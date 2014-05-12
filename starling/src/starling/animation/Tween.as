@@ -335,14 +335,13 @@ package starling.animation
 		private var previousTime:Number;
 		private var restTime:Number;
 		private var carryOverTime:Number;
-		private var ratio:Number;
+		private var ratio:Number; 
 		private var reversed:Boolean;
 		private var numProperties:int;
 		private var startValue:Number;
 		private var endValue:Number;
 		private var delta:Number;
 		private var currentValue:Number;
-		private var onCompleteArgs:Array;
 		private var tOnComplete:Function;
 		private var tOnCompleteArgs:Array;
         

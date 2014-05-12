@@ -181,7 +181,7 @@ package starling.textures
         
         /** @inheritDoc */
         public override function get format():String { return mParent.format; }
-        
+         
         /** @inheritDoc */
         public override function get width():Number { return mWidth; }
         

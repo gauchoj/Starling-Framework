@@ -8,10 +8,9 @@
 //
 // =================================================================================================
 
-package starling.textures
-{
-    import flash.geom.Rectangle;
-    import flash.utils.Dictionary;
+package starling.textures {
+	import flash.geom.Rectangle;
+	import flash.utils.Dictionary;
 
     /** A texture atlas is a collection of many smaller textures in one big image. This class
      *  is used to access textures from such an atlas.
@@ -204,7 +203,6 @@ package starling.textures
 }
 
 import flash.geom.Rectangle;
-import starling.textures.Texture;
 
 class TextureInfo
 {

@@ -48,24 +48,12 @@ package starling.display
         private var mDurations:Vector.<Number>;
         private var mStartTimes:Vector.<Number>;
         
-		private var i:int;
         private var mDefaultFrameDuration:Number;
         private var mCurrentTime:Number;
         private var mCurrentFrame:int;
         private var mLoop:Boolean;
         private var mPlaying:Boolean;
         private var mMuted:Boolean;
-		private var finalFrame:int;
-		private var previousFrame:int;
-		private var restTime:Number;
-		private var breakAfterFrame:Boolean;
-		private var hasCompleteListener:Boolean;
-		private var dispatchCompleteEvent:Boolean;
-		private var mTotalTime:Number;
-		private var sound:Sound;
-		private var newFrameDuration:Number;
-		private var acceleration:Number;
-		private var duration:Number;
         
         /** Creates a movie clip from the provided textures and with the specified default framerate.
          *  The movie will have the size of the first frame. */  
@@ -84,8 +72,7 @@ package starling.display
         
         private function init(textures:Vector.<Texture>, fps:Number):void
         {
-            var i:int;
-			if (fps <= 0) throw new ArgumentError("Invalid fps: " + fps);
+            if (fps <= 0) throw new ArgumentError("Invalid fps: " + fps);
             var numFrames:int = textures.length;
             
             mDefaultFrameDuration = 1.0 / fps;
@@ -98,7 +85,7 @@ package starling.display
             mDurations = new Vector.<Number>(numFrames);
             mStartTimes = new Vector.<Number>(numFrames);
             
-            for (i=0; i<numFrames; ++i)
+            for (var i:int=0; i<numFrames; ++i)
             {
                 mDurations[i] = mDefaultFrameDuration;
                 mStartTimes[i] = i * mDefaultFrameDuration;
@@ -218,7 +205,7 @@ package starling.display
             mStartTimes.length = 0;
             mStartTimes[0] = 0;
             
-            for (i=1; i<numFrames; ++i)
+            for (var i:int=1; i<numFrames; ++i)
                 mStartTimes[i] = mStartTimes[int(i-1)] + mDurations[int(i-1)];
         }
         
@@ -227,23 +214,24 @@ package starling.display
         /** @inheritDoc */
         public function advanceTime(passedTime:Number):void
         {
-            if (!mPlaying || passedTime <= 0.0) return;
+            var sound:Sound;
+			if (!mPlaying || passedTime <= 0.0) return;
             
-            finalFrame;
-            previousFrame = mCurrentFrame;
-            restTime = 0.0;
-            breakAfterFrame = false;
-            hasCompleteListener = hasEventListener(Event.COMPLETE); 
-            dispatchCompleteEvent = false;
-            mTotalTime = this.totalTime;
+            var finalFrame:int;
+            var previousFrame:int = mCurrentFrame;
+            var restTime:Number = 0.0;
+            var breakAfterFrame:Boolean = false;
+            var hasCompleteListener:Boolean = hasEventListener(Event.COMPLETE); 
+            var dispatchCompleteEvent:Boolean = false;
+            var totalTime:Number = this.totalTime;
             
-            if (mLoop && mCurrentTime >= mTotalTime)
+            if (mLoop && mCurrentTime >= totalTime)
             { 
                 mCurrentTime = 0.0; 
                 mCurrentFrame = 0; 
             }
             
-            if (mCurrentTime < mTotalTime)
+            if (mCurrentTime < totalTime)
             {
                 mCurrentTime += passedTime;
                 finalFrame = mTextures.length - 1;
@@ -254,16 +242,16 @@ package starling.display
                     {
                         if (mLoop && !hasCompleteListener)
                         {
-                            mCurrentTime -= mTotalTime;
+                            mCurrentTime -= totalTime;
                             mCurrentFrame = 0;
                         }
                         else
                         {
                             breakAfterFrame = true;
-                            restTime = mCurrentTime - mTotalTime;
+                            restTime = mCurrentTime - totalTime;
                             dispatchCompleteEvent = hasCompleteListener;
                             mCurrentFrame = finalFrame;
-                            mCurrentTime = mTotalTime;
+                            mCurrentTime = totalTime;
                         }
                     }
                     else
@@ -277,7 +265,7 @@ package starling.display
                 }
                 
                 // special case when we reach *exactly* the total time.
-                if (mCurrentFrame == finalFrame && mCurrentTime == mTotalTime)
+                if (mCurrentFrame == finalFrame && mCurrentTime == totalTime)
                     dispatchCompleteEvent = hasCompleteListener;
             }
             
@@ -324,7 +312,7 @@ package starling.display
             mCurrentFrame = value;
             mCurrentTime = 0.0;
             
-            for (i=0; i<value; ++i)
+            for (var i:int=0; i<value; ++i)
                 mCurrentTime += getFrameDuration(i);
             
             texture = mTextures[mCurrentFrame];
@@ -337,14 +325,15 @@ package starling.display
         public function get fps():Number { return 1.0 / mDefaultFrameDuration; }
         public function set fps(value:Number):void
         {
-            if (value <= 0) throw new ArgumentError("Invalid fps: " + value);
+			if (value <= 0) throw new ArgumentError("Invalid fps: " + value);
             
-            newFrameDuration = 1.0 / value;
-            acceleration = newFrameDuration / mDefaultFrameDuration;
+            var duration:Number;
+            var newFrameDuration:Number = 1.0 / value;
+            var acceleration:Number = newFrameDuration / mDefaultFrameDuration;
             mCurrentTime *= acceleration;
             mDefaultFrameDuration = newFrameDuration;
             
-            for (i=0; i<numFrames; ++i) 
+            for (var i:int=0; i<numFrames; ++i) 
             {
                 duration = mDurations[i] * acceleration;
                 mDurations[i] = duration;

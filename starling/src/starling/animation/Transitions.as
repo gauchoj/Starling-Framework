@@ -13,7 +13,7 @@
 //
 // =================================================================================================
 //
-// Implementend by pis0 (Maiko Stievem - msdraco@gmail.com):
+// Implemented by pis0 (Maiko Stievem - msdraco@gmail.com):
 // - KTween easing functions - https://code.google.com/p/kawanet/
 // - KeySpline (Custom Bézier)- e.g.
 //

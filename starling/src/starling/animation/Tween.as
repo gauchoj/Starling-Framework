@@ -146,10 +146,9 @@ package starling.animation
         {
             if (time == 0 || (mRepeatCount == 1 && mCurrentTime == mTotalTime)) return;
             
-            var i:int;
-            var previousTime:Number = mCurrentTime;
-            var restTime:Number = mTotalTime - mCurrentTime;
-            var carryOverTime:Number = time > restTime ? time - restTime : 0.0;
+            previousTime = mCurrentTime;
+            restTime = mTotalTime - mCurrentTime;
+            carryOverTime = time > restTime ? time - restTime : 0.0;
             
             mCurrentTime += time;
             
@@ -164,9 +163,9 @@ package starling.animation
                 if (mOnStart != null) mOnStart.apply(null, mOnStartArgs);
             }
 
-            var ratio:Number = mCurrentTime / mTotalTime;
-            var reversed:Boolean = mReverse && (mCurrentCycle % 2 == 1);
-            var numProperties:int = mStartValues.length;
+            ratio = mCurrentTime / mTotalTime;
+            reversed = mReverse && (mCurrentCycle % 2 == 1);
+            numProperties = mStartValues.length;
             mProgress = reversed ? mTransitionFunc(1.0 - ratio) : mTransitionFunc(ratio);
 
             for (i=0; i<numProperties; ++i)
@@ -174,10 +173,10 @@ package starling.animation
                 if (mStartValues[i] != mStartValues[i]) // isNaN check - "isNaN" causes allocation! 
                     mStartValues[i] = mTarget[mProperties[i]] as Number;
                 
-                var startValue:Number = mStartValues[i];
-                var endValue:Number = mEndValues[i];
-                var delta:Number = endValue - startValue;
-                var currentValue:Number = startValue + mProgress * delta;
+                startValue = mStartValues[i];
+                endValue = mEndValues[i];
+                delta = endValue - startValue;
+                currentValue = startValue + mProgress * delta;
                 
                 if (mRoundToInt) currentValue = Math.round(currentValue);
                 mTarget[mProperties[i]] = currentValue;
@@ -198,28 +197,34 @@ package starling.animation
                 else
                 {
                     // save callback & args: they might be changed through an event listener
-                    var onComplete:Function = mOnComplete;
-                    var onCompleteArgs:Array = mOnCompleteArgs;
+                    tOnComplete = mOnComplete;
+                    tOnCompleteArgs = mOnCompleteArgs;
                     
                     // in the 'onComplete' callback, people might want to call "tween.reset" and
                     // add it to another juggler; so this event has to be dispatched *before*
                     // executing 'onComplete'.
                     dispatchEventWith(Event.REMOVE_FROM_JUGGLER);
-                    if (onComplete != null) onComplete.apply(null, onCompleteArgs);
+                    if (tOnComplete != null) tOnComplete.apply(null, tOnCompleteArgs);
                 }
             }
             
             if (carryOverTime) 
                 advanceTime(carryOverTime);
+			
+			tOnComplete = null;
+			tOnCompleteArgs = null;
         }
         
         /** The end value a certain property is animated to. Throws an ArgumentError if the 
          *  property is not being animated. */
         public function getEndValue(property:String):Number
         {
-            var index:int = mProperties.indexOf(property);
-            if (index == -1) throw new ArgumentError("The property '" + property + "' is not animated");
-            else return mEndValues[index] as Number;
+			// TODO: 
+            //i = mProperties.indexOf(property);
+            //if (i == -1) throw new ArgumentError("The property '" + property + "' is not animated");
+           // else return mEndValues[i] as Number;
+           
+		    return mEndValues[i] as Number;
         }
         
         /** Indicates if the tween is finished. */
@@ -326,6 +331,21 @@ package starling.animation
         // tween pooling
         
         private static var sTweenPool:Vector.<Tween> = new <Tween>[];
+		private var i:int;
+		private var previousTime:Number;
+		private var restTime:Number;
+		private var carryOverTime:Number;
+		private var ratio:Number;
+		private var reversed:Boolean;
+		private var numProperties:int;
+		private var startValue:Number;
+		private var endValue:Number;
+		private var delta:Number;
+		private var currentValue:Number;
+		private var onComplete:Function;
+		private var onCompleteArgs:Array;
+		private var tOnComplete:Function;
+		private var tOnCompleteArgs:Array;
         
         /** @private */
         starling_internal static function fromPool(target:Object, time:Number, 

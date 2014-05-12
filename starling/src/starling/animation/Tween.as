@@ -342,7 +342,6 @@ package starling.animation
 		private var endValue:Number;
 		private var delta:Number;
 		private var currentValue:Number;
-		private var onComplete:Function;
 		private var onCompleteArgs:Array;
 		private var tOnComplete:Function;
 		private var tOnCompleteArgs:Array;

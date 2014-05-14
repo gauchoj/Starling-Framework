@@ -217,7 +217,7 @@ package starling.display
 		private var hasCompleteListener: Boolean;
 		private var dispatchCompleteEvent: Boolean;
 		private var totalTimee: Number;
-		private var sound: Sound;
+		//private var sound: Sound;
         
         public function advanceTime(passedTime: Number): void
 		{

@@ -159,6 +159,7 @@ package starling.animation {
 		
 		/** @inheritDoc */
 		public function advanceTime(time:Number):void {
+			
 			do
 			{
 				if (time==0 || (mRepeatCount==1 && mCurrentTime==mTotalTime)) return;

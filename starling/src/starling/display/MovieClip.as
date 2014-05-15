@@ -45,6 +45,7 @@ package starling.display
     {
         private var mTextures:Vector.<Texture>;
         private var mSounds:Vector.<Sound>;
+        private var mMuted:Boolean;
         private var mDurations:Vector.<Number>;
         private var mStartTimes:Vector.<Number>;
         
@@ -53,7 +54,6 @@ package starling.display
         private var mCurrentFrame:int;
         private var mLoop:Boolean;
         private var mPlaying:Boolean;
-        private var mMuted:Boolean;
         
         /** Creates a movie clip from the provided textures and with the specified default framerate.
          *  The movie will have the size of the first frame. */  

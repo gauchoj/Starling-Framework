@@ -196,7 +196,16 @@ package starling.animation
          *  IAnimatable otherwise; it is taken from a pool and will be reused.</p> */
         public function tween(target:Object, time:Number, properties:Object):IAnimatable
         {
-            var property:String;
+           
+            var tween:Tween = create(target, time, properties);
+            tween.addEventListener(Event.REMOVE_FROM_JUGGLER, onPooledTweenComplete);
+            add(tween);
+            return tween;
+        }
+		
+		public function create(target:Object, time:Number, properties:Object):Tween
+		{
+			var property:String;
 			var value:Object;
 			var tween:Tween = Tween.starling_internal::fromPool(target, time);
             
@@ -211,12 +220,10 @@ package starling.animation
                 else
                     throw new ArgumentError("Invalid property: " + property);
             }
-            
-            tween.addEventListener(Event.REMOVE_FROM_JUGGLER, onPooledTweenComplete);
-            add(tween);
-
-            return tween;
-        }
+			
+			return tween;
+			
+		}
         
         private function onPooledTweenComplete(event:Event):void
         {

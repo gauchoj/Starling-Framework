@@ -10,47 +10,45 @@
 
 package starling.core
 {
-	import starling.animation.Juggler;
-	import starling.display.DisplayObject;
-	import starling.display.Stage;
-	import starling.events.EventDispatcher;
-	import starling.events.ResizeEvent;
-	import starling.events.TouchPhase;
-	import starling.events.TouchProcessor;
-	import starling.utils.HAlign;
-	import starling.utils.SystemUtil;
-	import starling.utils.VAlign;
-	import starling.utils.execute;
-
-	import com.assukar.airong.utils.Utils;
-
-	import flash.display.Sprite;
-	import flash.display.Stage3D;
-	import flash.display.StageAlign;
-	import flash.display.StageScaleMode;
-	import flash.display3D.Context3D;
-	import flash.display3D.Context3DCompareMode;
-	import flash.display3D.Context3DTriangleFace;
-	import flash.display3D.Program3D;
-	import flash.errors.IllegalOperationError;
-	import flash.events.ErrorEvent;
-	import flash.events.Event;
-	import flash.events.KeyboardEvent;
-	import flash.events.MouseEvent;
-	import flash.events.TouchEvent;
-	import flash.geom.Rectangle;
-	import flash.system.Capabilities;
-	import flash.text.TextField;
-	import flash.text.TextFieldAutoSize;
-	import flash.text.TextFormat;
-	import flash.text.TextFormatAlign;
-	import flash.ui.Mouse;
-	import flash.ui.Multitouch;
-	import flash.ui.MultitouchInputMode;
-	import flash.utils.ByteArray;
-	import flash.utils.Dictionary;
-	import flash.utils.getTimer;
-	import flash.utils.setTimeout;
+    import flash.display.Sprite;
+    import flash.display.Stage3D;
+    import flash.display.StageAlign;
+    import flash.display.StageScaleMode;
+    import flash.display3D.Context3D;
+    import flash.display3D.Context3DCompareMode;
+    import flash.display3D.Context3DTriangleFace;
+    import flash.display3D.Program3D;
+    import flash.errors.IllegalOperationError;
+    import flash.events.ErrorEvent;
+    import flash.events.Event;
+    import flash.events.KeyboardEvent;
+    import flash.events.MouseEvent;
+    import flash.events.TouchEvent;
+    import flash.geom.Rectangle;
+    import flash.system.Capabilities;
+    import flash.text.TextField;
+    import flash.text.TextFieldAutoSize;
+    import flash.text.TextFormat;
+    import flash.text.TextFormatAlign;
+    import flash.ui.Mouse;
+    import flash.ui.Multitouch;
+    import flash.ui.MultitouchInputMode;
+    import flash.utils.ByteArray;
+    import flash.utils.Dictionary;
+    import flash.utils.getTimer;
+    import flash.utils.setTimeout;
+    
+    import starling.animation.Juggler;
+    import starling.display.DisplayObject;
+    import starling.display.Stage;
+    import starling.events.EventDispatcher;
+    import starling.events.ResizeEvent;
+    import starling.events.TouchPhase;
+    import starling.events.TouchProcessor;
+    import starling.utils.HAlign;
+    import starling.utils.SystemUtil;
+    import starling.utils.VAlign;
+    import starling.utils.execute;
     
     /** Dispatched when a new render context is created. */
     [Event(name="context3DCreate", type="starling.events.Event")]
@@ -372,8 +370,18 @@ package starling.core
             function requestNextProfile():void
             {
                 currentProfile = profiles.shift();
-					 Utils.print("currentProfile:" + currentProfile);
-                execute(mStage3D.requestContext3D, renderMode, currentProfile);
+                //execute(mStage3D.requestContext3D, renderMode, currentProfile);
+				
+				try {
+					execute(mStage3D.requestContext3D, renderMode, currentProfile);
+				} catch (error:Error) {
+					if (profiles.length > 0) {
+						setTimeout(requestNextProfile, 1);
+					} else {
+						throw (error);
+					}
+				}
+				
             }
             
             function onCreated(event:Event):void

@@ -142,79 +142,101 @@ package starling.animation {
 			animate("alpha", alpha);
 		}
 		
+		private var i: int;
+		private var previousTime: Number;
+		private var restTime: Number;
+		private var carryOverTime: Number;
+		private var ratio: Number;
+		private var reversed: Boolean;
+		private var numProperties: int;
+		private var startValue: Number;
+		private var endValue: Number;
+		private var delta: Number;
+		private var currentValue: Number;
+		private var onCompletee: Function;
+		private var onCompleteArgss: Array;
+		private var mProp: String;
+		
 		/** @inheritDoc */
 		public function advanceTime(time:Number):void {
-			var currentValue:Number;
-			var delta:Number;
-			var endValue:Number;
-			var startValue:Number;
-			if (time == 0 || (mRepeatCount == 1 && mCurrentTime == mTotalTime))
-				return;
 			
-			var i:int;
-			var previousTime:Number = mCurrentTime;
-			var restTime:Number = mTotalTime - mCurrentTime;
-			var carryOverTime:Number = time > restTime ? time - restTime : 0.0;
-			
-			mCurrentTime += time;
-			
-			if (mCurrentTime <= 0)
-				return; // the delay is not over yet
-			else if (mCurrentTime > mTotalTime)
-				mCurrentTime = mTotalTime;
-			
-			if (mCurrentCycle < 0 && previousTime <= 0 && mCurrentTime > 0) {
-				mCurrentCycle++;
-				if (mOnStart != null)
-					mOnStart.apply(null, mOnStartArgs);
-			}
-			
-			var ratio:Number = mCurrentTime / mTotalTime;
-			var reversed:Boolean = mReverse && (mCurrentCycle % 2 == 1);
-			var numProperties:int = mStartValues.length;
-			mProgress = reversed ? mTransitionFunc(1.0 - ratio) : mTransitionFunc(ratio);
-			
-			for (i = 0; i < numProperties; ++i) {
-				if (mStartValues[i] != mStartValues[i]) // isNaN check - "isNaN" causes allocation! 
-					mStartValues[i] = mTarget[mProperties[i]] as Number;
-				
-				startValue = mStartValues[i];
-				endValue = mEndValues[i];
-				delta = endValue - startValue;
-				currentValue = startValue + mProgress * delta;
-				
-				if (mRoundToInt)
-					currentValue = Math.round(currentValue);
-				mTarget[mProperties[i]] = currentValue;
-			}
-			
-			if (mOnUpdate != null)
-				mOnUpdate.apply(null, mOnUpdateArgs);
-			
-			if (previousTime < mTotalTime && mCurrentTime >= mTotalTime) {
-				if (mRepeatCount == 0 || mRepeatCount > 1) {
-					mCurrentTime = -mRepeatDelay;
+			do
+			{
+				if (time==0 || (mRepeatCount==1 && mCurrentTime==mTotalTime)) return;
+	
+				i = 0;
+				previousTime = mCurrentTime;
+				restTime = mTotalTime-mCurrentTime;
+				carryOverTime = time>restTime?time-restTime:0.0;
+	
+				mCurrentTime += time;
+	
+				if (mCurrentTime<=0)
+					return; // the delay is not over yet
+				else if (mCurrentTime>mTotalTime)
+					mCurrentTime = mTotalTime;
+	
+				if (mCurrentCycle<0 && previousTime<=0 && mCurrentTime>0)
+				{
 					mCurrentCycle++;
-					if (mRepeatCount > 1)
-						mRepeatCount--;
-					if (mOnRepeat != null)
-						mOnRepeat.apply(null, mOnRepeatArgs);
-				} else {
-					// save callback & args: they might be changed through an event listener
-					var onComplete:Function = mOnComplete;
-					var onCompleteArgs:Array = mOnCompleteArgs;
-					
-					// in the 'onComplete' callback, people might want to call "tween.reset" and
-					// add it to another juggler; so this event has to be dispatched *before*
-					// executing 'onComplete'.
-					dispatchEventWith(Event.REMOVE_FROM_JUGGLER);
-					if (onComplete != null)
-						onComplete.apply(null, onCompleteArgs);
+					if (mOnStart!=null) mOnStart.apply(null, mOnStartArgs);
 				}
+	
+				ratio = mCurrentTime/mTotalTime;
+				reversed = mReverse && (mCurrentCycle%2==1);
+				numProperties = mStartValues.length;
+				mProgress = reversed?mTransitionFunc(1.0-ratio):mTransitionFunc(ratio);
+	
+				for (i = 0; i<numProperties; ++i)
+				{
+					mProp = mProperties[i];
+					
+					if (mStartValues[i]!=mStartValues[i]) // isNaN check - "isNaN" causes allocation!
+					{
+						startValue = mStartValues[i] = mTarget[mProp] as Number;
+					}
+					else
+					{
+						startValue = mStartValues[i];
+					}
+	
+					endValue = mEndValues[i];
+					delta = endValue-startValue;
+					currentValue = startValue+mProgress*delta;
+	
+					if (mRoundToInt) currentValue = Math.round(currentValue);
+					mTarget[mProp] = currentValue;
+				}
+	
+				if (mOnUpdate!=null)
+					mOnUpdate.apply(null, mOnUpdateArgs);
+	
+				if (previousTime<mTotalTime && mCurrentTime>=mTotalTime)
+				{
+					if (mRepeatCount==0 || mRepeatCount>1)
+					{
+						mCurrentTime = -mRepeatDelay;
+						mCurrentCycle++;
+						if (mRepeatCount>1) mRepeatCount--;
+						if (mOnRepeat!=null) mOnRepeat.apply(null, mOnRepeatArgs);
+					}
+					else
+					{
+						// save callback & args: they might be changed through an event listener
+						onCompletee = mOnComplete;
+						onCompleteArgss = mOnCompleteArgs;
+	
+						// in the 'onComplete' callback, people might want to call "tween.reset" and
+						// add it to another juggler; so this event has to be dispatched *before*
+						// executing 'onComplete'.
+						dispatchEventWith(Event.REMOVE_FROM_JUGGLER);
+						if (onCompletee!=null) onCompletee.apply(null, onCompleteArgss);
+					}
+				}
+				
+				time = carryOverTime;
 			}
-			
-			if (carryOverTime)
-				advanceTime(carryOverTime);
+			while (carryOverTime);
 		}
 		
 		/** The end value a certain property is animated to. Throws an ArgumentError if the
@@ -426,7 +448,7 @@ package starling.animation {
 			tween.mTarget = null;
 			tween.mTransitionFunc = null;
 			tween.removeEventListeners();
-			sTweenPool.push(tween);
+			sTweenPool[sTweenPool.length] = tween;
 		}
 	}
 }

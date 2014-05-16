@@ -119,14 +119,16 @@ package starling.animation
         /** Removes all objects at once. */
         public function purge():void
         {
-            // the object vector is not purged right away, because if this method is called 
+            var i:int;
+			var dispatcher:EventDispatcher;
+			// the object vector is not purged right away, because if this method is called 
             // from an 'advanceTime' call, this would make the loop crash. Instead, the
             // vector is filled with 'null' values. They will be cleaned up on the next call
             // to 'advanceTime'.
             
-            for (var i:int=mObjects.length-1; i>=0; --i)
+            for (i=mObjects.length-1; i>=0; --i)
             {
-                var dispatcher:EventDispatcher = mObjects[i] as EventDispatcher;
+                dispatcher = mObjects[i] as EventDispatcher;
                 if (dispatcher) dispatcher.removeEventListener(Event.REMOVE_FROM_JUGGLER, onRemove);
                 mObjects[i] = null;
             }
@@ -139,7 +141,7 @@ package starling.animation
          *  <p>To cancel the call, pass the returned 'IAnimatable' instance to 'Juggler.remove()'.
          *  Do not use the returned IAnimatable otherwise; it is taken from a pool and will be
          *  reused.</p> */
-        public function delayCall(call:Function, delay:Number, ...args): DelayedCall//IAnimatable
+        public function delayCall(call:Function, delay:Number, ...args):DelayedCall
         {
             if (call == null) return null;
             
@@ -156,7 +158,7 @@ package starling.animation
          *  <p>To cancel the call, pass the returned 'IAnimatable' instance to 'Juggler.remove()'.
          *  Do not use the returned IAnimatable otherwise; it is taken from a pool and will be
          *  reused.</p> */
-        public function repeatCall(call:Function, interval:Number, repeatCount:int=0, ...args):IAnimatable
+        public function repeatCall(call:Function, interval:Number, repeatCount:int=0, ...args):DelayedCall
         {
             if (call == null) return null;
             
@@ -194,11 +196,22 @@ package starling.animation
          *  IAnimatable otherwise; it is taken from a pool and will be reused.</p> */
         public function tween(target:Object, time:Number, properties:Object):IAnimatable
         {
-            var tween:Tween = Tween.starling_internal::fromPool(target, time);
+           
+            var tween:Tween = create(target, time, properties);
+            tween.addEventListener(Event.REMOVE_FROM_JUGGLER, onPooledTweenComplete);
+            add(tween);
+            return tween;
+        }
+		
+		public function create(target:Object, time:Number, properties:Object):Tween
+		{
+			var property:String;
+			var value:Object;
+			var tween:Tween = Tween.starling_internal::fromPool(target, time);
             
-            for (var property:String in properties)
+            for (property in properties)
             {
-                var value:Object = properties[property];
+                value = properties[property];
                 
                 if (tween.hasOwnProperty(property))
                     tween[property] = value;
@@ -207,12 +220,10 @@ package starling.animation
                 else
                     throw new ArgumentError("Invalid property: " + property);
             }
-            
-            tween.addEventListener(Event.REMOVE_FROM_JUGGLER, onPooledTweenComplete);
-            add(tween);
-
-            return tween;
-        }
+			
+			return tween;
+			
+		}
         
         private function onPooledTweenComplete(event:Event):void
         {
@@ -222,7 +233,8 @@ package starling.animation
         /** Advances all objects by a certain time (in seconds). */
         public function advanceTime(time:Number):void
         {   
-            var numObjects:int = mObjects.length;
+            var object:IAnimatable;
+			var numObjects:int = mObjects.length;
             var currentIndex:int = 0;
             var i:int;
             
@@ -235,7 +247,7 @@ package starling.animation
             
             for (i=0; i<numObjects; ++i)
             {
-                var object:IAnimatable = mObjects[i];
+                object = mObjects[i];
                 if (object)
                 {
                     // shift objects into empty slots along the way

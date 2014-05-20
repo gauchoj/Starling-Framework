@@ -227,6 +227,7 @@ package starling.animation
         
         private function onPooledTweenComplete(event:Event):void
         {
+			event.target.removeEventListener(Event.REMOVE_FROM_JUGGLER, onPooledTweenComplete);
             Tween.starling_internal::toPool(event.target as Tween);
         }
         

@@ -10,9 +10,11 @@
 
 package starling.animation
 {
-    import starling.core.starling_internal;
-    import starling.events.Event;
-    import starling.events.EventDispatcher;
+	import starling.core.starling_internal;
+	import starling.events.Event;
+	import starling.events.EventDispatcher;
+
+	import com.assukar.airong.utils.Utils;
 
     /** The Juggler takes objects that implement IAnimatable (like Tweens) and executes them.
      * 
@@ -59,6 +61,8 @@ package starling.animation
         /** Adds an object to the juggler. */
         public function add(object:IAnimatable):void
         {
+//				Utils.print("object:" + object + " ix:" + mObjects.indexOf(object));
+							
             if (object && mObjects.indexOf(object) == -1) 
             {
                 mObjects.push(object);
@@ -148,6 +152,8 @@ package starling.animation
             var delayedCall:DelayedCall = DelayedCall.starling_internal::fromPool(call, delay, args);
             delayedCall.addEventListener(Event.REMOVE_FROM_JUGGLER, onPooledDelayedCallComplete);
             add(delayedCall);
+				
+				Utils.print("delayedCall:" + delayedCall + " " + call + "(" + args + ")");
 
             return delayedCall; 
         }

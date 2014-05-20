@@ -74,8 +74,8 @@ package starling.animation
                     
                     // in the callback, people might want to call "reset" and re-add it to the
                     // juggler; so this event has to be dispatched *before* executing 'call'.
-                    dispatchEventWith(Event.REMOVE_FROM_JUGGLER);
                     call.apply(null, args);
+                    dispatchEventWith(Event.REMOVE_FROM_JUGGLER);
                 }
             }
         }
@@ -83,7 +83,7 @@ package starling.animation
         /** Indicates if enough time has passed, and the call has already been executed. */
         public function get isComplete():Boolean 
         { 
-            return mRepeatCount == 1 && mCurrentTime >= mTotalTime; 
+            return mRepeatCount == 1 && mCurrentTime >= mTotalTime;
         }
         
         /** The time for which calls will be delayed (in seconds). */

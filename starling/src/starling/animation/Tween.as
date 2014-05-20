@@ -160,9 +160,10 @@ package starling.animation {
 		/** @inheritDoc */
 		public function advanceTime(time:Number):void {
 			
-			do
+			while (time)
 			{
-				if (time==0 || (mRepeatCount==1 && mCurrentTime==mTotalTime)) return;
+//				if (time==0 || 
+				if (mRepeatCount==1 && mCurrentTime==mTotalTime) return;
 	
 				i = 0;
 				previousTime = mCurrentTime;
@@ -236,7 +237,7 @@ package starling.animation {
 				
 				time = carryOverTime;
 			}
-			while (carryOverTime);
+//			while (carryOverTime);
 		}
 		
 		/** The end value a certain property is animated to. Throws an ArgumentError if the

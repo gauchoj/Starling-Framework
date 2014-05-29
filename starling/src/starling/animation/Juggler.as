@@ -145,7 +145,8 @@ package starling.animation
         {
             if (call == null) return null;
             
-            var delayedCall:DelayedCall = DelayedCall.starling_internal::fromPool(call, delay, args);
+            //var delayedCall:DelayedCall = DelayedCall.starling_internal::fromPool(call, delay, args);
+            var delayedCall:DelayedCall = new DelayedCall(call, delay, args);
             delayedCall.addEventListener(Event.REMOVE_FROM_JUGGLER, onPooledDelayedCallComplete);
             add(delayedCall);
 
@@ -172,7 +173,8 @@ package starling.animation
         
         private function onPooledDelayedCallComplete(event:Event):void
         {
-            DelayedCall.starling_internal::toPool(event.target as DelayedCall);
+			event.target.removeEventListener(Event.REMOVE_FROM_JUGGLER, onRemove);
+            //DelayedCall.starling_internal::toPool(event.target as DelayedCall);
         }
         
         /** Utilizes a tween to animate the target object over <code>time</code> seconds. Internally,

@@ -91,7 +91,6 @@ package starling.animation
 				if (index < mObjects.length && mObjects[index] == object) {
 					mObjects[index] = null;
 				}else {
-					Utils.print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> fail index", index);
 					index = mObjects.indexOf(object);
 					mObjects[index] = null;
 				}
@@ -215,7 +214,7 @@ package starling.animation
         {
            
             var tween:Tween = create(target, time, properties);
-            tween.addEventListener(Event.REMOVE_FROM_JUGGLER, onPooledTweenComplete);
+			tween.addEventListener(Event.REMOVE_FROM_JUGGLER, onPooledTweenComplete);
             add(tween);
             return tween;
         }

@@ -154,7 +154,7 @@ package starling.animation
             delayedCall.addEventListener(Event.REMOVE_FROM_JUGGLER, onPooledDelayedCallComplete);
             add(delayedCall);
 				
-				Utils.print("delayedCall:" + delayedCall + " " + call + "(" + args + ")");
+//				Utils.print("delayedCall:" + delayedCall + " " + call + "(" + args + ")");
 
             return delayedCall; 
         }

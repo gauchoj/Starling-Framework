@@ -1,0 +1,64 @@
+
+
+
+// lista os repositorios atuais
+
+git remote -v
+
+# origin    https://github.com/gauchoj/Starling-Framework.git (fetch)
+# origin    https://github.com/gauchoj/Starling-Framework.git (push)
+
+
+
+
+// se nao houver upstream, add
+
+git remote add upstream https://github.com/PrimaryFeather/Starling-Framework.git
+
+
+
+
+// a nova lista dos remotes deve estar assim
+
+git remote -v
+
+# origin    https://github.com/gauchoj/Starling-Framework.git (fetch)
+# origin    https://github.com/gauchoj/Starling-Framework.git (push)
+# upstream  https://github.com/PrimaryFeather/Starling-Framework.git (fetch)
+# upstream  https://github.com/PrimaryFeather/Starling-Framework.git (push)
+
+
+
+
+
+// pega os branches do upstream
+
+git fetch upstream
+
+
+
+
+// lista todos os branches locais e remotos trackeados
+
+git branch -va
+
+
+
+
+
+// coloca vc no branch master, caso já nao esteja
+
+git checkout master
+
+
+
+
+
+// merge
+
+git merge upstream/master
+
+
+
+
+

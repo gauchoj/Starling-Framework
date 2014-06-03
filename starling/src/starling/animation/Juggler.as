@@ -10,10 +10,9 @@
 
 package starling.animation
 {
-	import com.assukar.airong.utils.Utils;
-    import starling.core.starling_internal;
-    import starling.events.Event;
-    import starling.events.EventDispatcher;
+	import starling.core.starling_internal;
+	import starling.events.Event;
+	import starling.events.EventDispatcher;
 
     /** The Juggler takes objects that implement IAnimatable (like Tweens) and executes them.
      * 

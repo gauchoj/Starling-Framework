@@ -39,6 +39,7 @@ package starling.animation {
 	 *  @see Transitions
 	 */
 	public class Tween extends EventDispatcher implements IAnimatable {
+		
 		private var mTarget:Object;
 		private var mTransitionFunc:Function;
 		private var mTransitionName:String;
@@ -69,6 +70,9 @@ package starling.animation {
 		private var mCurrentCycle:int;
 		
 		private var canceled:Boolean;
+		
+		internal var pooled:Boolean;
+		
 		
 		/** Creates a tween with a target, duration (in seconds) and a transition function.
 		 *  @param target the object that you want to animate
@@ -428,6 +432,12 @@ package starling.animation {
 		
 		public function cancel():void {
 			canceled = true;
+		}
+		
+		/* INTERFACE starling.animation.IAnimatable */
+		
+		public function isActive():Boolean {
+			return pooled;
 		}
 		
 		// tween pooling

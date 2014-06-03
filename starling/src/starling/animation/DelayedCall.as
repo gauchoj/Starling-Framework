@@ -10,9 +10,8 @@
 
 package starling.animation
 {
-    import starling.core.starling_internal;
-    import starling.events.Event;
-    import starling.events.EventDispatcher;
+	import starling.events.Event;
+	import starling.events.EventDispatcher;
 
     /** A DelayedCall allows you to execute a method after a certain time has passed. Since it 
      *  implements the IAnimatable interface, it can be added to a juggler. In most cases, you 
@@ -30,7 +29,7 @@ package starling.animation
         private var mTotalTime:Number;
         private var mCall:Function;
         private var mArgs:Array;
-        private var mRepeatCount:int;
+        //private var mRepeatCount:int;
         
         /** Creates a delayed call. */
         public function DelayedCall(call:Function, delay:Number, args:Array=null)
@@ -45,7 +44,7 @@ package starling.animation
             mTotalTime = Math.max(delay, 0.0001);
             mCall = call;
             mArgs = args;
-            mRepeatCount = 1;
+            //mRepeatCount = 1;
             
             return this;
         }
@@ -58,33 +57,33 @@ package starling.animation
             
             if (previousTime < mTotalTime && mCurrentTime >= mTotalTime)
             {                
-                if (mRepeatCount == 0 || mRepeatCount > 1)
-                {
-                    mCall.apply(null, mArgs);
-                    
-                    if (mRepeatCount > 0) mRepeatCount -= 1;
-                    mCurrentTime = 0;
-                    advanceTime((previousTime + time) - mTotalTime);
-                }
-                else
-                {
-                    // save call & args: they might be changed through an event listener
-                    var call:Function = mCall;
-                    var args:Array = mArgs;
-                    
-                    // in the callback, people might want to call "reset" and re-add it to the
-                    // juggler; so this event has to be dispatched *before* executing 'call'.
-                    call.apply(null, args);
-                    dispatchEventWith(Event.REMOVE_FROM_JUGGLER);
+                //if (mRepeatCount == 0 || mRepeatCount > 1)
+                //{
+                    //mCall.apply(null, mArgs);
+                    //
+                    //if (mRepeatCount > 0) mRepeatCount -= 1;
+                    //mCurrentTime = 0;
+                    //advanceTime((previousTime + time) - mTotalTime);
+                //}
+                //else
+                //{
+                    ////var call:Function = mCall;
+                    ////var args:Array = mArgs;
+                    //
+                    ////call.apply(null, args);
 					
-                }
+                    dispatchEventWith(Event.REMOVE_FROM_JUGGLER);
+                    mCall.apply(null, mArgs);
+					
+                //}
             }
         }
         
         /** Indicates if enough time has passed, and the call has already been executed. */
         public function get isComplete():Boolean 
         { 
-            return mRepeatCount == 1 && mCurrentTime >= mTotalTime;
+            //return mRepeatCount == 1 && mCurrentTime >= mTotalTime;
+            return mCurrentTime >= mTotalTime;
         }
         
         /** The time for which calls will be delayed (in seconds). */
@@ -93,31 +92,8 @@ package starling.animation
         /** The time that has already passed (in seconds). */
         public function get currentTime():Number { return mCurrentTime; }
         
-        /** The number of times the call will be repeated. 
-         *  Set to '0' to repeat indefinitely. @default 1 */
-        public function get repeatCount():int { return mRepeatCount; }
-        public function set repeatCount(value:int):void { mRepeatCount = value; }
+        //public function get repeatCount():int { return mRepeatCount; }
+        //public function set repeatCount(value:int):void { mRepeatCount = value; }
         
-        // delayed call pooling
-        
-        private static var sPool:Vector.<DelayedCall> = new <DelayedCall>[];
-        
-        /** @private */
-        starling_internal static function fromPool(call:Function, delay:Number, 
-                                                   args:Array=null):DelayedCall
-        {
-            if (sPool.length) return sPool.pop().reset(call, delay, args);
-            else return new DelayedCall(call, delay, args);
-        }
-        
-        /** @private */
-        starling_internal static function toPool(delayedCall:DelayedCall):void
-        {
-            // reset any object-references, to make sure we don't prevent any garbage collection
-            delayedCall.mCall = null;
-            delayedCall.mArgs = null;
-            delayedCall.removeEventListeners();
-            sPool.push(delayedCall);
-        }
     }
 }

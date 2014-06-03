@@ -76,6 +76,7 @@ package starling.animation
                     // juggler; so this event has to be dispatched *before* executing 'call'.
                     call.apply(null, args);
                     dispatchEventWith(Event.REMOVE_FROM_JUGGLER);
+					
                 }
             }
         }

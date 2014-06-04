@@ -170,7 +170,7 @@ package starling.text
         {
             if (result == null) result = new <int>[];
 
-            for(var key:int in mChars)
+            for(var key:* in mChars)
                 result[result.length] = key;
 
             return result;

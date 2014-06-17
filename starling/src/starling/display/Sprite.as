@@ -100,7 +100,7 @@ package starling.display
          */
         public function flatten():void
         {
-			 mFlattenRequested = true;
+            mFlattenRequested = true;
             broadcastEventWith(Event.FLATTEN);
         }
         

@@ -42,10 +42,9 @@ package starling.events
         /** Helper object. */
         private static var sBubbleChains:Array = [];
         
-		private var _jugglerIndex:int = -1;
-		
         /** Creates an EventDispatcher. */
-        public function EventDispatcher() { _jugglerIndex = -1; }
+        public function EventDispatcher()
+        {  }
         
         /** Registers an event listener at a certain object. */
         public function addEventListener(type:String, listener:Function):void
@@ -205,13 +204,5 @@ package starling.events
                 mEventListeners[type] as Vector.<Function> : null;
             return listeners ? listeners.length != 0 : false;
         }
-		
-		public function get jugglerIndex():int {
-			return _jugglerIndex;
-		}
-		
-		public function set jugglerIndex(value:int):void {
-			_jugglerIndex = value;
-		}
     }
 }

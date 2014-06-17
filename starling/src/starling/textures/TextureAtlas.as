@@ -8,9 +8,10 @@
 //
 // =================================================================================================
 
-package starling.textures {
-	import flash.geom.Rectangle;
-	import flash.utils.Dictionary;
+package starling.textures
+{
+    import flash.geom.Rectangle;
+    import flash.utils.Dictionary;
 
     /** A texture atlas is a collection of many smaller textures in one big image. This class
      *  is used to access textures from such an atlas.
@@ -70,7 +71,6 @@ package starling.textures {
     {
         private var mAtlasTexture:Texture;
         private var mTextureInfos:Dictionary;
-        private var mTextureNames:Vector.<String>;
         
         /** helper objects */
         private static var sNames:Vector.<String> = new <String>[];
@@ -144,21 +144,13 @@ package starling.textures {
         /** Returns all texture names that start with a certain string, sorted alphabetically. */
         public function getNames(prefix:String="", result:Vector.<String>=null):Vector.<String>
         {
-            var name:String;
             if (result == null) result = new <String>[];
             
-            if (mTextureNames == null)
-            {
-                // optimization: store sorted list of texture names
-                mTextureNames = new <String>[];
-                for (name in mTextureInfos) mTextureNames[mTextureNames.length] = name;
-                mTextureNames.sort(Array.CASEINSENSITIVE);
-            }
-
-            for each (name in mTextureNames)
+            for (var name:String in mTextureInfos)
                 if (name.indexOf(prefix) == 0)
-                    result[result.length] = name;
+                    result.push(name);
             
+            result.sort(Array.CASEINSENSITIVE);
             return result;
         }
         
@@ -191,14 +183,12 @@ package starling.textures {
                                   rotated:Boolean=false):void
         {
             mTextureInfos[name] = new TextureInfo(region, frame, rotated);
-            mTextureNames = null;
         }
         
         /** Removes a region with a certain name. */
         public function removeRegion(name:String):void
         {
             delete mTextureInfos[name];
-            mTextureNames = null;
         }
         
         /** The base texture that makes up the atlas. */
@@ -214,6 +204,7 @@ package starling.textures {
 }
 
 import flash.geom.Rectangle;
+import starling.textures.Texture;
 
 class TextureInfo
 {

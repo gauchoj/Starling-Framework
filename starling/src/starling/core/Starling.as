@@ -176,7 +176,7 @@ package starling.core
     public class Starling extends EventDispatcher
     {
         /** The version of the Starling framework. */
-        public static const VERSION:String = "1.5.2";
+        public static const VERSION:String = "1.5.1";
         
         /** The key for the shader programs stored in 'contextData' */
         private static const PROGRAM_DATA_NAME:String = "Starling.programs"; 
@@ -1019,7 +1019,7 @@ package starling.core
          *  internal code Starling can't avoid), so do not call this method too often. */
         public function get contextValid():Boolean
         {
-            return mContext && mContext.driverInfo != "Disposed";
+            return mContext && mContext.driverInfo != "Disposed"
         }
 
         // static properties
@@ -1071,7 +1071,5 @@ package starling.core
             else
                 sHandleLostContext = value;
         }
-		
-		/*** ADD A SILLY COMMENT TO TEST A FORK */
     }
 }

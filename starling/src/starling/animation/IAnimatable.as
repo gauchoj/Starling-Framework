@@ -26,12 +26,5 @@ package starling.animation
     {
         /** Advance the time by a number of seconds. @param time in seconds. */
         function advanceTime(time:Number):void;
-		
-		/**
-		 * 
-		 */
-		function get jugglerIndex():int;
-		function set jugglerIndex(value:int):void;
-		
     }
 }

@@ -99,14 +99,15 @@ package starling.animation
         
         // delayed call pooling
         
-        private static var sPool:Vector.<DelayedCall> = new <DelayedCall>[];
+//        private static var sPool:Vector.<DelayedCall> = new <DelayedCall>[];
         
         /** @private */
         starling_internal static function fromPool(call:Function, delay:Number, 
                                                    args:Array=null):DelayedCall
         {
-            if (sPool.length) return sPool.pop().reset(call, delay, args);
-            else return new DelayedCall(call, delay, args);
+//            if (sPool.length) return sPool.pop().reset(call, delay, args);
+//            else return new DelayedCall(call, delay, args);
+				return new DelayedCall(call, delay, args);
         }
         
         /** @private */
@@ -116,7 +117,7 @@ package starling.animation
             delayedCall.mCall = null;
             delayedCall.mArgs = null;
             delayedCall.removeEventListeners();
-            sPool.push(delayedCall);
+//            sPool.push(delayedCall);
         }
     }
 }

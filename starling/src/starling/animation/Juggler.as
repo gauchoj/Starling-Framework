@@ -242,8 +242,9 @@ package starling.animation
         
         private function onPooledTweenComplete(event:Event):void
         {
-			event.target.removeEventListener(Event.REMOVE_FROM_JUGGLER, onPooledTweenComplete);
-            Tween.starling_internal::toPool(event.target as Tween);
+			var tween:Tween = event.target as Tween;
+//			tween.removeEventListener(Event.REMOVE_FROM_JUGGLER, onPooledTweenComplete);
+            Tween.starling_internal::toPool(tween);
         }
         
         /** Advances all objects by a certain time (in seconds). */

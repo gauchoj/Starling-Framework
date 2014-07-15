@@ -10,25 +10,25 @@
 
 package starling.display
 {
-    import flash.geom.Matrix;
-    import flash.geom.Point;
-    import flash.geom.Rectangle;
-    import flash.system.Capabilities;
-    import flash.ui.Mouse;
-    import flash.ui.MouseCursor;
-    import flash.utils.getQualifiedClassName;
-    
-    import starling.core.RenderSupport;
-    import starling.core.Starling;
-    import starling.errors.AbstractClassError;
-    import starling.errors.AbstractMethodError;
-    import starling.events.Event;
-    import starling.events.EventDispatcher;
-    import starling.events.TouchEvent;
-    import starling.filters.FragmentFilter;
-    import starling.utils.HAlign;
-    import starling.utils.MatrixUtil;
-    import starling.utils.VAlign;
+	import starling.core.RenderSupport;
+	import starling.core.Starling;
+	import starling.errors.AbstractClassError;
+	import starling.errors.AbstractMethodError;
+	import starling.events.Event;
+	import starling.events.EventDispatcher;
+	import starling.events.TouchEvent;
+	import starling.filters.FragmentFilter;
+	import starling.utils.HAlign;
+	import starling.utils.MatrixUtil;
+	import starling.utils.VAlign;
+
+	import flash.geom.Matrix;
+	import flash.geom.Point;
+	import flash.geom.Rectangle;
+	import flash.system.Capabilities;
+	import flash.ui.Mouse;
+	import flash.ui.MouseCursor;
+	import flash.utils.getQualifiedClassName;
     
     /** Dispatched when an object is added to a parent. */
     [Event(name="added", type="starling.events.Event")]
@@ -764,5 +764,65 @@ package starling.display
         /** The stage the display object is connected to, or null if it is not connected 
          *  to the stage. */
         public function get stage():Stage { return this.base as Stage; }
+		
+		/* start of ASSUKAR */
+		
+		public function set yd(v: Number): void
+		{
+			y += int(v);
+		}
+		public function set xd(v: Number): void
+		{
+			x += int(v);
+		}
+		public function set pivotRatioY(v: Number): void
+		{
+			pivotY = int(height*v);
+		}
+		public function set pivotRatioX(v: Number): void
+		{
+			pivotX = int(width*v);
+		}
+		public function set centerPivots(v: Object): void
+		{
+			centerPivotY = v;
+			centerPivotX = v;
+		}
+		public function set centerPivotY(v: Object): void
+		{
+			pivotY = int(height/2);
+		}
+		public function set centerPivotX(v: Object): void
+		{
+			pivotX = int(width/2);
+		}
+		public function set rotateDegrees(v: Object): void
+		{
+			rotation += (Math.PI*Number(v))/180;
+		}
+		public function set centerYRelativeTo(base: DisplayObject): void
+		{
+			y = int(base.y+base.height*.5-height*.5);
+		}
+		public function set centerXRelativeTo(base: DisplayObject): void
+		{
+			x = int(base.x+base.width*.5-width*.5);
+		}
+		public function set centerRelativeTo(base: DisplayObject): void
+		{
+			centerYRelativeTo = base;
+			centerXRelativeTo = base;
+		}
+		public function set pivotsRatio(v: Object): void
+		{
+			pivotX = int(width*Number(v));
+			pivotY = int(height*Number(v));			
+		}
+		public function set scale(v: Object): void
+		{
+			scaleX = scaleY = v as Number;
+		}
+		
+		/* end of ASSUKAR */
     }
 }

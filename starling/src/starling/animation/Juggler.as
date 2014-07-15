@@ -46,7 +46,8 @@ package starling.animation
      *  @see Tween
      *  @see DelayedCall 
      */
-    public class Juggler implements IAnimatable
+    public class Juggler 
+	implements IAnimatable
     {
         private var mObjects:Vector.<IAnimatable>;
         private var mElapsedTime:Number;
@@ -61,19 +62,26 @@ package starling.animation
         /** Adds an object to the juggler. */
         public function add(object:IAnimatable):void
         {
-            if (object && mObjects.indexOf(object) == -1) 
+//			Utils.print("juggler::add:" + mObjects.length);
+//            if (object && mObjects.indexOf(object) == -1) 
+			if (object && object.jugglerIndex == -1)
             {
-                mObjects.push(object);
+//                mObjects.push(object);
+				object.jugglerIndex = mObjects.push(object)-1;
             
                 var dispatcher:EventDispatcher = object as EventDispatcher;
                 if (dispatcher) dispatcher.addEventListener(Event.REMOVE_FROM_JUGGLER, onRemove);
             }
+			
+//			assertList();
         }
         
         /** Determines if an object has been added to the juggler. */
         public function contains(object:IAnimatable):Boolean
         {
-            return mObjects.indexOf(object) != -1;
+//			Utils.print("juggler::contains:" + mObjects.length);
+//            return mObjects.indexOf(object) != -1;
+			return object && object.jugglerIndex > -1;
         }
         
         /** Removes an object from the juggler. */
@@ -86,18 +94,29 @@ package starling.animation
 
 				try
 				{
-	            var index:int = mObjects.indexOf(object);
-	            if (index != -1) mObjects[index] = null;
+//					Utils.print("juggler::remove:" + mObjects.length);
+//		            var index:int = mObjects.indexOf(object);
+					var index:int = object.jugglerIndex;
+		            if (index != -1) mObjects[index] = null;
+					object.jugglerIndex = -1;
 				}
 				catch (e: Error)
 				{
-					Utils.print("mObjects:" + mObjects);
-					Utils.print("object:" + object);
-					Utils.print("index:" + index);
+					Utils.log("mObjects:" + mObjects + " object:" + object + " index:" + index);
 					Utils.log(e);
 					throw e;
 				}
+				
+//				assertList();
         }
+		
+//		private function assertList(): void
+//		{
+//            for (var i:int=mObjects.length-1; i>=0; --i)
+//            {
+//				if (mObjects[i] && mObjects[i].jugglerIndex != i) throw new Error(i + ":" + mObjects[i].jugglerIndex);
+//			}
+//		}
         
         /** Removes all tweens with a certain target. */
         public function removeTweens(target:Object):void
@@ -110,9 +129,12 @@ package starling.animation
                 if (tween && tween.target == target)
                 {
                     tween.removeEventListener(Event.REMOVE_FROM_JUGGLER, onRemove);
+					tween.jugglerIndex = -1;
                     mObjects[i] = null;
                 }
             }
+			
+//			assertList();
         }
         
         /** Figures out if the juggler contains one or more tweens with a certain target. */
@@ -141,8 +163,11 @@ package starling.animation
             {
                 var dispatcher:EventDispatcher = mObjects[i] as EventDispatcher;
                 if (dispatcher) dispatcher.removeEventListener(Event.REMOVE_FROM_JUGGLER, onRemove);
+				mObjects[i].jugglerIndex = -1;
                 mObjects[i] = null;
             }
+			
+//			assertList();
         }
         
         /** Delays the execution of a function until <code>delay</code> seconds have passed.
@@ -268,14 +293,17 @@ package starling.animation
             // of animatables. we must not process new objects right now (they will be processed
             // in the next frame), and we need to clean up any empty slots in the list.
             
+			var object:IAnimatable;
+			
             for (i=0; i<numObjects; ++i)
             {
-                var object:IAnimatable = mObjects[i];
+                object = mObjects[i];
                 if (object)
                 {
                     // shift objects into empty slots along the way
                     if (currentIndex != i) 
                     {
+						object.jugglerIndex = currentIndex; 
                         mObjects[currentIndex] = object;
                         mObjects[i] = null;
                     }
@@ -290,10 +318,17 @@ package starling.animation
                 numObjects = mObjects.length; // count might have changed!
                 
                 while (i < numObjects)
-                    mObjects[int(currentIndex++)] = mObjects[int(i++)];
+				{
+                    object = mObjects[int(currentIndex)] = mObjects[int(i)];
+					if (object) object.jugglerIndex = int(currentIndex); 
+					currentIndex++;
+					i++;
+				}
                 
                 mObjects.length = currentIndex;
             }
+			
+//			assertList();
         }
         
         private function onRemove(event:Event):void
@@ -310,6 +345,17 @@ package starling.animation
  
         /** The actual vector that contains all objects that are currently being animated. */
         protected function get objects():Vector.<IAnimatable> { return mObjects; }
+		
+		/* INTERFACE starling.animation.IAnimatable */
+		private var _jugglerIndex : int = -1;
+		public function get jugglerIndex() : int
+		{
+			return _jugglerIndex;
+		}
+		public function set jugglerIndex(value : int) : void
+		{
+			_jugglerIndex = value;
+		}		
     }
 }
 

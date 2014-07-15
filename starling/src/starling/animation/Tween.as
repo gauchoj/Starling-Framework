@@ -347,5 +347,16 @@ package starling.animation
             tween.removeEventListeners();
 //            sTweenPool.push(tween);
         }
+		
+		/* INTERFACE starling.animation.IAnimatable */
+		private var _jugglerIndex : int = -1;
+		public function get jugglerIndex() : int
+		{
+			return _jugglerIndex;
+		}
+		public function set jugglerIndex(value : int) : void
+		{
+			_jugglerIndex = value;
+		}		
     }
 }

@@ -353,5 +353,16 @@ package starling.display
         {
             return !mLoop && mCurrentTime >= totalTime;
         }
+		
+		/* INTERFACE starling.animation.IAnimatable */
+		private var _jugglerIndex : int = -1;
+		public function get jugglerIndex() : int
+		{
+			return _jugglerIndex;
+		}
+		public function set jugglerIndex(value : int) : void
+		{
+			_jugglerIndex = value;
+		}		
     }
 }

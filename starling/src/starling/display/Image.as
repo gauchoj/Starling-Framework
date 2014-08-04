@@ -97,7 +97,7 @@ package starling.display
             mVertexData.setPosition(1, width, 0.0);
             mVertexData.setPosition(2, 0.0, height);
             mVertexData.setPosition(3, width, height); 
-            
+			
             onVertexDataChanged();
         }
         

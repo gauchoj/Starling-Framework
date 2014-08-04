@@ -10,14 +10,17 @@
 
 package starling.textures
 {
+	import com.assukar.airong.utils.Utils;
     import flash.display.Bitmap;
     import flash.display.BitmapData;
     import flash.display3D.Context3D;
+	import flash.display3D.textures.RectangleTexture;
     import flash.display3D.textures.TextureBase;
     import flash.geom.Matrix;
     import flash.geom.Point;
     import flash.geom.Rectangle;
     import flash.utils.ByteArray;
+	import flash.utils.Endian;
     
     import starling.core.RenderSupport;
     import starling.core.Starling;
@@ -96,17 +99,18 @@ package starling.textures
                 potData = new BitmapData(mWidth, mHeight, true, 0);
                 potData.copyPixels(data, data.rect, sOrigin);
                 data = potData;
-            }
-            
+            }			
+			
             if (mBase is flash.display3D.textures.Texture)
             {
                 var potTexture:flash.display3D.textures.Texture = 
                     mBase as flash.display3D.textures.Texture;
+					
+					potTexture.uploadFromBitmapData(data);
+				
                 
-                potTexture.uploadFromBitmapData(data);
-                
-                if (mMipMapping && data.width > 1 && data.height > 1)
-                {
+                if (mMipMapping && data.width > 1 && data.height > 1) {
+					
                     var currentWidth:int  = data.width  >> 1;
                     var currentHeight:int = data.height >> 1;
                     var level:int = 1;
@@ -127,15 +131,18 @@ package starling.textures
                     
                     canvas.dispose();
                 }
+				
             }
             else // if (mBase is RectangleTexture)
             {
                 mBase["uploadFromBitmapData"](data);
             }
-            
+			
+			
             if (potData) potData.dispose();
             mDataUploaded = true;
         }
+		
         
         /** Uploads ATF data from a ByteArray to the texture. Note that the size of the
          *  ATF-encoded data must be exactly the same as the original texture size.
@@ -153,8 +160,7 @@ package starling.textures
             
             var self:ConcreteTexture = this;
             var isAsync:Boolean = async is Function || async === true;
-            var potTexture:flash.display3D.textures.Texture = 
-                  mBase as flash.display3D.textures.Texture;
+            var potTexture:flash.display3D.textures.Texture = mBase as flash.display3D.textures.Texture;
             
             if (potTexture == null)
                 throw new Error("This texture type does not support ATF data");
@@ -177,6 +183,8 @@ package starling.textures
                 }
             }
         }
+		
+		
         
         // texture backup (context loss)
         
@@ -196,8 +204,8 @@ package starling.textures
          *  the current base. */
         starling_internal function createBase():void
         {
-            var context:Context3D = Starling.context;
-            
+            var context:Context3D = Starling.context;     
+			
             if (mBase is flash.display3D.textures.Texture)
                 mBase = context.createTexture(mWidth, mHeight, mFormat, 
                                               mOptimizedForRenderTexture);

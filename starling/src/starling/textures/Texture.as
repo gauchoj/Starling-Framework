@@ -10,10 +10,12 @@
 
 package starling.textures
 {
+	import com.assukar.praia.bela.main.Context;
     import flash.display.Bitmap;
     import flash.display.BitmapData;
     import flash.display3D.Context3D;
     import flash.display3D.Context3DTextureFormat;
+	import flash.display3D.textures.RectangleTexture;
     import flash.display3D.textures.TextureBase;
     import flash.geom.Rectangle;
     import flash.system.Capabilities;
@@ -248,18 +250,22 @@ package starling.textures
                                               scale:Number=1, format:String="bgra",
                                               repeat:Boolean=false):Texture
         {
+			
             var texture:Texture = Texture.empty(data.width / scale, data.height / scale, true, 
                                                 generateMipMaps, optimizeForRenderToTexture, scale,
                                                 format, repeat);
             
-            texture.root.uploadBitmapData(data);
-            texture.root.onRestore = function():void
-            {
-                texture.root.uploadBitmapData(data);
-            };
+			
+				texture.root.uploadBitmapData(data);
+				texture.root.onRestore = function():void
+				{
+					texture.root.uploadBitmapData(data);
+				};
+			
             
             return texture;
         }
+		
         
         /** Creates a texture from the compressed ATF format. If you don't want to use any embedded
          *  mipmaps, you can disable them by setting "useMipMaps" to <code>false</code>.
@@ -276,19 +282,22 @@ package starling.textures
             if (context == null) throw new MissingContextError();
             
             var atfData:AtfData = new AtfData(data);
-            var nativeTexture:flash.display3D.textures.Texture = context.createTexture(
-                atfData.width, atfData.height, atfData.format, false);
+			
+            var nativeTexture:flash.display3D.textures.Texture = context.createTexture(atfData.width, atfData.height, atfData.format, false);
+			
             var concreteTexture:ConcreteTexture = new ConcreteTexture(nativeTexture, atfData.format, 
                 atfData.width, atfData.height, useMipMaps && atfData.numTextures > 1, 
                 false, false, scale, repeat);
             
-            concreteTexture.uploadAtfData(data, 0, async);
+            concreteTexture.uploadAtfData(data, 0, async);		
+			
             concreteTexture.onRestore = function():void
             {
                 concreteTexture.uploadAtfData(data, 0);
             };
-            
+
             return concreteTexture;
+			
         }
         
         /** Creates a texture with a certain size and color.
@@ -337,6 +346,7 @@ package starling.textures
                                      mipMapping:Boolean=true, optimizeForRenderToTexture:Boolean=false,
                                      scale:Number=-1, format:String="bgra", repeat:Boolean=false):Texture
         {
+			
             if (scale <= 0) scale = Starling.contentScaleFactor;
             
             var actualWidth:int, actualHeight:int;
@@ -349,7 +359,8 @@ package starling.textures
             var origHeight:int = height * scale;
             var potWidth:int   = getNextPowerOfTwo(origWidth);
             var potHeight:int  = getNextPowerOfTwo(origHeight);
-            var isPot:Boolean  = (origWidth == potWidth && origHeight == potHeight);
+            var isPot:Boolean  = (origWidth == potWidth && origHeight == potHeight);	
+			
             var useRectTexture:Boolean = !mipMapping && !repeat &&
                 Starling.current.profile != "baselineConstrained" &&
                 "createRectangleTexture" in context && format.indexOf("compressed") == -1;
@@ -361,21 +372,29 @@ package starling.textures
                 
                 // Rectangle Textures are supported beginning with AIR 3.8. By calling the new
                 // methods only through those lookups, we stay compatible with older SDKs.
-                nativeTexture = context["createRectangleTexture"](
-                    actualWidth, actualHeight, format, optimizeForRenderToTexture);
+                nativeTexture = context["createRectangleTexture"](actualWidth, actualHeight, format, optimizeForRenderToTexture);
+				nativeTexture = context.createRectangleTexture(actualWidth, actualHeight, format, optimizeForRenderToTexture);
+				
             }
             else
             {
                 actualWidth  = potWidth;
                 actualHeight = potHeight;
-                
-                nativeTexture = context.createTexture(actualWidth, actualHeight, format,
-                                                      optimizeForRenderToTexture);
-            }
+				
+                nativeTexture = context.createTexture(actualWidth, actualHeight, format,  optimizeForRenderToTexture);
+			}
             
-            var concreteTexture:ConcreteTexture = new ConcreteTexture(nativeTexture, format,
-                actualWidth, actualHeight, mipMapping, premultipliedAlpha,
-                optimizeForRenderToTexture, scale, repeat);
+            var concreteTexture:ConcreteTexture = new ConcreteTexture(
+				nativeTexture,
+				format,
+				actualWidth,
+				actualHeight,
+				mipMapping,
+				premultipliedAlpha,
+				optimizeForRenderToTexture,
+				scale,
+				repeat
+			);
             
             concreteTexture.onRestore = concreteTexture.clear;
             
@@ -383,7 +402,11 @@ package starling.textures
                 return concreteTexture;
             else
                 return new SubTexture(concreteTexture, new Rectangle(0, 0, width, height), true);
+				
         }
+		
+		
+		
         
         /** Creates a texture that contains a region (in pixels) of another texture. The new
          *  texture will reference the base texture; no data is duplicated. */

@@ -2,12 +2,14 @@
 bin-debug/
 bin-release/
 starling/doc/html/
+target/
 
 # Project property files
 .settings/
 .flexProperties
 .FlexUnitSettings
 .idea/
+.project
 
 # OS X folders
 .DS_Store

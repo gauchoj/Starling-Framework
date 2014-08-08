@@ -8,8 +8,7 @@
 //
 // =================================================================================================
 
-package starling.textures
-{
+package starling.textures {
 	import starling.core.Starling;
 	import starling.errors.AbstractClassError;
 	import starling.errors.MissingContextError;

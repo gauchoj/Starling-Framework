@@ -10,7 +10,6 @@
 
 package starling.textures
 {
-	import com.assukar.praia.bela.main.Context;
     import flash.display.Bitmap;
     import flash.display.BitmapData;
     import flash.display3D.Context3D;

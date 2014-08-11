@@ -10,24 +10,21 @@
 
 package starling.textures
 {
-	import com.assukar.airong.utils.Utils;
-    import flash.display.Bitmap;
-    import flash.display.BitmapData;
-    import flash.display3D.Context3D;
-	import flash.display3D.textures.RectangleTexture;
-    import flash.display3D.textures.TextureBase;
-    import flash.geom.Matrix;
-    import flash.geom.Point;
-    import flash.geom.Rectangle;
-    import flash.utils.ByteArray;
-	import flash.utils.Endian;
+	import flash.display.Bitmap;
+	import flash.display.BitmapData;
+	import flash.display3D.Context3D;
+	import flash.display3D.textures.TextureBase;
+	import flash.geom.Matrix;
+	import flash.geom.Point;
+	import flash.geom.Rectangle;
+	import flash.utils.ByteArray;
+	import starling.core.RenderSupport;
+	import starling.core.Starling;
+	import starling.core.starling_internal;
+	import starling.errors.MissingContextError;
+	import starling.events.Event;
+	import starling.utils.Color;
     
-    import starling.core.RenderSupport;
-    import starling.core.Starling;
-    import starling.core.starling_internal;
-    import starling.errors.MissingContextError;
-    import starling.events.Event;
-    import starling.utils.Color;
     
     use namespace starling_internal;
 
@@ -182,6 +179,37 @@ package starling.textures
                     else callback();
                 }
             }
+        }
+		
+		
+		
+		// TODO byteArray test
+		public function uploadByteArray(data:ByteArray):void {
+			
+			var bytesOut:ByteArray = new ByteArray();
+			data.position = 0;
+			while (data.bytesAvailable) {
+				var pixel:uint = data.readUnsignedInt();
+				bytesOut.writeUnsignedInt(
+					(pixel >> 24 & 0xff) > uint(0xff*.5) 
+						? ((pixel & 0xff) << 24)
+						  | ((pixel >> 8 & 0xff) << 16)
+						  | ((pixel >> 16 & 0xff) << 8)
+						  | (pixel >> 24 & 0xff)
+						: 0x0					
+				);
+			}		
+			
+            if (mBase is flash.display3D.textures.Texture) {
+                var potTexture:flash.display3D.textures.Texture = mBase as flash.display3D.textures.Texture;					
+				potTexture.uploadFromByteArray(bytesOut, 0);				
+            }else {
+                mBase["uploadFromByteArray"](bytesOut, 0);
+            }
+			
+            mDataUploaded = true;
+			bytesOut.clear();
+			data.clear();
         }
 		
 		

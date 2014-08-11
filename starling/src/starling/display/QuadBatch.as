@@ -168,10 +168,21 @@ package starling.display
             if (context == null)  throw new MissingContextError();
             
             mVertexBuffer = context.createVertexBuffer(numVertices, VertexData.ELEMENTS_PER_VERTEX);
+			
             mVertexBuffer.uploadFromVector(mVertexData.rawData, 0, numVertices);
-            
-            mIndexBuffer = context.createIndexBuffer(numIndices);
+			
+			mIndexBuffer = context.createIndexBuffer(numIndices);
+//			mIndexBuffer = context.createIndexBuffer(12);
+			
+			//TODO to delete (test double sided)			
+//			trace("TEST", mIndexData.length, numIndices, mIndexData);
+
             mIndexBuffer.uploadFromVector(mIndexData, 0, numIndices);
+//			mIndexData = new <uint>[ 0,1,2, 1,3,2, //]; 
+//				2,3,1, 2,1,0];
+//			4,5,6,5,7,6,8,9,10,9,11,10,12,13,14,13,15,14,16,17,18,17,19,18,20,21,22,21,23,22,24,25,26,25,27,26,28,29,30,29,31,30,32,33,34,33,35,34,36,37,38,37,39,38,40,41,42,41,43,42,44,45,46,45,47,46,48,49,50,49,51,50,52,53,54,53,55,54,56,57,58,57,59,58,60,61,62,61,63,62];
+//			mIndexData = mIndexData.concat(mIndexData.reverse());	
+//			mIndexBuffer.uploadFromVector(mIndexData, 0, 12);
             
             mSyncRequired = false;
         }
@@ -235,7 +246,7 @@ package starling.display
             if (mTexture == null || tinted)
                 context.setVertexBufferAt(1, mVertexBuffer, VertexData.COLOR_OFFSET, 
                                           Context3DVertexBufferFormat.FLOAT_4);
-            
+             
             if (mTexture)
             {
                 context.setTextureAt(0, mTexture.base);
@@ -243,7 +254,9 @@ package starling.display
                                           Context3DVertexBufferFormat.FLOAT_2);
             }
             
+			//TODO performance test
             context.drawTriangles(mIndexBuffer, 0, mNumQuads * 2);
+//            context.drawTriangles(mIndexBuffer);
             
             if (mTexture)
             {

@@ -27,7 +27,6 @@ package starling.text {
 	import starling.display.Quad;
 	import starling.display.QuadBatch;
 	import starling.display.Sprite;
-	import starling.events.EnterFrameEvent;
 	import starling.events.Event;
 	import starling.textures.Texture;
 	import starling.utils.deg2rad;
@@ -173,6 +172,7 @@ package starling.text {
 		// TrueType font rendering		
 		private var tempScale:Number;
 		private var tempBitmapData:BitmapData;
+		private var tempRect:Rectangle;
 		private var tempTexture:Texture;
 		
 		private function createRenderedContents():void {			
@@ -188,23 +188,33 @@ package starling.text {
 			tempScale = Starling.contentScaleFactor;
 			tempBitmapData = renderText(tempScale, mTextBounds);		
 			
-			mHitArea.width = tempBitmapData.width / tempScale;
-			mHitArea.height = tempBitmapData.height / tempScale;
+			mHitArea.width = tempBitmapData.width; // / tempScale;
+			mHitArea.height = tempBitmapData.height; // / tempScale;
 			
-			tempTexture = Texture.fromBitmapData(tempBitmapData, false, false, tempScale, sDefaultTextureFormat);
+			// original
+			tempTexture = Texture.fromBitmapData(tempBitmapData, false, false, 1, sDefaultTextureFormat);
+			
+			//TODO byteArray test.
+//			tempRect = tempBitmapData.rect;
+//			tempTexture = Texture.fromByteArray(tempBitmapData.getPixels(tempRect), mHitArea, true);
 			
 			tempTexture.root.onRestore = function():void {
 				if (mTextBounds == null)
 					mTextBounds = new Rectangle();
 				
+				// original
 				tempTexture.root.uploadBitmapData(renderText(tempScale, mTextBounds));
+				
+				//TODO byteArray test
+//				tempBitmapData = renderText(tempScale, mTextBounds);
+//				tempTexture.root.uploadByteArray(tempBitmapData.getPixels(tempBitmapData.rect));				
 			
 			};
 			
 			tempBitmapData.dispose();
 			
 			if (mImage == null) {
-				mImage = new Image(tempTexture);
+				mImage = new Image(tempTexture);				
 				mImage.touchable = false;
 				addChild(mImage);
 			} else {				
@@ -228,8 +238,9 @@ package starling.text {
 		}
 		
 		private function renderText(scale:Number, resultTextBounds:Rectangle):BitmapData {
-			var width:Number = mHitArea.width * scale;
-			var height:Number = mHitArea.height * scale;
+			var width:Number = mHitArea.width; // * scale;
+			var height:Number = mHitArea.height; // * scale;
+
 			var hAlign:String = mHAlign;
 			var vAlign:String = mVAlign;
 			
@@ -242,7 +253,18 @@ package starling.text {
 				vAlign = VAlign.TOP;
 			}
 			
-			var textFormat:TextFormat = new TextFormat(mFontName, mFontSize * scale, mColor, mBold, mItalic, mUnderline, null, null, hAlign);
+			var textFormat:TextFormat = new TextFormat(
+				mFontName,
+//				mFontSize * scale,
+				mFontSize,
+				mColor,
+				mBold,
+				mItalic,
+				mUnderline,
+				null,
+				null,
+				hAlign
+			);
 			textFormat.kerning = mKerning;
 			
 			sNativeTextField.defaultTextFormat = textFormat;
@@ -253,6 +275,8 @@ package starling.text {
 			sNativeTextField.multiline = true;
 			sNativeTextField.wordWrap = true;
 			sNativeTextField.text = mText;
+//			sNativeTextField.thickness = -50;
+//			sNativeTextField.sharpness = -50;
 			sNativeTextField.embedFonts = true;
 			sNativeTextField.filters = mNativeFilters;
 			
@@ -298,10 +322,14 @@ package starling.text {
 			// if 'nativeFilters' are in use, the text field might grow beyond its bounds
 			var filterOffset:Point = calculateFilterOffset(sNativeTextField, hAlign, vAlign);
 			
-			// finally: draw text field to bitmap data
+			// finally: draw text field to bitmap data			
 			var bitmapData:BitmapData = new BitmapData(width, height, true, 0x0);
 			
 			var drawMatrix:Matrix = new Matrix(1, 0, 0, 1, filterOffset.x, filterOffset.y + int(textOffsetY) - 2);
+			//var drawMatrix:Matrix = new Matrix();
+			//drawMatrix.tx = (filterOffset.x);
+			//drawMatrix.ty = (filterOffset.y + int(textOffsetY) - 2);
+			//drawMatrix.scale(scale, scale);
 			
 			//var drawWithQualityFunc:Function = "drawWithQuality" in bitmapData ? bitmapData["drawWithQuality"] : null;
 			
@@ -314,7 +342,7 @@ package starling.text {
 			
 			// lock bitmap before draw to a better performance (pisØ)
 			bitmapData.lock();
-			bitmapData.drawWithQuality(sNativeTextField, drawMatrix, null, null, null, false, StageQuality.LOW);
+			bitmapData.drawWithQuality(sNativeTextField, drawMatrix, null, null, null, false, StageQuality.MEDIUM);
 			bitmapData.unlock();
 			
 //            }else {
@@ -326,8 +354,9 @@ package starling.text {
 			sNativeTextField.text = "";
 			
 			// update textBounds rectangle
-			resultTextBounds.setTo((textOffsetX + filterOffset.x) / scale, (textOffsetY + filterOffset.y) / scale, textWidth / scale, textHeight / scale);
-			
+//			resultTextBounds.setTo((textOffsetX + filterOffset.x) / scale, (textOffsetY + filterOffset.y) / scale, textWidth / scale, textHeight / scale);
+			resultTextBounds.setTo((textOffsetX + filterOffset.x) , (textOffsetY + filterOffset.y) , textWidth , textHeight );
+//			
 			return bitmapData;
 		}
 		

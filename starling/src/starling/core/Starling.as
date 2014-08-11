@@ -486,8 +486,13 @@ package starling.core
             var scaleX:Number = mViewPort.width  / mStage.stageWidth;
             var scaleY:Number = mViewPort.height / mStage.stageHeight;
             
+			//TODO tto uncomment
             mContext.setDepthTest(false, Context3DCompareMode.ALWAYS);
             mContext.setCulling(Context3DTriangleFace.NONE);
+			
+			//TODO performance test
+//            mContext.setDepthTest(false, Context3DCompareMode.NEVER); 
+//            mContext.setCulling(Context3DTriangleFace.BACK);
             
             mSupport.renderTarget = null; // back buffer
             mSupport.setOrthographicProjection(

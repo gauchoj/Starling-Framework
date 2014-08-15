@@ -823,6 +823,7 @@ package starling.display
 			scaleX = scaleY = v as Number;
 		}
 		
+		
 		/* end of ASSUKAR */
     }
 }

@@ -491,8 +491,9 @@ package starling.core
             mContext.setCulling(Context3DTriangleFace.NONE);
 			
 			//TODO performance test
-//            mContext.setDepthTest(false, Context3DCompareMode.NEVER); 
+//            mContext.setDepthTest(false, Context3DCompareMode.ALWAYS); 
 //            mContext.setCulling(Context3DTriangleFace.BACK);
+			
             
             mSupport.renderTarget = null; // back buffer
             mSupport.setOrthographicProjection(

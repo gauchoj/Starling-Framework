@@ -332,17 +332,17 @@ package starling.core
         
         /** Adds a quad to the current batch of unrendered quads. If there is a state change,
          *  all previous quads are rendered at once, and the batch is reset. */
-        public function batchQuad(quad:Quad, parentAlpha:Number, 
-                                  texture:Texture=null, smoothing:String=null):void
+        public function batchQuad(quad:Quad, parentAlpha:Number, texture:Texture = null, smoothing:String=null, doubleSided:Boolean = false):void
+//        public function batchQuad(quad:Quad, parentAlpha:Number, texture:Texture = null, smoothing:String=null):void
         {
-            if (mQuadBatches[mCurrentQuadBatchID].isStateChange(quad.tinted, parentAlpha, texture, 
-                                                                smoothing, mBlendMode))
+            if (mQuadBatches[mCurrentQuadBatchID].isStateChange(quad.tinted, parentAlpha, texture, smoothing, doubleSided, mBlendMode))
+//            if (mQuadBatches[mCurrentQuadBatchID].isStateChange(quad.tinted, parentAlpha, texture, smoothing, mBlendMode))
             {
                 finishQuadBatch();
             }
             
-            mQuadBatches[mCurrentQuadBatchID].addQuad(quad, parentAlpha, texture, smoothing, 
-                                                      mModelViewMatrix, mBlendMode);
+            mQuadBatches[mCurrentQuadBatchID].addQuad(quad, parentAlpha, texture, smoothing, doubleSided, mModelViewMatrix, mBlendMode);
+//            mQuadBatches[mCurrentQuadBatchID].addQuad(quad, parentAlpha, texture, smoothing, mModelViewMatrix, mBlendMode);
         }
         
         /** Adds a batch of quads to the current batch of unrendered quads. If there is a state 
@@ -353,14 +353,13 @@ package starling.core
          *  expensive than what you save by avoiding the draw call.</p> */
         public function batchQuadBatch(quadBatch:QuadBatch, parentAlpha:Number):void
         {
-            if (mQuadBatches[mCurrentQuadBatchID].isStateChange(
-                quadBatch.tinted, parentAlpha, quadBatch.texture, quadBatch.smoothing, mBlendMode))
+            if (mQuadBatches[mCurrentQuadBatchID].isStateChange(quadBatch.tinted, parentAlpha, quadBatch.texture, quadBatch.smoothing, quadBatch.doubleSided, mBlendMode))
+//            if (mQuadBatches[mCurrentQuadBatchID].isStateChange(quadBatch.tinted, parentAlpha, quadBatch.texture, quadBatch.smoothing, mBlendMode))
             {
                 finishQuadBatch();
             }
             
-            mQuadBatches[mCurrentQuadBatchID].addQuadBatch(quadBatch, parentAlpha, 
-                                                           mModelViewMatrix, mBlendMode);
+            mQuadBatches[mCurrentQuadBatchID].addQuadBatch(quadBatch, parentAlpha, mModelViewMatrix, mBlendMode);
         }
         
         /** Renders the current quad batch and resets it. */
@@ -377,7 +376,7 @@ package starling.core
                 ++mDrawCount;
                 
                 if (mQuadBatches.length <= mCurrentQuadBatchID)
-                    mQuadBatches.push(new QuadBatch());
+                    mQuadBatches.push(new QuadBatch()); 
             }
         }
         

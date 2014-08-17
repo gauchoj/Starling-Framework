@@ -8,14 +8,8 @@
 //
 // =================================================================================================
 
-package starling.textures {
-	import starling.core.Starling;
-	import starling.errors.AbstractClassError;
-	import starling.errors.MissingContextError;
-	import starling.utils.Color;
-	import starling.utils.VertexData;
-	import starling.utils.getNextPowerOfTwo;
-
+package starling.textures
+{
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
 	import flash.display3D.Context3D;
@@ -25,6 +19,13 @@ package starling.textures {
 	import flash.system.Capabilities;
 	import flash.utils.ByteArray;
 	import flash.utils.getQualifiedClassName;
+	import starling.core.Starling;
+	import starling.errors.AbstractClassError;
+	import starling.errors.MissingContextError;
+	import starling.utils.Color;
+	import starling.utils.getNextPowerOfTwo;
+	import starling.utils.VertexData;
+    
 
     /** <p>A texture stores the information that represents an image. It cannot be added to the
      *  display list directly; instead it has to be mapped onto a display object. In Starling, 
@@ -263,6 +264,38 @@ package starling.textures {
             return texture;
         }
 		
+		
+		
+		//TODO byteArray test
+		static public function fromByteArray(
+			data:ByteArray,
+			rect:Rectangle,
+            optimizeForRenderToTexture:Boolean=false,
+            scale:Number = 1,
+            repeat:Boolean=false
+		):Texture {
+			
+            var texture:Texture = Texture.empty(
+				rect.width / scale, 
+				rect.height / scale,
+				true, 
+				false,
+				optimizeForRenderToTexture,
+				scale,
+				Context3DTextureFormat.BGRA,
+				repeat
+			);            
+			
+			texture.root.uploadByteArray(data);
+			texture.root.onRestore = function():void {
+				texture.root.uploadByteArray(data);
+			};
+            
+            return texture;
+        }
+		
+		
+		
         
         /** Creates a texture from the compressed ATF format. If you don't want to use any embedded
          *  mipmaps, you can disable them by setting "useMipMaps" to <code>false</code>.
@@ -354,6 +387,7 @@ package starling.textures {
             
             var origWidth:int  = width  * scale;
             var origHeight:int = height * scale;
+			
             var potWidth:int   = getNextPowerOfTwo(origWidth);
             var potHeight:int  = getNextPowerOfTwo(origHeight);
             var isPot:Boolean  = (origWidth == potWidth && origHeight == potHeight);	
@@ -399,6 +433,7 @@ package starling.textures {
                 return concreteTexture;
             else
                 return new SubTexture(concreteTexture, new Rectangle(0, 0, width, height), true);
+//                return new SubTexture(concreteTexture, new Rectangle(0, 0, actualWidth, actualHeight), true);
 				
         }
 		

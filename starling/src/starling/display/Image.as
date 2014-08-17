@@ -60,11 +60,12 @@ package starling.display
                 mVertexData.setTexCoords(1, 1.0, 0.0);
                 mVertexData.setTexCoords(2, 0.0, 1.0);
                 mVertexData.setTexCoords(3, 1.0, 1.0);
-                
+				
                 mTexture = texture;
                 mSmoothing = TextureSmoothing.BILINEAR;
                 mVertexDataCache = new VertexData(4, pma);
                 mVertexDataCacheInvalid = true;
+				
             }
             else
             {
@@ -177,11 +178,28 @@ package starling.display
             else
                 throw new ArgumentError("Invalid smoothing mode: " + value);
         }
+		
+		
+		
+		
+		
+		//double side
+		private var doubleSidedd:Boolean = false;
+		public function get doubleSided():Boolean {
+			return this.doubleSidedd;
+		}
+		public function set doubleSided(value:Boolean):void {
+			this.doubleSidedd = value;
+		} 
+		
+		
+		
         
         /** @inheritDoc */
         public override function render(support:RenderSupport, parentAlpha:Number):void
         {
-            support.batchQuad(this, parentAlpha, mTexture, mSmoothing);
+            support.batchQuad(this, parentAlpha, mTexture, mSmoothing, doubleSided);			
+//            support.batchQuad(this, parentAlpha, mTexture, mSmoothing);			
         }
     }
 }

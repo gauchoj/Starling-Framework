@@ -10,17 +10,17 @@
 
 package starling.core
 {
-    import flash.system.System;
-    
-    import starling.display.BlendMode;
-    import starling.display.Quad;
-    import starling.display.Sprite;
-    import starling.events.EnterFrameEvent;
-    import starling.events.Event;
-    import starling.text.BitmapFont;
-    import starling.text.TextField;
-    import starling.utils.HAlign;
-    import starling.utils.VAlign;
+	import starling.display.BlendMode;
+	import starling.display.Quad;
+	import starling.display.Sprite;
+	import starling.events.EnterFrameEvent;
+	import starling.events.Event;
+	import starling.text.BitmapFont;
+	import starling.text.TextField;
+	import starling.utils.HAlign;
+	import starling.utils.VAlign;
+
+	import flash.system.System;
     
     /** A small, lightweight box that displays the current framerate, memory consumption and
      *  the number of draw calls per frame. The display is updated automatically once per frame. */
@@ -46,6 +46,8 @@ package starling.core
             mTextField.x = 2;
             mTextField.hAlign = HAlign.LEFT;
             mTextField.vAlign = VAlign.TOP;
+			
+			enlarge();
             
             addChild(mBackground);
             addChild(mTextField);
@@ -55,6 +57,12 @@ package starling.core
             addEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
             addEventListener(Event.REMOVED_FROM_STAGE, onRemovedFromStage);
         }
+		
+		public function enlarge(): void
+		{
+			mBackground.scaleX = mBackground.scaleY = 2;
+			mTextField.scaleX = mTextField.scaleY = 2;
+		}
         
         private function onAddedToStage():void
         {

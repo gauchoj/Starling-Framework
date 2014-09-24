@@ -460,7 +460,7 @@ package starling.core
         
         /** Returns the flags that are required for AGAL texture lookup, 
          *  including the '&lt;' and '&gt;' delimiters. */
-        public static function getTextureLookupFlags(format:String, mipMapping:Boolean,
+        public static function getTextureLookupFlags(format:String, mipMapping:Boolean=false,
                                                      repeat:Boolean=false,
                                                      smoothing:String="bilinear"):String
         {

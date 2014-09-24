@@ -145,11 +145,9 @@ package starling.display {
 		/** Creates a duplicate of the QuadBatch object. */
 		public function clone():QuadBatch {
 			var clone:QuadBatch = new QuadBatch();
-			clone.mVertexData = mVertexData.clone(0, mNumQuads * 4);
 			
-			//double side
-			var indexToSlice:uint = doubleSided ? 12 : 6;
-			clone.mIndexData = mIndexData.slice(0, mNumQuads * indexToSlice);
+			clone.mVertexData = mVertexData.clone(0, mNumQuads * 4);
+			clone.mIndexData = mIndexData.slice(0, mNumQuads * 6);
 			
 			clone.mNumQuads = mNumQuads;
 			clone.mTinted = mTinted;
@@ -193,7 +191,7 @@ package starling.display {
 					mIndexDatadoubleSidedd[index + 8] = mIndexData[i + 3];
 					mIndexDatadoubleSidedd[index + 9] = mIndexData[i + 2];
 					mIndexDatadoubleSidedd[index + 10] = mIndexData[i + 1];
-					mIndexDatadoubleSidedd[index + 11] = mIndexData[i + 0];
+					mIndexDatadoubleSidedd[index + 11] = mIndexData[i + 0]; 
 					
 					index += 12;
 					i += 5;
@@ -284,9 +282,9 @@ package starling.display {
 				context.setVertexBufferAt(2, mVertexBuffer, VertexData.TEXCOORD_OFFSET, Context3DVertexBufferFormat.FLOAT_2);
 			}
 			
-			//double side
-			context.drawTriangles(mIndexBuffer, 0, mNumQuads * (doubleSided ? 4 : 2));
-//			context.drawTriangles(mIndexBuffer);
+			//double side			
+			//context.drawTriangles(mIndexBuffer, 0, mNumQuads *  2); 
+			context.drawTriangles(mIndexBuffer);
 			
 			if (mTexture) {
 				context.setTextureAt(0, null);
@@ -355,7 +353,9 @@ package starling.display {
 				mVertexData.scaleAlpha(vertexID, alpha, 4);
 			
 			mSyncRequired = true;
-			mNumQuads++;
+			
+			//mNumQuads++;
+			mNumQuads = mNumQuads + (doubleSided ? 2:1);			
 		}
 		
 		/** Adds another QuadBatch to this batch. Just like the 'addQuad' method, you have to
@@ -367,7 +367,8 @@ package starling.display {
 			var tinted:Boolean = quadBatch.mTinted || parentAlpha != 1.0;
 			var alpha:Number = parentAlpha * quadBatch.alpha;
 			var vertexID:int = mNumQuads * 4;
-			var numQuads:int = quadBatch.numQuads;
+			
+			var numQuads:int = quadBatch.numQuads + int(quadBatch.doubleSided);
 			
 			if (mNumQuads + numQuads > capacity)
 				capacity = mNumQuads + numQuads;
@@ -683,9 +684,8 @@ package starling.display {
 			if (mNumQuads > value)
 				mNumQuads = value;
 			
-			mVertexData.numVertices = value * 4;
-			
-			mIndexData.length = value * (doubleSided ? 12 : 6);
+			mVertexData.numVertices = value * 4;			
+			mIndexData.length = value * 6; 
 			
 			var i:int = oldCapacity;
 			for (; i < value; ++i) {

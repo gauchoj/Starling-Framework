@@ -283,8 +283,8 @@ package starling.display {
 			}
 			
 			//double side			
-			//context.drawTriangles(mIndexBuffer, 0, mNumQuads *  2); 
-			context.drawTriangles(mIndexBuffer);
+			context.drawTriangles(mIndexBuffer, 0, mNumQuads *  2); 
+			//context.drawTriangles(mIndexBuffer);
 			
 			if (mTexture) {
 				context.setTextureAt(0, null);

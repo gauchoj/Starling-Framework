@@ -468,6 +468,21 @@ package starling.display
             if (mOrientationChanged)
             {
                 mOrientationChanged = false;
+				
+				
+				
+				//TODO test scales to culling 
+				//if (mScaleX<0) {
+					//mScaleX *= -1;
+					//mRotation += Math.PI;
+					//mY += height;
+				//}
+				//if (mScaleY<0) {
+					//mScaleY *= -1;
+					//mY += height;
+				//}
+				
+				
                 
                 if (mSkewX == 0.0 && mSkewY == 0.0)
                 {
@@ -510,6 +525,7 @@ package starling.display
                     }
                 }
             }
+				
             
             return mTransformationMatrix; 
         }
@@ -825,5 +841,8 @@ package starling.display
 		
 		
 		/* end of ASSUKAR */
+		
+		
+		
     }
 }

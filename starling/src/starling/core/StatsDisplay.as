@@ -47,7 +47,7 @@ package starling.core
             mTextField.hAlign = HAlign.LEFT;
             mTextField.vAlign = VAlign.TOP;
 			
-			enlarge();
+//			enlarge();
             
             addChild(mBackground);
             addChild(mTextField);

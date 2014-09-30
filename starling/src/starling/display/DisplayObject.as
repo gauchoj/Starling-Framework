@@ -331,7 +331,7 @@ package starling.display
          *  'scaleX' and 'scaleY' values are not zero, and its 'visible' property is enabled.) */
         public function get hasVisibleArea():Boolean
         {
-            return mAlpha != 0.0 && mVisible && mScaleX != 0.0 && mScaleY != 0.0;
+            return mVisible && mAlpha != 0.0 && mScaleX != 0.0 && mScaleY != 0.0;
         }
         
         /** Moves the pivot point to a certain position within the local coordinate system

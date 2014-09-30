@@ -98,7 +98,7 @@ package starling.filters
             
             if (target.hasProgram(programName))
             {
-                mShaderProgram = target.getProgram(programName);
+                mShaderProgram = target.getProgram(programName); 
             }
             else
             {

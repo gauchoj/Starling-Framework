@@ -182,5 +182,9 @@ package starling.display
         /** Indicates if the rgb values are stored premultiplied with the alpha value; this can
          *  affect the rendering. (Most developers don't have to care, though.) */
         public function get premultipliedAlpha():Boolean { return mVertexData.premultipliedAlpha; }
+		
+		
+		
+		
     }
 }

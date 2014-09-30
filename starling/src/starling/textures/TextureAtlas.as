@@ -120,7 +120,7 @@ package starling.textures
         }
         
         /** Retrieves a subtexture by name. Returns <code>null</code> if it is not found. */
-        public function getTexture(name:String):Texture
+        public function getTexture(name:String):Texture 
         {
             var info:TextureInfo = mTextureInfos[name];
             

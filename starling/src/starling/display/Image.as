@@ -43,6 +43,8 @@ package starling.display
         
         private var mVertexDataCache:VertexData;
         private var mVertexDataCacheInvalid:Boolean;
+		
+		private var pma:Boolean;
         
         /** Creates a quad with a texture mapped onto it. */
         public function Image(texture:Texture)
@@ -52,7 +54,8 @@ package starling.display
                 var frame:Rectangle = texture.frame;
                 var width:Number  = frame ? frame.width  : texture.width;
                 var height:Number = frame ? frame.height : texture.height;
-                var pma:Boolean = texture.premultipliedAlpha;
+				
+                pma = texture.premultipliedAlpha;
                 
                 super(width, height, 0xffffff, pma);
                 
@@ -74,7 +77,8 @@ package starling.display
         }
         
         /** Creates an Image with a texture that is created from a bitmap object. */
-        public static function fromBitmap(bitmap:Bitmap, generateMipMaps:Boolean=true, 
+        //public static function fromBitmap(bitmap:Bitmap, generateMipMaps:Boolean=true, 
+        public static function fromBitmap(bitmap:Bitmap, generateMipMaps:Boolean=false, 
                                           scale:Number=1):Image
         {
             return new Image(Texture.fromBitmap(bitmap, generateMipMaps, false, scale));
@@ -94,10 +98,11 @@ package starling.display
             var width:Number  = frame ? frame.width  : texture.width;
             var height:Number = frame ? frame.height : texture.height;
             
-            mVertexData.setPosition(0, 0.0, 0.0);
-            mVertexData.setPosition(1, width, 0.0);
-            mVertexData.setPosition(2, 0.0, height);
-            mVertexData.setPosition(3, width, height); 
+			
+				mVertexData.setPosition(0, 0.0, 0.0);
+				mVertexData.setPosition(1, width, 0.0);
+				mVertexData.setPosition(2, 0.0, height);
+				mVertexData.setPosition(3, width, height); 				
 			
             onVertexDataChanged();
         }
@@ -180,26 +185,12 @@ package starling.display
         }
 		
 		
-		
-		
-		
-		//double side
-		private var doubleSidedd:Boolean = false;
-		public function get doubleSided():Boolean {
-			return this.doubleSidedd;
-		}
-		public function set doubleSided(value:Boolean):void {
-			this.doubleSidedd = value;
-		} 
-		
-		
-		
         
         /** @inheritDoc */
         public override function render(support:RenderSupport, parentAlpha:Number):void
         {
-            support.batchQuad(this, parentAlpha, mTexture, mSmoothing, doubleSided);			
-//            support.batchQuad(this, parentAlpha, mTexture, mSmoothing);			
+            //support.batchQuad(this, parentAlpha, mTexture, mSmoothing, doubleSided);			
+            support.batchQuad(this, parentAlpha, mTexture, mSmoothing);			
         }
     }
 }

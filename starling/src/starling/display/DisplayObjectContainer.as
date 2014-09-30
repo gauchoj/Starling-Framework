@@ -348,7 +348,7 @@ package starling.display
                     var filter:FragmentFilter = child.filter;
 
                     support.pushMatrix();
-                    support.transformMatrix(child);
+                    support.transformMatrix(child); 
                     support.blendMode = child.blendMode;
                     
                     if (filter) filter.render(child, support, alpha);

@@ -171,7 +171,7 @@ package starling.textures
          *  @param format:  the context3D texture format to use. Ignored for ATF data.
          *  @param repeat:  the repeat value of the texture. Only useful for power-of-two textures.
          */
-        public static function fromEmbeddedAsset(assetClass:Class, mipMapping:Boolean=true,
+        public static function fromEmbeddedAsset(assetClass:Class, mipMapping:Boolean=false,
                                                  optimizeForRenderToTexture:Boolean=false,
                                                  scale:Number=1, format:String="bgra",
                                                  repeat:Boolean=false):Texture
@@ -219,7 +219,7 @@ package starling.textures
          *                  quality). 
          *  @param repeat:  the repeat value of the texture. Only useful for power-of-two textures.
          */
-        public static function fromBitmap(bitmap:Bitmap, generateMipMaps:Boolean=true,
+        public static function fromBitmap(bitmap:Bitmap, generateMipMaps:Boolean=false,
                                           optimizeForRenderToTexture:Boolean=false,
                                           scale:Number=1, format:String="bgra",
                                           repeat:Boolean=false):Texture
@@ -243,7 +243,7 @@ package starling.textures
          *                  quality).
          *  @param repeat:  the repeat value of the texture. Only useful for power-of-two textures.
          */
-        public static function fromBitmapData(data:BitmapData, generateMipMaps:Boolean=true,
+        public static function fromBitmapData(data:BitmapData, generateMipMaps:Boolean=false,
                                               optimizeForRenderToTexture:Boolean=false,
                                               scale:Number=1, format:String="bgra",
                                               repeat:Boolean=false):Texture
@@ -305,7 +305,7 @@ package starling.textures
          *  <p>If the 'async' parameter contains a callback function, the texture is decoded
          *  asynchronously. It can only be used when the callback has been executed. This is the
          *  expected function definition: <code>function(texture:Texture):void;</code></p> */
-        public static function fromAtfData(data:ByteArray, scale:Number=1, useMipMaps:Boolean=true, 
+        public static function fromAtfData(data:ByteArray, scale:Number=1, useMipMaps:Boolean=false, 
                                            async:Function=null, repeat:Boolean=false):Texture
         {
             var context:Context3D = Starling.context;
@@ -373,7 +373,7 @@ package starling.textures
          *  @param repeat: the repeat mode of the texture. Only useful for power-of-two textures.
          */
         public static function empty(width:Number, height:Number, premultipliedAlpha:Boolean=true,
-                                     mipMapping:Boolean=true, optimizeForRenderToTexture:Boolean=false,
+                                     mipMapping:Boolean=false, optimizeForRenderToTexture:Boolean=false,
                                      scale:Number=-1, format:String="bgra", repeat:Boolean=false):Texture
         {
 			
@@ -432,8 +432,8 @@ package starling.textures
             if (isPot || useRectTexture)
                 return concreteTexture;
             else
-                return new SubTexture(concreteTexture, new Rectangle(0, 0, width, height), true);
-//                return new SubTexture(concreteTexture, new Rectangle(0, 0, actualWidth, actualHeight), true);
+                //return new SubTexture(concreteTexture, new Rectangle(0, 0, width, height), true);
+                return new SubTexture(concreteTexture, new Rectangle(0, 0, actualWidth, actualHeight), true);
 				
         }
 		

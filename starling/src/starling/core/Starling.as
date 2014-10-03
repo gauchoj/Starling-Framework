@@ -16,6 +16,7 @@ package starling.core
     import flash.display.StageScaleMode;
     import flash.display3D.Context3D;
     import flash.display3D.Context3DCompareMode;
+	import flash.display3D.Context3DStencilAction;
     import flash.display3D.Context3DTriangleFace;
     import flash.display3D.Program3D;
     import flash.errors.IllegalOperationError;
@@ -483,7 +484,7 @@ package starling.core
             updateNativeOverlay();
             mSupport.nextFrame();
             
-            var scaleX:Number = mViewPort.width  / mStage.stageWidth;
+            var scaleX:Number = mViewPort.width  / mStage.stageWidth; 
             var scaleY:Number = mViewPort.height / mStage.stageHeight;
             
 			//TODO to uncomment
@@ -491,8 +492,17 @@ package starling.core
             mContext.setCulling(Context3DTriangleFace.NONE);
 			
 			//TODO performance test
-            //mContext.setDepthTest(false, Context3DCompareMode.NEVER); 
-            //mContext.setCulling(Context3DTriangleFace.BACK);   
+			//mContext.setStencilReferenceValue(1);
+			//mContext.setCulling(Context3DTriangleFace.BACK);  
+            //mContext.setDepthTest(false, Context3DCompareMode.LESS); 			
+			////mContext.setStencilActions( 
+				//Context3DTriangleFace.FRONT_AND_BACK, 
+				//Context3DCompareMode.ALWAYS,
+				//Context3DStencilAction.SET,
+				//Context3DStencilAction.SET,
+				//Context3DStencilAction.SET
+			//);
+			
 			
             
             mSupport.renderTarget = null; // back buffer
@@ -539,14 +549,17 @@ package starling.core
                     // the size happens in a separate operation) -- so we have no choice but to
                     // set the backbuffer to a very small size first, to be on the safe side.
                     
-                    if (mProfile == "baselineConstrained")
-                        configureBackBuffer(32, 32, mAntiAliasing, false);
+                    if (mProfile == "baselineConstrained") {
+						configureBackBuffer(32, 32, mAntiAliasing, false);
+					}
                     
                     mStage3D.x = mClippedViewPort.x;
                     mStage3D.y = mClippedViewPort.y;
                     
-                    configureBackBuffer(mClippedViewPort.width, mClippedViewPort.height,
-                        mAntiAliasing, false, mSupportHighResolutions);
+					configureBackBuffer(mClippedViewPort.width, mClippedViewPort.height, mAntiAliasing, //
+						false, //
+						//true, //
+					mSupportHighResolutions);
                     
                     if (mSupportHighResolutions && "contentsScaleFactor" in mNativeStage)
                         mNativeStageContentScaleFactor = mNativeStage["contentsScaleFactor"];

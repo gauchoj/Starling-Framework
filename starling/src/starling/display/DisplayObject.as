@@ -10,6 +10,13 @@
 
 package starling.display
 {
+	import flash.geom.Matrix;
+	import flash.geom.Point;
+	import flash.geom.Rectangle;
+	import flash.system.Capabilities;
+	import flash.ui.Mouse;
+	import flash.ui.MouseCursor;
+	import flash.utils.getQualifiedClassName;
 	import starling.core.RenderSupport;
 	import starling.core.Starling;
 	import starling.errors.AbstractClassError;
@@ -22,13 +29,6 @@ package starling.display
 	import starling.utils.MatrixUtil;
 	import starling.utils.VAlign;
 
-	import flash.geom.Matrix;
-	import flash.geom.Point;
-	import flash.geom.Rectangle;
-	import flash.system.Capabilities;
-	import flash.ui.Mouse;
-	import flash.ui.MouseCursor;
-	import flash.utils.getQualifiedClassName;
     
     /** Dispatched when an object is added to a parent. */
     [Event(name="added", type="starling.events.Event")]
@@ -168,6 +168,8 @@ package starling.display
             mBlendMode = BlendMode.AUTO;
             mTransformationMatrix = new Matrix();
             mOrientationChanged = mUseHandCursor = false;
+			
+			
         }
         
         /** Disposes all resources of the display object. 
@@ -468,21 +470,6 @@ package starling.display
             if (mOrientationChanged)
             {
                 mOrientationChanged = false;
-				
-				
-				
-				//TODO test scales to culling 
-				//if (mScaleX<0) {
-					//mScaleX *= -1;
-					//mRotation += Math.PI;
-					//mY += height;
-				//}
-				//if (mScaleY<0) {
-					//mScaleY *= -1;
-					//mY += height;
-				//}
-				
-				
                 
                 if (mSkewX == 0.0 && mSkewY == 0.0)
                 {
@@ -838,6 +825,26 @@ package starling.display
 		{
 			scaleX = scaleY = v as Number;
 		}
+		
+		
+		
+		
+		
+		
+		// back side
+		private var mBackSide:Boolean = false; //true;   
+		public function get backSide():Boolean {			
+			return this.mBackSide;
+		}		
+		public function set backSide(value:Boolean):void {			
+			this.mBackSide = value;
+		}	
+		
+		
+		
+		
+		
+		
 		
 		
 		/* end of ASSUKAR */

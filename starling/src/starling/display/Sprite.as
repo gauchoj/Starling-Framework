@@ -99,7 +99,7 @@ package starling.display
          *  with a big number of children.</p> 
          */
         public function flatten():void
-        {
+        {			
             mFlattenRequested = true;
             broadcastEventWith(Event.FLATTEN);
         }

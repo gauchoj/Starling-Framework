@@ -444,16 +444,16 @@ package starling.core
         
         /** Calls <code>advanceTime()</code> (with the time that has passed since the last frame)
          *  and <code>render()</code>. */
-		private var passedTime:Number;
+//		private var passedTime:Number;
 		public function get framePassedTime(): Number
 		{
-			return mLastFrameTimestamp - (getTimer() / 1000.0);
+			return (getTimer() / 1000.0) - mLastFrameTimestamp;
 		}
         public function nextFrame():void
         {
             var now:Number = getTimer() / 1000.0;
 //            var passedTime:Number = now - mLastFrameTimestamp;
-			passedTime = now - mLastFrameTimestamp;
+			var passedTime:Number = now - mLastFrameTimestamp;
             mLastFrameTimestamp = now;
             
             // to avoid overloading time-based animations, the maximum delta is truncated.

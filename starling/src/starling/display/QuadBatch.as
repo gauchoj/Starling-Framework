@@ -271,6 +271,7 @@ package starling.display
             
             //context.drawTriangles(mIndexBuffer, 0, mNumQuads * 2 );	
 			
+			
 			// back side
             context.drawTriangles(mIndexBuffer, 0, mNumQuads * (mBackSide ? 4 : 2) ); 
             
@@ -608,7 +609,7 @@ package starling.display
                     smoothing = image ? image.smoothing : null;
 					
 					// back side
-					backSide = image ? image.backSide : quad.backSide; //quad.backSide;
+					backSide = quad.backSide; 
 					
                     tinted = quad.tinted;
 					

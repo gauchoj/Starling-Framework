@@ -447,7 +447,7 @@ package starling.core
 		private var passedTime:Number;
 		public function get framePassedTime(): Number
 		{
-			return passedTime;
+			return mLastFrameTimestamp - (getTimer() / 1000.0);
 		}
         public function nextFrame():void
         {

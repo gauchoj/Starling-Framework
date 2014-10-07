@@ -1,7 +1,7 @@
 // =================================================================================================
 //
 //	Starling Framework
-//	Copyright 2011 Gamua OG. All Rights Reserved.
+//	Copyright 2011-2014 Gamua. All Rights Reserved.
 //
 //	This program is free software. You can redistribute and/or modify it
 //	in accordance with the terms of the accompanying license agreement.
@@ -10,27 +10,27 @@
 
 package starling.core
 {
-	import com.adobe.utils.AGALMiniAssembler;
-	import flash.display3D.Context3D;
-	import flash.display3D.Context3DProgramType;
-	import flash.display3D.Context3DTextureFormat;
-	import flash.display3D.Program3D;
-	import flash.geom.Matrix;
-	import flash.geom.Matrix3D;
-	import flash.geom.Point;
-	import flash.geom.Rectangle;
-	import starling.display.BlendMode;
-	import starling.display.DisplayObject;
-	import starling.display.Quad;
-	import starling.display.QuadBatch;
-	import starling.errors.MissingContextError;
-	import starling.textures.Texture;
-	import starling.textures.TextureSmoothing;
-	import starling.utils.Color;
-	import starling.utils.MatrixUtil;
-	import starling.utils.RectangleUtil;
+    import com.adobe.utils.AGALMiniAssembler;
     
+    import flash.display3D.Context3D;
+    import flash.display3D.Context3DProgramType;
+    import flash.display3D.Context3DTextureFormat;
+    import flash.display3D.Program3D;
+    import flash.geom.Matrix;
+    import flash.geom.Matrix3D;
+    import flash.geom.Point;
+    import flash.geom.Rectangle;
     
+    import starling.display.BlendMode;
+    import starling.display.DisplayObject;
+    import starling.display.Quad;
+    import starling.display.QuadBatch;
+    import starling.errors.MissingContextError;
+    import starling.textures.Texture;
+    import starling.textures.TextureSmoothing;
+    import starling.utils.Color;
+    import starling.utils.MatrixUtil;
+    import starling.utils.RectangleUtil;
 
     /** A class that contains helper methods simplifying Stage3D rendering.
      *
@@ -65,7 +65,6 @@ package starling.core
         private static var sBufferRect:Rectangle = new Rectangle();
         private static var sScissorRect:Rectangle = new Rectangle();
         private static var sAssembler:AGALMiniAssembler = new AGALMiniAssembler();
-		
         
         // construction
         
@@ -332,17 +331,18 @@ package starling.core
         
         /** Adds a quad to the current batch of unrendered quads. If there is a state change,
          *  all previous quads are rendered at once, and the batch is reset. */
-        //public function batchQuad(quad:Quad, parentAlpha:Number, texture:Texture = null, smoothing:String=null, doubleSided:Boolean = false):void
-        public function batchQuad(quad:Quad, parentAlpha:Number, texture:Texture = null, smoothing:String=null):void
+		
+        public function batchQuad(quad:Quad, parentAlpha:Number, texture:Texture=null, smoothing:String=null):void
+        //public function batchQuad(quad:Quad, parentAlpha:Number, texture:Texture=null, smoothing:String=null, backSide:Boolean = false):void
         {
-            //if (mQuadBatches[mCurrentQuadBatchID].isStateChange(quad.tinted, parentAlpha, texture, smoothing, doubleSided, mBlendMode))
-            if (mQuadBatches[mCurrentQuadBatchID].isStateChange(quad.tinted, parentAlpha, texture, smoothing, mBlendMode))
+            //if (mQuadBatches[mCurrentQuadBatchID].isStateChange(quad.tinted, parentAlpha, texture, smoothing, mBlendMode))
+            if (mQuadBatches[mCurrentQuadBatchID].isStateChange(quad.tinted, parentAlpha, texture, smoothing, quad.backSide, mBlendMode))
             {
                 finishQuadBatch();
             }
             
-            //mQuadBatches[mCurrentQuadBatchID].addQuad(quad, parentAlpha, texture, smoothing, doubleSided, mModelViewMatrix, mBlendMode);
             mQuadBatches[mCurrentQuadBatchID].addQuad(quad, parentAlpha, texture, smoothing, mModelViewMatrix, mBlendMode);
+            //mQuadBatches[mCurrentQuadBatchID].addQuad(quad, parentAlpha, texture, smoothing, backSide, mModelViewMatrix, mBlendMode);
         }
         
         /** Adds a batch of quads to the current batch of unrendered quads. If there is a state 
@@ -353,8 +353,9 @@ package starling.core
          *  expensive than what you save by avoiding the draw call.</p> */
         public function batchQuadBatch(quadBatch:QuadBatch, parentAlpha:Number):void
         {
-            //if (mQuadBatches[mCurrentQuadBatchID].isStateChange(quadBatch.tinted, parentAlpha, quadBatch.texture, quadBatch.smoothing, quadBatch.doubleSided, mBlendMode))
-            if (mQuadBatches[mCurrentQuadBatchID].isStateChange(quadBatch.tinted, parentAlpha, quadBatch.texture, quadBatch.smoothing, mBlendMode))
+            if (mQuadBatches[mCurrentQuadBatchID].isStateChange(
+                //quadBatch.tinted, parentAlpha, quadBatch.texture, quadBatch.smoothing, mBlendMode))
+                quadBatch.tinted, parentAlpha, quadBatch.texture, quadBatch.smoothing, quadBatch.backSide, mBlendMode))
             {
                 finishQuadBatch();
             }
@@ -376,7 +377,7 @@ package starling.core
                 ++mDrawCount;
                 
                 if (mQuadBatches.length <= mCurrentQuadBatchID)
-                    mQuadBatches.push(new QuadBatch()); 
+                    mQuadBatches.push(new QuadBatch());
             }
         }
         
@@ -452,8 +453,7 @@ package starling.core
             
             resultProgram.upload(
                 sAssembler.assemble(Context3DProgramType.VERTEX, vertexShader),
-                sAssembler.assemble(Context3DProgramType.FRAGMENT, fragmentShader)
-			);
+                sAssembler.assemble(Context3DProgramType.FRAGMENT, fragmentShader));
             
             return resultProgram;
         }

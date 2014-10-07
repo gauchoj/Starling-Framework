@@ -10,45 +10,46 @@
 
 package starling.core
 {
-	import starling.animation.Juggler;
-	import starling.display.DisplayObject;
-	import starling.display.Stage;
-	import starling.events.EventDispatcher;
-	import starling.events.ResizeEvent;
-	import starling.events.TouchPhase;
-	import starling.events.TouchProcessor;
-	import starling.utils.HAlign;
-	import starling.utils.SystemUtil;
-	import starling.utils.VAlign;
-	import starling.utils.execute;
-
-	import flash.display.Sprite;
-	import flash.display.Stage3D;
-	import flash.display.StageAlign;
-	import flash.display.StageScaleMode;
-	import flash.display3D.Context3D;
-	import flash.display3D.Context3DCompareMode;
-	import flash.display3D.Context3DTriangleFace;
-	import flash.display3D.Program3D;
-	import flash.errors.IllegalOperationError;
-	import flash.events.ErrorEvent;
-	import flash.events.Event;
-	import flash.events.KeyboardEvent;
-	import flash.events.MouseEvent;
-	import flash.events.TouchEvent;
-	import flash.geom.Rectangle;
-	import flash.system.Capabilities;
-	import flash.text.TextField;
-	import flash.text.TextFieldAutoSize;
-	import flash.text.TextFormat;
-	import flash.text.TextFormatAlign;
-	import flash.ui.Mouse;
-	import flash.ui.Multitouch;
-	import flash.ui.MultitouchInputMode;
-	import flash.utils.ByteArray;
-	import flash.utils.Dictionary;
-	import flash.utils.getTimer;
-	import flash.utils.setTimeout;
+    import flash.display.Sprite;
+    import flash.display.Stage3D;
+    import flash.display.StageAlign;
+    import flash.display.StageScaleMode;
+    import flash.display3D.Context3D;
+    import flash.display3D.Context3DCompareMode;
+	import flash.display3D.Context3DStencilAction;
+    import flash.display3D.Context3DTriangleFace;
+    import flash.display3D.Program3D;
+    import flash.errors.IllegalOperationError;
+    import flash.events.ErrorEvent;
+    import flash.events.Event;
+    import flash.events.KeyboardEvent;
+    import flash.events.MouseEvent;
+    import flash.events.TouchEvent;
+    import flash.geom.Rectangle;
+    import flash.system.Capabilities;
+    import flash.text.TextField;
+    import flash.text.TextFieldAutoSize;
+    import flash.text.TextFormat;
+    import flash.text.TextFormatAlign;
+    import flash.ui.Mouse;
+    import flash.ui.Multitouch;
+    import flash.ui.MultitouchInputMode;
+    import flash.utils.ByteArray;
+    import flash.utils.Dictionary;
+    import flash.utils.getTimer;
+    import flash.utils.setTimeout;
+    
+    import starling.animation.Juggler;
+    import starling.display.DisplayObject;
+    import starling.display.Stage;
+    import starling.events.EventDispatcher;
+    import starling.events.ResizeEvent;
+    import starling.events.TouchPhase;
+    import starling.events.TouchProcessor;
+    import starling.utils.HAlign;
+    import starling.utils.SystemUtil;
+    import starling.utils.VAlign;
+    import starling.utils.execute;
     
     /** Dispatched when a new render context is created. */
     [Event(name="context3DCreate", type="starling.events.Event")]
@@ -443,17 +444,11 @@ package starling.core
         }
         
         /** Calls <code>advanceTime()</code> (with the time that has passed since the last frame)
-         *  and <code>render()</code>. */
-		private var passedTime:Number;
-		public function get framePassedTime(): Number
-		{
-			return passedTime;
-		}
+         *  and <code>render()</code>. */ 
         public function nextFrame():void
         {
             var now:Number = getTimer() / 1000.0;
-//            var passedTime:Number = now - mLastFrameTimestamp;
-			passedTime = now - mLastFrameTimestamp;
+            var passedTime:Number = now - mLastFrameTimestamp;
             mLastFrameTimestamp = now;
             
             // to avoid overloading time-based animations, the maximum delta is truncated.
@@ -489,7 +484,7 @@ package starling.core
             updateNativeOverlay();
             mSupport.nextFrame();
             
-            var scaleX:Number = mViewPort.width  / mStage.stageWidth;
+            var scaleX:Number = mViewPort.width  / mStage.stageWidth; 
             var scaleY:Number = mViewPort.height / mStage.stageHeight;
             
 			//TODO to uncomment
@@ -497,8 +492,17 @@ package starling.core
             mContext.setCulling(Context3DTriangleFace.NONE);
 			
 			//TODO performance test
-            //mContext.setDepthTest(false, Context3DCompareMode.NEVER); 
-            //mContext.setCulling(Context3DTriangleFace.BACK);   
+			//mContext.setStencilReferenceValue(1);
+			//mContext.setCulling(Context3DTriangleFace.BACK);  
+            //mContext.setDepthTest(false, Context3DCompareMode.LESS); 			
+			////mContext.setStencilActions( 
+				//Context3DTriangleFace.FRONT_AND_BACK, 
+				//Context3DCompareMode.ALWAYS,
+				//Context3DStencilAction.SET,
+				//Context3DStencilAction.SET,
+				//Context3DStencilAction.SET
+			//);
+			
 			
             
             mSupport.renderTarget = null; // back buffer
@@ -545,14 +549,17 @@ package starling.core
                     // the size happens in a separate operation) -- so we have no choice but to
                     // set the backbuffer to a very small size first, to be on the safe side.
                     
-                    if (mProfile == "baselineConstrained")
-                        configureBackBuffer(32, 32, mAntiAliasing, false);
+                    if (mProfile == "baselineConstrained") {
+						configureBackBuffer(32, 32, mAntiAliasing, false);
+					}
                     
                     mStage3D.x = mClippedViewPort.x;
                     mStage3D.y = mClippedViewPort.y;
                     
-                    configureBackBuffer(mClippedViewPort.width, mClippedViewPort.height,
-                        mAntiAliasing, false, mSupportHighResolutions);
+					configureBackBuffer(mClippedViewPort.width, mClippedViewPort.height, mAntiAliasing, //
+						false, //
+						//true, //
+					mSupportHighResolutions);
                     
                     if (mSupportHighResolutions && "contentsScaleFactor" in mNativeStage)
                         mNativeStageContentScaleFactor = mNativeStage["contentsScaleFactor"];

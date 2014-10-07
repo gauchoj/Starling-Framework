@@ -188,9 +188,11 @@ package starling.display
         
         /** @inheritDoc */
         public override function render(support:RenderSupport, parentAlpha:Number):void
-        {
-            //support.batchQuad(this, parentAlpha, mTexture, mSmoothing, doubleSided);			
+        {		
             support.batchQuad(this, parentAlpha, mTexture, mSmoothing);			
         }
+		
+		
+		
     }
 }

@@ -10,15 +10,15 @@
 
 package starling.display
 {
-    import flash.display.Bitmap;
-    import flash.geom.Matrix;
-    import flash.geom.Point;
-    import flash.geom.Rectangle;
+	import flash.display.Bitmap;
+	import flash.geom.Matrix;
+	import flash.geom.Point;
+	import flash.geom.Rectangle;
+	import starling.core.RenderSupport;
+	import starling.textures.Texture;
+	import starling.textures.TextureSmoothing;
+	import starling.utils.VertexData;
     
-    import starling.core.RenderSupport;
-    import starling.textures.Texture;
-    import starling.textures.TextureSmoothing;
-    import starling.utils.VertexData;
     
     /** An Image is a quad with a texture mapped onto it.
      *  
@@ -35,7 +35,7 @@ package starling.display
      *  
      *  @see starling.textures.Texture
      *  @see Quad
-     */ 
+     */     
     public class Image extends Quad
     {
         private var mTexture:Texture;
@@ -68,6 +68,8 @@ package starling.display
                 mSmoothing = TextureSmoothing.BILINEAR;
                 mVertexDataCache = new VertexData(4, pma);
                 mVertexDataCacheInvalid = true;
+				
+				
 				
             }
             else

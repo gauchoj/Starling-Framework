@@ -10,9 +10,13 @@
 
 package starling.display
 {
+	import com.assukar.airong.error.AssukarError;
+	import com.assukar.airong.utils.Utils;
+	import com.assukar.domain.main.AssukarContext;
     import flash.display3D.Context3D;
     import flash.display3D.Context3DProgramType;
     import flash.display3D.Context3DTextureFormat;
+	import flash.display3D.Context3DTriangleFace;
     import flash.display3D.Context3DVertexBufferFormat;
     import flash.display3D.IndexBuffer3D;
     import flash.display3D.Program3D;
@@ -97,10 +101,16 @@ package starling.display
 		
 		//back side
 		private var mBackSide:Boolean;
-		//override public function get backSide():Boolean { return mBackSide; }
+		override public function get backSide():Boolean { return mBackSide; }
+		
+		// ignore filter
+		private var mIgnoreFilters:Boolean;
+		override public function get ignoreFilters():Boolean { return mIgnoreFilters; } 
+		
+		
 		
         
-        /** Creates a new QuadBatch instance with empty batch data. */
+        /** Creates a new QuadBatch instance with empty batch data. */ 
         public function QuadBatch()
         {
             mVertexData = new VertexData(0, true);
@@ -113,11 +123,14 @@ package starling.display
 			//back side
 			mBackSide = false;
 			
+			//buffer error
+			mIgnoreFilters = false;
+			
             // Handle lost context. We use the conventional event here (not the one from Starling)
             // so we're able to create a weak event listener; this avoids memory leaks when people 
             // forget to call "dispose" on the QuadBatch.
-            Starling.current.stage3D.addEventListener(Event.CONTEXT3D_CREATE, 
-                                                      onContextCreated, false, 0, true);
+            Starling.current.stage3D.addEventListener(Event.CONTEXT3D_CREATE, onContextCreated, false, 0, true);
+			
         }
         
         /** Disposes vertex- and index-buffer. */
@@ -132,6 +145,9 @@ package starling.display
 			
 			// back side
 			mBackSide = false;
+			
+			// buffer error
+			mIgnoreFilters = false;
             
             super.dispose();
         }
@@ -169,38 +185,52 @@ package starling.display
 			// back side
 			clone.mBackSide = mBackSide;
 			
+			// ignore filters
+			clone.mIgnoreFilters = mIgnoreFilters;
+			
             return clone;
         }
         
         private function expand():void
         {
             var oldCapacity:int = this.capacity;
-
             if (oldCapacity >= MAX_NUM_QUADS)
                 throw new Error("Exceeded maximum number of quads!");
 
             this.capacity = oldCapacity < 8 ? 16 : oldCapacity * 2;
         }
         
+		
         private function createBuffers():void
         {
             destroyBuffers();
-
-            var numVertices:int = mVertexData.numVertices;
-            var numIndices:int = mIndexData.length;
+			
+			var numIndices:int = mIndexData.length;
+            var numVertices:int = mVertexData.numVertices;			
             var context:Context3D = Starling.context;
 
             if (numVertices == 0) return;
-            if (context == null)  throw new MissingContextError();
-            
-            mVertexBuffer = context.createVertexBuffer(numVertices, VertexData.ELEMENTS_PER_VERTEX);
-            mVertexBuffer.uploadFromVector(mVertexData.rawData, 0, numVertices);
-            
-            mIndexBuffer = context.createIndexBuffer(numIndices);
+            if (context == null)  throw new MissingContextError();			
 			
-            mIndexBuffer.uploadFromVector(mIndexData, 0, numIndices);
             
-            mSyncRequired = false;
+			
+			//TODO buffer error
+			try {				
+				mVertexBuffer = context.createVertexBuffer(numVertices, VertexData.ELEMENTS_PER_VERTEX);
+				mVertexBuffer.uploadFromVector(mVertexData.rawData, 0, numVertices);								
+				mIndexBuffer = context.createIndexBuffer(numIndices);			
+				mIndexBuffer.uploadFromVector(mIndexData, 0, numIndices);
+				
+				mSyncRequired = false;
+			
+			}catch (err:Error) {				
+				Utils.logError(new AssukarError(err.message +"\nNow IGNORE_ALL_FILTERS = true on this device"), false );	 
+				mSyncRequired = IGNORE_ALL_FILTERS = true;	 
+			}
+            
+          
+            
+           
         }
         
         private function destroyBuffers():void
@@ -237,8 +267,10 @@ package starling.display
         /** Renders the current batch with custom settings for model-view-projection matrix, alpha 
          *  and blend mode. This makes it possible to render batches that are not part of the 
          *  display list. */ 
+		
         public function renderCustom(mvpMatrix:Matrix, parentAlpha:Number=1.0, blendMode:String=null):void
         {
+			
             if (mNumQuads == 0) return;
             if (mSyncRequired) syncBuffers();
             
@@ -255,28 +287,26 @@ package starling.display
             context.setProgram(getProgram(tinted));
             context.setProgramConstantsFromVector(Context3DProgramType.VERTEX, 0, sRenderAlpha, 1);
             context.setProgramConstantsFromMatrix(Context3DProgramType.VERTEX, 1, sRenderMatrix, true);
-            context.setVertexBufferAt(0, mVertexBuffer, VertexData.POSITION_OFFSET, 
-                                      Context3DVertexBufferFormat.FLOAT_2); 
+            context.setVertexBufferAt(0, mVertexBuffer, VertexData.POSITION_OFFSET, Context3DVertexBufferFormat.FLOAT_2); 
             
             if (mTexture == null || tinted)
-                context.setVertexBufferAt(1, mVertexBuffer, VertexData.COLOR_OFFSET, 
-                                          Context3DVertexBufferFormat.FLOAT_4);
+                context.setVertexBufferAt(1, mVertexBuffer, VertexData.COLOR_OFFSET, Context3DVertexBufferFormat.FLOAT_4);
             
             if (mTexture)
             {
                 context.setTextureAt(0, mTexture.base);
-                context.setVertexBufferAt(2, mVertexBuffer, VertexData.TEXCOORD_OFFSET, 
-                                          Context3DVertexBufferFormat.FLOAT_2);
+                context.setVertexBufferAt(2, mVertexBuffer, VertexData.TEXCOORD_OFFSET, Context3DVertexBufferFormat.FLOAT_2);
             }
             
-            //context.drawTriangles(mIndexBuffer, 0, mNumQuads * 2 );	
-			
-			
-			// back side
-            context.drawTriangles(mIndexBuffer, 0, mNumQuads * (mBackSide ? 4 : 2) ); 
             
-            if (mTexture)
-            {
+			
+			//TODO buffer error
+			if (mIndexBuffer) { 						 
+				context.drawTriangles(mIndexBuffer, 0, mNumQuads * (mBackSide ? 4 : 2) );
+			}
+		
+            
+            if (mTexture) {				
                 context.setTextureAt(0, null);
                 context.setVertexBufferAt(2, null);
             }
@@ -295,7 +325,10 @@ package starling.display
             mSyncRequired = true;
 			
 			// back side
-			mBackSide = false;
+			mBackSide = false; // false
+			
+			// buffer error
+			mIgnoreFilters = false;
         }
         
         /** Adds an image to the batch. This method internally calls 'addQuad' with the correct
@@ -316,31 +349,36 @@ package starling.display
          *  the batch. */ 
 		
 		// back side
+		
         //public function addQuad(quad:Quad, parentAlpha:Number=1.0, texture:Texture=null, smoothing:String=null, backSide:Boolean=false, modelViewMatrix:Matrix=null, blendMode:String=null):void
         public function addQuad(quad:Quad, parentAlpha:Number=1.0, texture:Texture=null, smoothing:String=null, modelViewMatrix:Matrix=null, blendMode:String=null):void
-        {
+        {	
 			
-		
 			// back side
-			mBackSide = quad.backSide;
+			mBackSide = quad.backSide;				
+			
+			// ignore filter
+			mIgnoreFilters = quad.ignoreFilters;			
 			
             if (modelViewMatrix == null)
                 modelViewMatrix = quad.transformationMatrix;
             
             var alpha:Number = parentAlpha * quad.alpha;
+			
             var vertexID:int = mNumQuads * 4;
             
-            if (mNumQuads + 1 > mVertexData.numVertices / 4) expand();
+            if (mNumQuads + 1 > mVertexData.numVertices / 4 ) expand();	
             if (mNumQuads == 0) 
-            {
+            {	
                 this.blendMode = blendMode ? blendMode : quad.blendMode;
                 mTexture = texture;
                 mTinted = texture ? (quad.tinted || parentAlpha != 1.0) : false;
-                mSmoothing = smoothing;
-				
+                mSmoothing = smoothing;				
 				
                 mVertexData.setPremultipliedAlpha(quad.premultipliedAlpha);
             }
+				 
+			
             
             quad.copyVertexDataTransformedTo(mVertexData, vertexID, modelViewMatrix);
             
@@ -348,7 +386,11 @@ package starling.display
                 mVertexData.scaleAlpha(vertexID, alpha, 4);
 
             mSyncRequired = true;
-            mNumQuads++;
+            mNumQuads++;			
+			
+			
+			
+			
         }
         
         /** Adds another QuadBatch to this batch. Just like the 'addQuad' method, you have to
@@ -359,6 +401,10 @@ package starling.display
 			// back side
 			mBackSide = quadBatch.mBackSide;
 			
+			// ignore filter
+			mIgnoreFilters = quadBatch.mIgnoreFilters;
+				
+			
 			if (modelViewMatrix == null)
                 modelViewMatrix = quadBatch.transformationMatrix;
             
@@ -367,7 +413,7 @@ package starling.display
             var vertexID:int = mNumQuads * 4;
             var numQuads:int = quadBatch.numQuads;
             
-            if (mNumQuads + numQuads > capacity) capacity = mNumQuads + numQuads;
+            if (mNumQuads + numQuads > capacity) capacity = mNumQuads + numQuads;			
             if (mNumQuads == 0) 
             {
                 this.blendMode = blendMode ? blendMode : quadBatch.blendMode;
@@ -378,8 +424,7 @@ package starling.display
                 mVertexData.setPremultipliedAlpha(quadBatch.mVertexData.premultipliedAlpha, false);
             }
             
-            quadBatch.mVertexData.copyTransformedTo(mVertexData, vertexID, modelViewMatrix,
-                                                    0, numQuads*4);
+            quadBatch.mVertexData.copyTransformedTo(mVertexData, vertexID, modelViewMatrix, 0, numQuads*4);
             
             if (alpha != 1.0)
                 mVertexData.scaleAlpha(vertexID, alpha, numQuads*4);
@@ -394,22 +439,19 @@ package starling.display
          *  (one batch can contain up to 8192 quads). */
 		
         //public function isStateChange(tinted:Boolean, parentAlpha:Number, texture:Texture, smoothing:String, blendMode:String, numQuads:int=1):Boolean
-        public function isStateChange(tinted:Boolean, parentAlpha:Number, texture:Texture, smoothing:String, backSide:Boolean, blendMode:String, numQuads:int=1):Boolean
+        public function isStateChange(tinted:Boolean, parentAlpha:Number, texture:Texture, smoothing:String, backSide:Boolean, blendMode:String, ignoreFilters:Boolean, numQuads:int=1):Boolean
         {
+			
             if (mNumQuads == 0) return false;
             else if (mNumQuads + numQuads > MAX_NUM_QUADS) return true; // maximum buffer size
             else if (mTexture == null && texture == null) 
-                return this.blendMode != blendMode;
+                //return this.blendMode != blendMode;
+                return this.blendMode != blendMode || this.backSide != backSide || this.ignoreFilters != ignoreFilters;
             else if (mTexture != null && texture != null)
-                return mTexture.base != texture.base ||
-                       mTexture.repeat != texture.repeat || mSmoothing != smoothing ||
-					   
-					   //back side
-					   mBackSide != backSide ||
-					   
-                       mTinted != (tinted || parentAlpha != 1.0) || this.blendMode != blendMode;
-					   
-            else return true;
+                //return mTexture.base != texture.base || mTexture.repeat != texture.repeat || mSmoothing != smoothing || mTinted != (tinted || parentAlpha != 1.0) || this.blendMode != blendMode;					               
+                return mTexture.base != texture.base || mTexture.repeat != texture.repeat || mSmoothing != smoothing || mTinted != (tinted || parentAlpha != 1.0) || this.blendMode != blendMode || this.backSide != backSide || this.ignoreFilters != ignoreFilters;					               
+			else return true;
+			
         }
         
         // utility methods for manual vertex-modification
@@ -521,12 +563,16 @@ package starling.display
          *  and creates a vector of QuadBatch objects representing it. This can be
          *  used to render the container very efficiently. The 'flatten'-method of the Sprite 
          *  class uses this method internally. */
-        public static function compile(object:DisplayObject, 
-                                       quadBatches:Vector.<QuadBatch>):void
-        {
-            compileObject(object, quadBatches, -1, new Matrix());
+		
+		
+        public static function compile(object:DisplayObject, quadBatches:Vector.<QuadBatch>):void
+        {				
+            compileObject(object, quadBatches, -1, new Matrix());	
         }
         
+		//TODO buffer error
+		private static var IGNORE_ALL_FILTERS:Boolean = false;		
+		
         private static function compileObject(object:DisplayObject, 
                                               quadBatches:Vector.<QuadBatch>,
                                               quadBatchID:int,
@@ -535,7 +581,14 @@ package starling.display
                                               blendMode:String=null,
                                               ignoreCurrentFilter:Boolean=false):int
         {
-            var i:int;
+			
+			
+			//TODO buffer error
+			if (IGNORE_ALL_FILTERS && object.filter) {				
+				object.ignoreFilters = true;	
+			}			
+			
+			var i:int;
             var quadBatch:QuadBatch;
             var isRootObject:Boolean = false;
             var objectAlpha:Number = object.alpha;
@@ -544,7 +597,7 @@ package starling.display
             var quad:Quad = object as Quad;
             var batch:QuadBatch = object as QuadBatch;
             var filter:FragmentFilter = object.filter;
-            
+			
             if (quadBatchID == -1)
             {
                 isRootObject = true;
@@ -555,40 +608,37 @@ package starling.display
                 if (quadBatches.length == 0) quadBatches.push(new QuadBatch());
                 else quadBatches[0].reset();
             }
+			
+			
             
             if (filter && !ignoreCurrentFilter)
             {
                 if (filter.mode == FragmentFilterMode.ABOVE)
                 {
-                    quadBatchID = compileObject(object, quadBatches, quadBatchID,
-                                                transformationMatrix, alpha, blendMode, true);
-                }
-                
-                quadBatchID = compileObject(filter.compile(object), quadBatches, quadBatchID,
-                                            transformationMatrix, alpha, blendMode);
+                    quadBatchID = compileObject(object, quadBatches, quadBatchID, transformationMatrix, alpha, blendMode, true);
+                }      
+				
+                quadBatchID = compileObject(filter.compile(object), quadBatches, quadBatchID, transformationMatrix, alpha, blendMode);
                 
                 if (filter.mode == FragmentFilterMode.BELOW)
                 {
-                    quadBatchID = compileObject(object, quadBatches, quadBatchID,
-                        transformationMatrix, alpha, blendMode, true);
+                    quadBatchID = compileObject(object, quadBatches, quadBatchID, transformationMatrix, alpha, blendMode, true);
                 }
             }
             else if (container)
-            {
+            {	
                 var numChildren:int = container.numChildren;
                 var childMatrix:Matrix = new Matrix();
                 
                 for (i=0; i<numChildren; ++i)
                 {
                     var child:DisplayObject = container.getChildAt(i);
-                    if (child.hasVisibleArea)
-                    {
-                        var childBlendMode:String = child.blendMode == BlendMode.AUTO ?
-                                                    blendMode : child.blendMode;
-                        childMatrix.copyFrom(transformationMatrix);
+					
+                    if (child.hasVisibleArea){
+                        var childBlendMode:String = child.blendMode == BlendMode.AUTO ? blendMode : child.blendMode;
+                        childMatrix.copyFrom(transformationMatrix);					
                         RenderSupport.transformMatrixForObject(childMatrix, child);
-                        quadBatchID = compileObject(child, quadBatches, quadBatchID, childMatrix, 
-                                                    alpha*objectAlpha, childBlendMode);
+                        quadBatchID = compileObject(child, quadBatches, quadBatchID, childMatrix, alpha*objectAlpha, childBlendMode);
                     }
                 }
             }
@@ -601,6 +651,10 @@ package starling.display
 				
 				// back side
 				var backSide:Boolean;
+				
+				// ignore filters
+				var ignoreFilters:Boolean;
+				
                 
                 if (quad)
                 {
@@ -610,6 +664,9 @@ package starling.display
 					
 					// back side
 					backSide = quad.backSide; 
+					
+					// ignore filters
+					ignoreFilters = quad.ignoreFilters; 
 					
                     tinted = quad.tinted;
 					
@@ -623,6 +680,9 @@ package starling.display
 					// back side
 					backSide = batch.mBackSide;
 					
+					// ignore filters
+					ignoreFilters = batch.mIgnoreFilters;
+					
                     tinted = batch.mTinted;					
                     numQuads = batch.mNumQuads;
                 }
@@ -630,13 +690,14 @@ package starling.display
                 quadBatch = quadBatches[quadBatchID];
                 
                 //if (quadBatch.isStateChange(tinted, alpha*objectAlpha, texture, smoothing, blendMode, numQuads))
-                if (quadBatch.isStateChange(tinted, alpha*objectAlpha, texture, smoothing, backSide, blendMode, numQuads))
+                if (quadBatch.isStateChange(tinted, alpha*objectAlpha, texture, smoothing, backSide, blendMode, ignoreFilters, numQuads))
                 {
                     quadBatchID++;
                     if (quadBatches.length <= quadBatchID) quadBatches.push(new QuadBatch());
                     quadBatch = quadBatches[quadBatchID];
                     quadBatch.reset();
                 }
+				
                 
                 if (quad)
                     quadBatch.addQuad(quad, alpha, texture, smoothing, transformationMatrix, blendMode);
@@ -689,52 +750,49 @@ package starling.display
          *  If you add more quads than what fits into the current capacity, the QuadBatch is
          *  expanded automatically. However, if you know beforehand how many vertices you need,
          *  you can manually set the right capacity with this method. */
-        public function get capacity():int { return mVertexData.numVertices / 4; }
+        public function get capacity():int { return mVertexData.numVertices / 4; }		
         public function set capacity(value:int):void
         {
-            var oldCapacity:int = capacity;
+           var oldCapacity:int = capacity;
             
             if (value == oldCapacity) return;
-            else if (value == 0) throw new Error("Capacity must be > 0");
+			else if (value == 0) throw new Error("Capacity must be > 0"); 
             else if (value > MAX_NUM_QUADS) value = MAX_NUM_QUADS;
-            if (mNumQuads > value) mNumQuads = value;
+            if (mNumQuads > value) mNumQuads = value;          
             
-            mVertexData.numVertices = value * 4;
-						
+			mVertexData.numVertices = value * 4;			 			
             mIndexData.length = value * (mBackSide ? 12 : 6);
             
             for (var i:int=oldCapacity; i<value; ++i)
-            {				
-				if (mBackSide) {
-					
+            {	
+				if(mBackSide){ 
 					mIndexData[int(i * 12 + 0)] = i * 4;					
 					mIndexData[int(i * 12 + 1)] = i * 4 + 1;					
 					mIndexData[int(i * 12 + 2)] = i * 4 + 2;						
 					mIndexData[int(i * 12 + 3)] = i * 4 + 1;					
 					mIndexData[int(i * 12 + 4)] = i * 4 + 3;					
-					mIndexData[int(i * 12 + 5)] = i * 4 + 2;
-					
+					mIndexData[int(i * 12 + 5)] = i * 4 + 2;					
 					mIndexData[int(i * 12 + 6)] = i * 4 + 2;							
 					mIndexData[int(i * 12 + 7)] = i * 4 + 3;					
 					mIndexData[int(i * 12 + 8)] = i * 4 + 1;		
 					mIndexData[int(i * 12 + 9)] = i * 4 + 2;					
 					mIndexData[int(i * 12 + 10)] = i * 4 + 1;					
-					mIndexData[int(i * 12 + 11)] = i * 4 + 0;
-					
+					mIndexData[int(i * 12 + 11)] = i * 4 + 0;		
 				}else {
 					mIndexData[int(i * 6 + 0)] = i * 4;					
 					mIndexData[int(i * 6 + 1)] = i * 4 + 1;					
 					mIndexData[int(i * 6 + 2)] = i * 4 + 2;						
 					mIndexData[int(i * 6 + 3)] = i * 4 + 1;					
 					mIndexData[int(i * 6 + 4)] = i * 4 + 3;					
-					mIndexData[int(i * 6 + 5)] = i * 4 + 2; 
+					mIndexData[int(i * 6 + 5)] = i * 4 + 2;		
 				}
-            }
-
-            destroyBuffers();
+            }			
+			
+			destroyBuffers();
             mSyncRequired = true;
         }
-
+		
+		
         // program management
         
         private function getProgram(tinted:Boolean):Program3D

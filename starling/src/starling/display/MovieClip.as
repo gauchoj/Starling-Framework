@@ -12,6 +12,7 @@ package starling.display
 {
     import flash.errors.IllegalOperationError;
     import flash.media.Sound;
+	import starling.core.RenderSupport;
     
     import starling.animation.IAnimatable;
     import starling.events.Event;
@@ -43,6 +44,8 @@ package starling.display
      */    
     public class MovieClip extends Image implements IAnimatable
     {
+		
+		
         private var mTextures:Vector.<Texture>;
         private var mSounds:Vector.<Sound>;
         private var mDurations:Vector.<Number>;
@@ -58,7 +61,8 @@ package starling.display
         /** Creates a movie clip from the provided textures and with the specified default framerate.
          *  The movie will have the size of the first frame. */  
         public function MovieClip(textures:Vector.<Texture>, fps:Number=12)
-        {
+        {	
+			
             if (textures.length > 0)
             {
                 super(textures[0]);
@@ -364,5 +368,10 @@ package starling.display
 		{
 			_jugglerIndex = value;
 		}		
+		
+		
+
+		
+		
     }
 }

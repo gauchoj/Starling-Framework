@@ -336,7 +336,7 @@ package starling.core
         //public function batchQuad(quad:Quad, parentAlpha:Number, texture:Texture=null, smoothing:String=null, backSide:Boolean = false):void
         {
             //if (mQuadBatches[mCurrentQuadBatchID].isStateChange(quad.tinted, parentAlpha, texture, smoothing, mBlendMode))
-            if (mQuadBatches[mCurrentQuadBatchID].isStateChange(quad.tinted, parentAlpha, texture, smoothing, quad.backSide, mBlendMode))
+            if (mQuadBatches[mCurrentQuadBatchID].isStateChange(quad.tinted, parentAlpha, texture, smoothing, quad.backSide, mBlendMode, quad.ignoreFilters))
             {
                 finishQuadBatch();
             }
@@ -355,7 +355,7 @@ package starling.core
         {
             if (mQuadBatches[mCurrentQuadBatchID].isStateChange(
                 //quadBatch.tinted, parentAlpha, quadBatch.texture, quadBatch.smoothing, mBlendMode))
-                quadBatch.tinted, parentAlpha, quadBatch.texture, quadBatch.smoothing, quadBatch.backSide, mBlendMode))
+                quadBatch.tinted, parentAlpha, quadBatch.texture, quadBatch.smoothing, quadBatch.backSide, mBlendMode, quadBatch.ignoreFilters))
             {
                 finishQuadBatch();
             }

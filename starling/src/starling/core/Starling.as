@@ -497,9 +497,9 @@ package starling.core
             mContext.setCulling(Context3DTriangleFace.NONE);
 			
 			//TODO performance test
-			//mContext.setStencilReferenceValue(1);
-			//mContext.setCulling(Context3DTriangleFace.BACK);  
-            //mContext.setDepthTest(false, Context3DCompareMode.LESS); 			
+			//mContext.setCulling(Context3DTriangleFace.BACK);   
+			
+			//mContext.setStencilReferenceValue(1);           			
 			////mContext.setStencilActions( 
 				//Context3DTriangleFace.FRONT_AND_BACK, 
 				//Context3DCompareMode.ALWAYS,

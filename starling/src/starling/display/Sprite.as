@@ -99,7 +99,7 @@ package starling.display
          *  with a big number of children.</p> 
          */
         public function flatten():void
-        {			
+        {						
             mFlattenRequested = true;
             broadcastEventWith(Event.FLATTEN);
         }
@@ -208,7 +208,7 @@ package starling.display
                 if (mFlattenRequested)
                 {
                     QuadBatch.compile(this, mFlattenedContents);
-                    support.applyClipRect(); // compiling filters might change scissor rect. :-\
+                    support.applyClipRect(); // compiling filters might change scissor rect. 
                     mFlattenRequested = false;
                 }
                 
@@ -220,10 +220,9 @@ package starling.display
                 support.raiseDrawCount(numBatches);
                 
                 for (var i:int=0; i<numBatches; ++i)
-                {
-                    var quadBatch:QuadBatch = mFlattenedContents[i];
-                    var blendMode:String = quadBatch.blendMode == BlendMode.AUTO ?
-                        support.blendMode : quadBatch.blendMode;
+                {	
+                    var quadBatch:QuadBatch = mFlattenedContents[i];		
+                    var blendMode:String = quadBatch.blendMode == BlendMode.AUTO ? support.blendMode : quadBatch.blendMode;
                     quadBatch.renderCustom(mvpMatrix, alpha, blendMode);
                 }
             }

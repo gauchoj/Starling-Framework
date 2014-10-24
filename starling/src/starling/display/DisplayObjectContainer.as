@@ -80,6 +80,7 @@ package starling.display
         /** @private */
         public function DisplayObjectContainer()
         {
+			
             if (Capabilities.isDebugger && 
                 getQualifiedClassName(this) == "starling.display::DisplayObjectContainer")
             {
@@ -87,6 +88,7 @@ package starling.display
             }
             
             mChildren = new <DisplayObject>[];
+			
         }
         
         /** Disposes the resources of all children. */
@@ -103,13 +105,14 @@ package starling.display
         /** Adds a child to the container. It will be at the frontmost position. */
         public function addChild(child:DisplayObject):DisplayObject
         {
+			
             addChildAt(child, numChildren);
             return child;
         }
         
         /** Adds a child to the container at a certain index. */
         public function addChildAt(child:DisplayObject, index:int):DisplayObject
-        {
+        {	
             var numChildren:int = mChildren.length; 
             
             if (index >= 0 && index <= numChildren)
@@ -117,6 +120,7 @@ package starling.display
                 if (child.parent == this)
                 {
                     setChildIndex(child, index); // avoids dispatching events
+					
                 }
                 else
                 {
@@ -128,12 +132,14 @@ package starling.display
                     
                     child.setParent(this);
                     child.dispatchEventWith(Event.ADDED, true);
+					
                     
                     if (stage)
                     {
                         var container:DisplayObjectContainer = child as DisplayObjectContainer;
                         if (container) container.broadcastEventWith(Event.ADDED_TO_STAGE);
                         else           child.dispatchEventWith(Event.ADDED_TO_STAGE);
+					
                     }
                 }
                 
@@ -466,5 +472,11 @@ package starling.display
                     getChildEventListeners(children[i], eventType, listeners);
             }
         }
+		
+		
+		
+		
+		
+		
     }
 }

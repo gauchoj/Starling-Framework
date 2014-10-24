@@ -10,6 +10,7 @@
 
 package starling.display
 {
+	import com.assukar.airong.error.AssukarError;
 	import flash.geom.Matrix;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
@@ -467,6 +468,7 @@ package starling.display
          *  <p>CAUTION: not a copy, but the actual object!</p> */
         public function get transformationMatrix():Matrix
         {
+			
             if (mOrientationChanged)
             {
                 mOrientationChanged = false;
@@ -639,6 +641,7 @@ package starling.display
                 mPivotY = value;
                 mOrientationChanged = true;
             }
+			
         }
         
         /** The horizontal scale factor. '1' means no scale, negative values flip the object. */
@@ -650,6 +653,7 @@ package starling.display
                 mScaleX = value;
                 mOrientationChanged = true;
             }
+			
         }
         
         /** The vertical scale factor. '1' means no scale, negative values flip the object. */
@@ -660,7 +664,7 @@ package starling.display
             {
                 mScaleY = value;
                 mOrientationChanged = true;
-            }
+            }	
         }
         
         /** The horizontal skew angle in radians. */
@@ -735,8 +739,15 @@ package starling.display
          *  performance reasons). Furthermore, when you set this property to 'null' or
          *  assign a different filter, the previous filter is NOT disposed automatically
          *  (since you might want to reuse it). */
-        public function get filter():FragmentFilter { return mFilter; }
-        public function set filter(value:FragmentFilter):void { mFilter = value; }
+		
+        //public function get filter():FragmentFilter { return mFilter; }
+        public function get filter():FragmentFilter {			
+			return mIgnoreFilters ? null : mFilter;
+		}
+		
+        public function set filter(value:FragmentFilter):void { 
+			mFilter = mIgnoreFilters ? null : value;
+		}
         
         /** The display object container that contains this display object. */
         public function get parent():DisplayObjectContainer { return mParent; }
@@ -813,7 +824,7 @@ package starling.display
 		}
 		public function set centerRelativeTo(base: DisplayObject): void
 		{
-			centerYRelativeTo = base;
+			centerYRelativeTo = base; 
 			centerXRelativeTo = base;
 		}
 		public function set pivotsRatio(v: Object): void
@@ -832,17 +843,24 @@ package starling.display
 		
 		
 		// back side
-		private var mBackSide:Boolean = false; //true;   
+		private var mBackSide:Boolean = false;  // false
 		public function get backSide():Boolean {			
 			return this.mBackSide;
 		}		
-		public function set backSide(value:Boolean):void {			
+		public function set backSide(value:Boolean):void {				
 			this.mBackSide = value;
 		}	
 		
 		
 		
-		
+		// ignoreFilters
+		private var mIgnoreFilters:Boolean = false; //false;   
+		public function get ignoreFilters():Boolean {			
+			return this.mIgnoreFilters;
+		}		
+		public function set ignoreFilters(value:Boolean):void {			
+			this.mIgnoreFilters = value;
+		}	
 		
 		
 		

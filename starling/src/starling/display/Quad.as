@@ -33,7 +33,7 @@ package starling.display
 	 *
 	 *  @see Image
 	 */
-	public class Quad extends DisplayObject
+	public class Quad extends DisplayObject	
 	{
 		private var mTinted:Boolean;
 		
@@ -49,6 +49,7 @@ package starling.display
 		 *  influence blending output. You can use the default value in most cases.  */
 		public function Quad(width:Number, height:Number, color:uint = 0xffffff, premultipliedAlpha:Boolean = true)
 		{
+			
 			if (width == 0.0 || height == 0.0)
 				throw new ArgumentError("Invalid size: width and height must not be zero");
 			
@@ -61,7 +62,7 @@ package starling.display
 			mVertexData.setPosition(3, width, height);
 			mVertexData.setUniformColor(color);
 			
-			onVertexDataChanged();
+			onVertexDataChanged();			
 		}
 		
 		/** Call this method after manually changing the contents of 'mVertexData'. */
@@ -203,8 +204,6 @@ package starling.display
 		{
 			return mVertexData.premultipliedAlpha;
 		}
-		
-		
 		
 	
 	}

@@ -10,12 +10,14 @@
 
 package starling.display
 {
-    import flash.errors.IllegalOperationError;
-    import flash.media.Sound;
-    
-    import starling.animation.IAnimatable;
-    import starling.events.Event;
-    import starling.textures.Texture;
+	import starling.animation.IAnimatable;
+	import starling.events.Event;
+	import starling.textures.Texture;
+
+	import com.assukar.airong.error.AbstractError;
+
+	import flash.errors.IllegalOperationError;
+	import flash.media.Sound;
     
     /** Dispatched whenever the movie has displayed its last frame. */
     [Event(name="complete", type="starling.events.Event")]
@@ -44,7 +46,7 @@ package starling.display
     public class MovieClip extends Image implements IAnimatable
     {
         private var mTextures:Vector.<Texture>;
-        private var mSounds:Vector.<Sound>;
+//        private var mSounds:Vector.<Sound>;
         private var mDurations:Vector.<Number>;
         private var mStartTimes:Vector.<Number>;
         
@@ -53,7 +55,7 @@ package starling.display
         private var mCurrentFrame:int;
         private var mLoop:Boolean;
         private var mPlaying:Boolean;
-        private var mMuted:Boolean;
+//        private var mMuted:Boolean;
         
         /** Creates a movie clip from the provided textures and with the specified default framerate.
          *  The movie will have the size of the first frame. */  
@@ -81,7 +83,7 @@ package starling.display
             mCurrentTime = 0.0;
             mCurrentFrame = 0;
             mTextures = textures.concat();
-            mSounds = new Vector.<Sound>(numFrames);
+//            mSounds = new Vector.<Sound>(numFrames);
             mDurations = new Vector.<Number>(numFrames);
             mStartTimes = new Vector.<Number>(numFrames);
             
@@ -109,7 +111,7 @@ package starling.display
             if (duration < 0) duration = mDefaultFrameDuration;
             
             mTextures.splice(frameID, 0, texture);
-            mSounds.splice(frameID, 0, sound);
+//            mSounds.splice(frameID, 0, sound);
             mDurations.splice(frameID, 0, duration);
             
             if (frameID > 0 && frameID == numFrames) 
@@ -125,7 +127,7 @@ package starling.display
             if (numFrames == 1) throw new IllegalOperationError("Movie clip must not be empty");
             
             mTextures.splice(frameID, 1);
-            mSounds.splice(frameID, 1);
+//            mSounds.splice(frameID, 1);
             mDurations.splice(frameID, 1);
             
             updateStartTimes();
@@ -148,16 +150,18 @@ package starling.display
         /** Returns the sound of a certain frame. */
         public function getFrameSound(frameID:int):Sound
         {
-            if (frameID < 0 || frameID >= numFrames) throw new ArgumentError("Invalid frame id");
-            return mSounds[frameID];
+			throw new AbstractError();
+//            if (frameID < 0 || frameID >= numFrames) throw new ArgumentError("Invalid frame id");
+//            return mSounds[frameID];
         }
         
         /** Sets the sound of a certain frame. The sound will be played whenever the frame 
          *  is displayed. */
         public function setFrameSound(frameID:int, sound:Sound):void
         {
-            if (frameID < 0 || frameID >= numFrames) throw new ArgumentError("Invalid frame id");
-            mSounds[frameID] = sound;
+			throw new AbstractError();
+//            if (frameID < 0 || frameID >= numFrames) throw new ArgumentError("Invalid frame id");
+//            mSounds[frameID] = sound;
         }
         
         /** Returns the duration of a certain frame (in seconds). */
@@ -258,8 +262,8 @@ package starling.display
                         mCurrentFrame++;
                     }
                     
-                    var sound:Sound = mSounds[mCurrentFrame];
-                    if (sound && !mMuted) sound.play();
+//                    var sound:Sound = mSounds[mCurrentFrame];
+//                    if (sound && !mMuted) sound.play();
                     if (breakAfterFrame) break;
                 }
                 
@@ -299,8 +303,14 @@ package starling.display
         
         /** If enabled, no new sounds will be started during playback. Sounds that are already
          *  playing are not affected. */
-        public function get muted():Boolean { return mMuted; }
-        public function set muted(value:Boolean):void { mMuted = value; }
+        public function get muted():Boolean {
+			throw new AbstractError(); 
+//			return mMuted; 
+			}
+        public function set muted(value:Boolean):void {
+			throw new AbstractError(); 
+//			mMuted = value; 
+			}
 
         /** The index of the frame that is currently displayed. */
         public function get currentFrame():int { return mCurrentFrame; }
@@ -313,7 +323,7 @@ package starling.display
                 mCurrentTime += getFrameDuration(i);
             
             texture = mTextures[mCurrentFrame];
-            if (!mMuted && mSounds[mCurrentFrame]) mSounds[mCurrentFrame].play();
+//            if (!mMuted && mSounds[mCurrentFrame]) mSounds[mCurrentFrame].play();
         }
         
         /** The default number of frames per second. Individual frames can have different 

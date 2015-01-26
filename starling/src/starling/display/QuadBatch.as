@@ -224,7 +224,7 @@ package starling.display
 				mSyncRequired = false;
 			
 			}catch (err:Error) {				
-				Utils.logError(new AssukarError(err.message +"\nNow IGNORE_ALL_FILTERS = true on this device"), false );	 
+				Utils.logError(new AssukarError(err.message +" IGNORE_ALL_FILTERS = true"), false );	 
 				mSyncRequired = IGNORE_ALL_FILTERS = true;	 
 			}
             

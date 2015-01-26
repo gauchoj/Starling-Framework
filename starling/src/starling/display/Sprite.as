@@ -10,14 +10,18 @@
 
 package starling.display
 {
-    import flash.geom.Matrix;
-    import flash.geom.Point;
-    import flash.geom.Rectangle;
-    
-    import starling.core.RenderSupport;
-    import starling.events.Event;
-    import starling.utils.MatrixUtil;
-    import starling.utils.RectangleUtil;
+	import starling.core.RenderSupport;
+	import starling.events.Event;
+	import starling.utils.MatrixUtil;
+	import starling.utils.RectangleUtil;
+
+	import com.assukar.airong.reflection.ReflectionUtils;
+	import com.assukar.airong.utils.Statics;
+	import com.assukar.airong.utils.Utils;
+
+	import flash.geom.Matrix;
+	import flash.geom.Point;
+	import flash.geom.Rectangle;
 
     /** Dispatched on all children when the object is flattened. */
     [Event(name="flatten", type="starling.events.Event")]
@@ -84,6 +88,9 @@ package starling.display
             }
         }
         
+		static private var flattens: int = 0;
+		static private var startOfTime: Date = new Date();
+		
         /** Optimizes the sprite for optimal rendering performance. Changes in the
          *  children of a flattened sprite will not be displayed any longer. For this to happen,
          *  either call <code>flatten</code> again, or <code>unflatten</code> the sprite. 
@@ -100,6 +107,15 @@ package starling.display
          */
         public function flatten():void
         {						
+//			if (!mFlattenRequested)
+//			{
+//				if (++flattens % 50 == 0)
+//				{
+//					Utils.printStackTrace("FLATTENS:" + flattens + " " + (Number(Statics.MINUTE * flattens) / (new Date().time - startOfTime.time)));
+//				}
+//				Utils.print(ReflectionUtils.getClassName(this));
+//			}
+			
             mFlattenRequested = true;
             broadcastEventWith(Event.FLATTEN);
         }

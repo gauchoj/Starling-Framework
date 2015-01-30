@@ -15,10 +15,6 @@ package starling.display
 	import starling.utils.MatrixUtil;
 	import starling.utils.RectangleUtil;
 
-	import com.assukar.airong.reflection.ReflectionUtils;
-	import com.assukar.airong.utils.Statics;
-	import com.assukar.airong.utils.Utils;
-
 	import flash.geom.Matrix;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
@@ -121,11 +117,12 @@ package starling.display
 			if (IGNORE_FLATTEN)
 			{
 				mFlattenRequested = false;
-				return;
 			}
-			
-            mFlattenRequested = true;
-            broadcastEventWith(Event.FLATTEN);
+			else
+			{
+	            mFlattenRequested = true;
+	            broadcastEventWith(Event.FLATTEN);
+			}
         }
         
         /** Removes the rendering optimizations that were created when flattening the sprite.

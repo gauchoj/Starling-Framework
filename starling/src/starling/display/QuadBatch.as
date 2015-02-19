@@ -10,34 +10,33 @@
 
 package starling.display
 {
+	import starling.core.RenderSupport;
+	import starling.core.Starling;
+	import starling.core.starling_internal;
+	import starling.errors.MissingContextError;
+	import starling.events.Event;
+	import starling.filters.FragmentFilter;
+	import starling.filters.FragmentFilterMode;
+	import starling.textures.Texture;
+	import starling.textures.TextureSmoothing;
+	import starling.utils.MatrixUtil;
+	import starling.utils.VertexData;
+
 	import com.assukar.airong.error.AssukarError;
 	import com.assukar.airong.utils.Utils;
-	import com.assukar.domain.main.AssukarContext;
-    import flash.display3D.Context3D;
-    import flash.display3D.Context3DProgramType;
-    import flash.display3D.Context3DTextureFormat;
-	import flash.display3D.Context3DTriangleFace;
-    import flash.display3D.Context3DVertexBufferFormat;
-    import flash.display3D.IndexBuffer3D;
-    import flash.display3D.Program3D;
-    import flash.display3D.VertexBuffer3D;
-    import flash.geom.Matrix;
-    import flash.geom.Matrix3D;
-    import flash.geom.Rectangle;
-    import flash.utils.Dictionary;
-    import flash.utils.getQualifiedClassName;
-    
-    import starling.core.RenderSupport;
-    import starling.core.Starling;
-    import starling.core.starling_internal;
-    import starling.errors.MissingContextError;
-    import starling.events.Event;
-    import starling.filters.FragmentFilter;
-    import starling.filters.FragmentFilterMode;
-    import starling.textures.Texture;
-    import starling.textures.TextureSmoothing;
-    import starling.utils.MatrixUtil;
-    import starling.utils.VertexData;
+
+	import flash.display3D.Context3D;
+	import flash.display3D.Context3DProgramType;
+	import flash.display3D.Context3DTextureFormat;
+	import flash.display3D.Context3DVertexBufferFormat;
+	import flash.display3D.IndexBuffer3D;
+	import flash.display3D.Program3D;
+	import flash.display3D.VertexBuffer3D;
+	import flash.geom.Matrix;
+	import flash.geom.Matrix3D;
+	import flash.geom.Rectangle;
+	import flash.utils.Dictionary;
+	import flash.utils.getQualifiedClassName;
     
     use namespace starling_internal;
     

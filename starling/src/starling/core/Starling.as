@@ -452,7 +452,6 @@ package starling.core
         public function nextFrame():void
         {
             var now:Number = getTimer() / 1000.0;
-//            var passedTime:Number = now - mLastFrameTimestamp;
 			var passedTime:Number = now - mLastFrameTimestamp;
             mLastFrameTimestamp = now;
             
@@ -492,24 +491,9 @@ package starling.core
             var scaleX:Number = mViewPort.width  / mStage.stageWidth; 
             var scaleY:Number = mViewPort.height / mStage.stageHeight;
             
-			//TODO to uncomment
             mContext.setDepthTest(false, Context3DCompareMode.ALWAYS); 
             mContext.setCulling(Context3DTriangleFace.NONE);
 			
-			//TODO performance test
-			//mContext.setCulling(Context3DTriangleFace.BACK);   
-			
-			//mContext.setStencilReferenceValue(1);           			
-			////mContext.setStencilActions( 
-				//Context3DTriangleFace.FRONT_AND_BACK, 
-				//Context3DCompareMode.ALWAYS,
-				//Context3DStencilAction.SET,
-				//Context3DStencilAction.SET,
-				//Context3DStencilAction.SET
-			//);
-			
-			
-            
             mSupport.renderTarget = null; // back buffer
             mSupport.setOrthographicProjection(
                 mViewPort.x < 0 ? -mViewPort.x / scaleX : 0.0, 
@@ -673,6 +657,9 @@ package starling.core
                 initialize();
             }
         }
+		
+		private var enterFrameDate: Date;
+		public var frameLength: Number = 0;
         
         private function onEnterFrame(event:Event):void
         {
@@ -681,8 +668,13 @@ package starling.core
             
             if (!mShareContext)
             {
+				enterFrameDate = new Date();
+				
                 if (mStarted) nextFrame();
                 else if (mRendering) render();
+				
+				frameLength = new Date().getTime() - enterFrameDate.getTime();
+//				Utils.print(frameLength);
             }
         }
         

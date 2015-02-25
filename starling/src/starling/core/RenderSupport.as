@@ -460,10 +460,8 @@ package starling.core
          *  all previous quads are rendered at once, and the batch is reset. */
 		
         public function batchQuad(quad:Quad, parentAlpha:Number, texture:Texture=null, smoothing:String=null):void
-        //public function batchQuad(quad:Quad, parentAlpha:Number, texture:Texture=null, smoothing:String=null, backSide:Boolean = false):void
         {
-            //if (mQuadBatches[mCurrentQuadBatchID].isStateChange(quad.tinted, parentAlpha, texture, smoothing, mBlendMode))
-            if (mQuadBatches[mCurrentQuadBatchID].isStateChange(quad.tinted, parentAlpha, texture, smoothing, quad.backSide, mBlendMode, quad.ignoreFilters))
+            if (mQuadBatches[mCurrentQuadBatchID].isStateChange(quad.tinted, parentAlpha, texture, smoothing, mBlendMode, 1, quad.ignoreFilters))
             {
                 finishQuadBatch();
             }
@@ -481,8 +479,7 @@ package starling.core
         public function batchQuadBatch(quadBatch:QuadBatch, parentAlpha:Number):void
         {
             if (mQuadBatches[mCurrentQuadBatchID].isStateChange(
-                //quadBatch.tinted, parentAlpha, quadBatch.texture, quadBatch.smoothing, mBlendMode))
-                quadBatch.tinted, parentAlpha, quadBatch.texture, quadBatch.smoothing, quadBatch.backSide, mBlendMode, quadBatch.ignoreFilters))
+                quadBatch.tinted, parentAlpha, quadBatch.texture, quadBatch.smoothing, mBlendMode, 1, quadBatch.ignoreFilters))
             {
                 finishQuadBatch();
             }

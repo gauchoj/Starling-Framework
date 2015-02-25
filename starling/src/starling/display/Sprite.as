@@ -86,10 +86,7 @@ package starling.display
             }
         }
         
-//		static private var flattens: int = 0;
-//		static private var startOfTime: Date = new Date();
-
-		static public var IGNORE_FLATTEN: Boolean = false;
+//		static public var IGNORE_FLATTEN: Boolean = false;
 		
         /** Optimizes the sprite for optimal rendering performance. Changes in the
          *  children of a flattened sprite will not be displayed any longer. For this to happen,
@@ -110,16 +107,16 @@ package starling.display
          */
         public function flatten(ignoreChildOrder:Boolean=false):void
         {						
-			if (IGNORE_FLATTEN)
-			{
-				mFlattenRequested = false;
-			}
-			else
-			{
+//			if (IGNORE_FLATTEN)
+//			{
+//				mFlattenRequested = false;
+//			}
+//			else
+//			{
 	            mFlattenRequested = true;
 	            mFlattenOptimized = ignoreChildOrder;
 	            broadcastEventWith(Event.FLATTEN);
-			}
+//			}
         }
         
         /** Removes the rendering optimizations that were created when flattening the sprite.

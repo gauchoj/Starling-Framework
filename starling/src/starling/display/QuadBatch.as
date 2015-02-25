@@ -93,6 +93,15 @@ package starling.display
         private static var sRenderMatrix:Matrix3D = new Matrix3D();
         private static var sProgramNameCache:Dictionary = new Dictionary();
         
+		// ignore filter ADDED BY ASSUKAR
+		private static var IGNORE_ALL_FILTERS : Boolean = false;
+		private var mIgnoreFilters : Boolean;
+		override public function get ignoreFilters() : Boolean
+		{
+			return mIgnoreFilters;
+		}
+		// 
+				
         /** Creates a new QuadBatch instance with empty batch data. */
         public function QuadBatch()
         {
@@ -103,6 +112,8 @@ package starling.display
             mSyncRequired = false;
             mBatchable = false;
             
+			mIgnoreFilters = false;
+			
             // Handle lost context. We use the conventional event here (not the one from Starling)
             // so we're able to create a weak event listener; this avoids memory leaks when people 
             // forget to call "dispose" on the QuadBatch.
@@ -119,6 +130,8 @@ package starling.display
             mVertexData.numVertices = 0;
             mIndexData.length = 0;
             mNumQuads = 0;
+			
+			mIgnoreFilters = false;
             
             super.dispose();
         }
@@ -147,6 +160,8 @@ package starling.display
             clone.mSyncRequired = true;
             clone.blendMode = blendMode;
             clone.alpha = alpha;
+			
+			clone.mIgnoreFilters = mIgnoreFilters;
             return clone;
         }
         
@@ -160,7 +175,8 @@ package starling.display
             this.capacity = oldCapacity < 8 ? 16 : oldCapacity * 2;
         }
         
-        private function createBuffers():void
+		// ASSUKAR CHANGED to return a boolean
+        private function createBuffers():Boolean
         {
             destroyBuffers();
 
@@ -168,17 +184,26 @@ package starling.display
             var numIndices:int = mIndexData.length;
             var context:Context3D = Starling.context;
 
-            if (numVertices == 0) return;
+            if (numVertices == 0) return true;
             if (context == null)  throw new MissingContextError();
             
-            mVertexBuffer = context.createVertexBuffer(numVertices, VertexData.ELEMENTS_PER_VERTEX);
-            mVertexBuffer.uploadFromVector(mVertexData.rawData, 0, numVertices);
-            
-            mIndexBuffer = context.createIndexBuffer(numIndices);
-            mIndexBuffer.uploadFromVector(mIndexData, 0, numIndices);
-            
-            mSyncRequired = false;
-        }
+			try
+			{
+	            mVertexBuffer = context.createVertexBuffer(numVertices, VertexData.ELEMENTS_PER_VERTEX);
+	            mVertexBuffer.uploadFromVector(mVertexData.rawData, 0, numVertices);
+	            mIndexBuffer = context.createIndexBuffer(numIndices);
+	            mIndexBuffer.uploadFromVector(mIndexData, 0, numIndices);
+	            mSyncRequired = false;
+			}
+			catch (err : Error)
+			{
+				Utils.logError(new AssukarError(err.message + " IGNORE_ALL_FILTERS = true"), false);
+				mSyncRequired = IGNORE_ALL_FILTERS = true;
+				return false;
+			}
+			
+			return true;
+	    }
         
         private function destroyBuffers():void
         {
@@ -196,11 +221,12 @@ package starling.display
         }
 
         /** Uploads the raw data of all batched quads to the vertex buffer. */
-        private function syncBuffers():void
+		// ASSUKAR CHANGED to return a boolean 
+        private function syncBuffers():Boolean
         {
             if (mVertexBuffer == null)
             {
-                createBuffers();
+                return createBuffers();
             }
             else
             {
@@ -208,6 +234,7 @@ package starling.display
                 // GPU hardware (iOS!), this is slower than updating the complete buffer.
                 mVertexBuffer.uploadFromVector(mVertexData.rawData, 0, mVertexData.numVertices);
                 mSyncRequired = false;
+				return true;
             }
         }
         
@@ -218,7 +245,7 @@ package starling.display
                                      blendMode:String=null):void
         {
             if (mNumQuads == 0) return;
-            if (mSyncRequired) syncBuffers();
+            if (mSyncRequired && !syncBuffers()) return;
             
             var pma:Boolean = mVertexData.premultipliedAlpha;
             var context:Context3D = Starling.context;
@@ -266,6 +293,7 @@ package starling.display
             mTexture = null;
             mSmoothing = null;
             mSyncRequired = true;
+			mIgnoreFilters = false;
         }
         
         /** Adds an image to the batch. This method internally calls 'addQuad' with the correct
@@ -284,6 +312,8 @@ package starling.display
                                 smoothing:String=null, modelViewMatrix:Matrix=null, 
                                 blendMode:String=null):void
         {
+			mIgnoreFilters = quad.ignoreFilters;
+			
             if (modelViewMatrix == null)
                 modelViewMatrix = quad.transformationMatrix;
             
@@ -314,6 +344,8 @@ package starling.display
         public function addQuadBatch(quadBatch:QuadBatch, parentAlpha:Number=1.0, 
                                      modelViewMatrix:Matrix=null, blendMode:String=null):void
         {
+			mIgnoreFilters = quadBatch.mIgnoreFilters;
+			
             if (modelViewMatrix == null)
                 modelViewMatrix = quadBatch.transformationMatrix;
             
@@ -347,12 +379,12 @@ package starling.display
          *  'tinted', 'smoothing', 'repeat' or 'blendMode' setting, or if the batch is full
          *  (one batch can contain up to 8192 quads). */
         public function isStateChange(tinted:Boolean, parentAlpha:Number, texture:Texture, 
-                                      smoothing:String, blendMode:String, numQuads:int=1):Boolean
+                                      smoothing:String, blendMode:String, numQuads:int=1, ignoreFilters : Boolean = false):Boolean
         {
             if (mNumQuads == 0) return false;
             else if (mNumQuads + numQuads > MAX_NUM_QUADS) return true; // maximum buffer size
             else if (mTexture == null && texture == null) 
-                return this.blendMode != blendMode;
+                return this.blendMode != blendMode || this.ignoreFilters != ignoreFilters;
             else if (mTexture != null && texture != null)
                 return mTexture.base != texture.base ||
                        mTexture.repeat != texture.repeat ||
@@ -503,7 +535,7 @@ package starling.display
                 {
                     batch2 = quadBatches[j];
                     if (!batch1.isStateChange(batch2.tinted, 1.0, batch2.texture,
-                                              batch2.smoothing, batch2.blendMode))
+                                              batch2.smoothing, batch2.blendMode, 1, batch2.ignoreFilters))
                     {
                         batch1.addQuadBatch(batch2);
                         batch2.dispose();
@@ -522,6 +554,11 @@ package starling.display
                                               blendMode:String=null,
                                               ignoreCurrentFilter:Boolean=false):int
         {
+			if (IGNORE_ALL_FILTERS && object.filter)
+			{
+				object.ignoreFilters = true;
+			}
+						
             if (object is Sprite3D)
                 throw new IllegalOperationError("Sprite3D objects cannot be flattened");
 
@@ -588,6 +625,7 @@ package starling.display
                 var smoothing:String;
                 var tinted:Boolean;
                 var numQuads:int;
+				var ignoreFilters : Boolean;
                 
                 if (quad)
                 {
@@ -596,6 +634,7 @@ package starling.display
                     smoothing = image ? image.smoothing : null;
                     tinted = quad.tinted;
                     numQuads = 1;
+					ignoreFilters = quad.ignoreFilters;
                 }
                 else
                 {
@@ -603,12 +642,13 @@ package starling.display
                     smoothing = batch.mSmoothing;
                     tinted = batch.mTinted;
                     numQuads = batch.mNumQuads;
+					ignoreFilters = batch.ignoreFilters;
                 }
                 
                 quadBatch = quadBatches[quadBatchID];
                 
                 if (quadBatch.isStateChange(tinted, alpha*objectAlpha, texture, 
-                                            smoothing, blendMode, numQuads))
+                                            smoothing, blendMode, numQuads, ignoreFilters))
                 {
                     quadBatchID++;
                     if (quadBatches.length <= quadBatchID) quadBatches.push(new QuadBatch());

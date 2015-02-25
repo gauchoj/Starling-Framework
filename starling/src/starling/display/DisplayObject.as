@@ -1004,13 +1004,13 @@ package starling.display
 		
 		
 		// back side
-		private var mBackSide:Boolean = false;  // false
-		public function get backSide():Boolean {			
-			return this.mBackSide;
-		}		
-		public function set backSide(value:Boolean):void {				
-			this.mBackSide = value;
-		}	
+		//private var mBackSide:Boolean = false;  // false
+		//public function get backSide():Boolean {			
+			//return this.mBackSide;
+		//}		
+		//public function set backSide(value:Boolean):void {				
+			//this.mBackSide = value; 
+		//}	
 		
 		
 		

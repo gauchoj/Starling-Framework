@@ -1,7 +1,7 @@
 // =================================================================================================
 //
 //	Starling Framework
-//	Copyright 2011 Gamua OG. All Rights Reserved.
+//	Copyright 2011-2014 Gamua. All Rights Reserved.
 //
 //	This program is free software. You can redistribute and/or modify it
 //	in accordance with the terms of the accompanying license agreement.
@@ -62,25 +62,18 @@ package starling.animation
         /** Adds an object to the juggler. */
         public function add(object:IAnimatable):void
         {
-//			Utils.print("juggler::add:" + mObjects.length);
-//            if (object && mObjects.indexOf(object) == -1) 
 			if (object && object.jugglerIndex == -1)
             {
-//                mObjects.push(object);
 				object.jugglerIndex = mObjects.push(object)-1;
             
                 var dispatcher:EventDispatcher = object as EventDispatcher;
                 if (dispatcher) dispatcher.addEventListener(Event.REMOVE_FROM_JUGGLER, onRemove);
             }
-			
-//			assertList();
         }
         
         /** Determines if an object has been added to the juggler. */
         public function contains(object:IAnimatable):Boolean
         {
-//			Utils.print("juggler::contains:" + mObjects.length);
-//            return mObjects.indexOf(object) != -1;
 			return object && object.jugglerIndex > -1;
         }
         
@@ -94,8 +87,6 @@ package starling.animation
 
 				try
 				{
-//					Utils.print("juggler::remove:" + mObjects.length);
-//		            var index:int = mObjects.indexOf(object);
 					var index:int = object.jugglerIndex;
 		            if (index != -1) mObjects[index] = null;
 					object.jugglerIndex = -1;
@@ -106,17 +97,7 @@ package starling.animation
 					Utils.log(e);
 					throw e;
 				}
-				
-//				assertList();
         }
-		
-//		private function assertList(): void
-//		{
-//            for (var i:int=mObjects.length-1; i>=0; --i)
-//            {
-//				if (mObjects[i] && mObjects[i].jugglerIndex != i) throw new Error(i + ":" + mObjects[i].jugglerIndex);
-//			}
-//		}
         
         /** Removes all tweens with a certain target. */
         public function removeTweens(target:Object):void
@@ -133,8 +114,6 @@ package starling.animation
                     mObjects[i] = null;
                 }
             }
-			
-//			assertList();
         }
         
         /** Figures out if the juggler contains one or more tweens with a certain target. */
@@ -166,8 +145,6 @@ package starling.animation
 				mObjects[i].jugglerIndex = -1;
                 mObjects[i] = null;
             }
-			
-//			assertList();
         }
         
         /** Delays the execution of a function until <code>delay</code> seconds have passed.
@@ -327,8 +304,6 @@ package starling.animation
                 
                 mObjects.length = currentIndex;
             }
-			
-//			assertList();
         }
         
         private function onRemove(event:Event):void

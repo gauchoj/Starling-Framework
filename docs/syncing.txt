@@ -54,9 +54,13 @@ git checkout master
 
 
 
-// merge
+// opção 1: merge com branch 
 
 git merge upstream/master
+
+// opção 2: merge com tag
+
+git merge TAG_NAME
 
 
 

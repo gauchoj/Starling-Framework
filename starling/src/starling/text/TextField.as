@@ -259,14 +259,16 @@ package starling.text
             sNativeTextField.height = height;
             sNativeTextField.antiAliasType = AntiAliasType.ADVANCED;
             sNativeTextField.selectable = false;            
-            sNativeTextField.multiline = true;            
-            sNativeTextField.wordWrap = true;            
-            sNativeTextField.embedFonts = true;
-            sNativeTextField.filters = mNativeFilters;
+            sNativeTextField.multiline = true;
+			            
+            sNativeTextField.wordWrap = true;         
 
             if (mIsHtmlText) sNativeTextField.htmlText = mText;
             else             sNativeTextField.text     = mText;
-            
+			
+            sNativeTextField.embedFonts = true;
+            sNativeTextField.filters = mNativeFilters;
+
             // we try embedded fonts first, non-embedded fonts are just a fallback
             if (sNativeTextField.textWidth == 0.0 || sNativeTextField.textHeight == 0.0)
                 sNativeTextField.embedFonts = false;

@@ -1,7 +1,7 @@
 // =================================================================================================
 //
 //	Starling Framework
-//	Copyright 2011 Gamua OG. All Rights Reserved.
+//	Copyright 2011-2014 Gamua. All Rights Reserved.
 //
 //	This program is free software. You can redistribute and/or modify it
 //	in accordance with the terms of the accompanying license agreement.
@@ -10,14 +10,15 @@
 
 package starling.display
 {
-	import starling.core.RenderSupport;
-	import starling.events.Event;
-	import starling.utils.MatrixUtil;
-	import starling.utils.RectangleUtil;
-
-	import flash.geom.Matrix;
-	import flash.geom.Point;
-	import flash.geom.Rectangle;
+    import flash.geom.Matrix;
+    import flash.geom.Matrix3D;
+    import flash.geom.Point;
+    import flash.geom.Rectangle;
+    
+    import starling.core.RenderSupport;
+    import starling.events.Event;
+    import starling.utils.MatrixUtil;
+    import starling.utils.RectangleUtil;
 
     /** Dispatched on all children when the object is flattened. */
     [Event(name="flatten", type="starling.events.Event")]
@@ -53,6 +54,7 @@ package starling.display
     {
         private var mFlattenedContents:Vector.<QuadBatch>;
         private var mFlattenRequested:Boolean;
+        private var mFlattenOptimized:Boolean;
         private var mClipRect:Rectangle;
         
         /** Helper objects. */
@@ -101,19 +103,13 @@ package starling.display
          *  produce at least one draw call; if it were merged together with other objects, this
          *  would cause additional matrix operations, and the optimization would have been in vain.
          *  Thus, don't just blindly flatten all your sprites, but reserve flattening for sprites
-         *  with a big number of children.</p> 
+         *  with a big number of children.</p>
+         *
+         *  @param ignoreChildOrder If the child order is not important, you can further optimize
+         *           the number of draw calls. Naturally, this is not an option for all use-cases.
          */
-        public function flatten():void
+        public function flatten(ignoreChildOrder:Boolean=false):void
         {						
-//			if (!mFlattenRequested)
-//			{
-//				if (++flattens % 50 == 0)
-//				{
-//					Utils.printStackTrace("FLATTENS:" + flattens + " " + (Number(Statics.MINUTE * flattens) / (new Date().time - startOfTime.time)));
-//				}
-//				Utils.print(ReflectionUtils.getClassName(this));
-//			}
-
 			if (IGNORE_FLATTEN)
 			{
 				mFlattenRequested = false;
@@ -121,6 +117,7 @@ package starling.display
 			else
 			{
 	            mFlattenRequested = true;
+	            mFlattenOptimized = ignoreChildOrder;
 	            broadcastEventWith(Event.FLATTEN);
 			}
         }
@@ -229,13 +226,14 @@ package starling.display
                 if (mFlattenRequested)
                 {
                     QuadBatch.compile(this, mFlattenedContents);
-                    support.applyClipRect(); // compiling filters might change scissor rect. 
+                    if (mFlattenOptimized) QuadBatch.optimize(mFlattenedContents);
+                    support.applyClipRect(); // compiling filters might change scissor rect. :-\
                     mFlattenRequested = false;
                 }
                 
                 var alpha:Number = parentAlpha * this.alpha;
                 var numBatches:int = mFlattenedContents.length;
-                var mvpMatrix:Matrix = support.mvpMatrix;
+                var mvpMatrix:Matrix3D = support.mvpMatrix3D;
                 
                 support.finishQuadBatch();
                 support.raiseDrawCount(numBatches);

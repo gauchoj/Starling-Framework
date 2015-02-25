@@ -800,7 +800,7 @@ package starling.display
             return program;
         }
         
-        private static function getImageProgramName(tinted:Boolean, mipMap:Boolean=true, 
+        private static function getImageProgramName(tinted:Boolean, mipMap:Boolean=false, 
                                                     repeat:Boolean=false, format:String="bgra",
                                                     smoothing:String="bilinear"):String
         {

@@ -183,7 +183,7 @@ package starling.textures
 		
 		
 		
-		// TODO byteArray test
+		//TODO:Starling: byteArray test
 		public function uploadByteArray(data:ByteArray):void {
 			
 			var bytesOut:ByteArray = new ByteArray();

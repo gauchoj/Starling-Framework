@@ -267,7 +267,7 @@ package starling.textures
 		
 		
 		
-		//TODO byteArray test
+		//TODO:Starling: byteArray test
 		static public function fromByteArray(
 			data:ByteArray,
 			rect:Rectangle,

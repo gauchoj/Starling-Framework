@@ -1,3 +1,4 @@
+
 // =================================================================================================
 //
 //	Starling Framework
@@ -14,12 +15,13 @@ package starling.textures
     import flash.utils.ByteArray;
 
     /** A parser for the ATF data format. */
-    public class AtfData
+    public class AtfData 
     {
         private var mFormat:String;
         private var mWidth:int;
         private var mHeight:int;
         private var mNumTextures:int;
+        private var mIsCubeMap:Boolean;
         private var mData:ByteArray;
         
         /** Create a new instance by parsing the given byte array. */
@@ -29,22 +31,25 @@ package starling.textures
             
             if (data[6] == 255) data.position = 12; // new file version
             else                data.position =  6; // old file version
-            
-            switch (data.readUnsignedByte())
+
+            var format:uint = data.readUnsignedByte();
+            switch (format & 0x7f)
             {
-                case 0:
-                case 1: mFormat = Context3DTextureFormat.BGRA; break;
-                case 2:
-                case 3: mFormat = Context3DTextureFormat.COMPRESSED; break;
-                case 4:
-                case 5: mFormat = "compressedAlpha"; break; // explicit string to stay compatible 
-                                                            // with older versions
+                case  0:
+                case  1: mFormat = Context3DTextureFormat.BGRA; break;
+                case 12:
+                case  2:
+                case  3: mFormat = Context3DTextureFormat.COMPRESSED; break;
+                case 13:
+                case  4:
+                case  5: mFormat = "compressedAlpha"; break; // explicit string for compatibility
                 default: throw new Error("Invalid ATF format");
             }
             
             mWidth = Math.pow(2, data.readUnsignedByte()); 
             mHeight = Math.pow(2, data.readUnsignedByte());
             mNumTextures = data.readUnsignedByte();
+            mIsCubeMap = (format & 0x80) != 0;
             mData = data;
             
             // version 2 of the new file format contains information about
@@ -57,7 +62,8 @@ package starling.textures
                 mNumTextures = emptyMipmaps ? 1 : numTextures;
             }
         }
-        
+
+        /** Checks the first 3 bytes of the data for the 'ATF' signature. */
         public static function isAtfData(data:ByteArray):Boolean
         {
             if (data.length < 3) return false;
@@ -67,11 +73,23 @@ package starling.textures
                 return signature == "ATF";
             }
         }
-        
+
+        /** The texture format. @see flash.display3D.textures.Context3DTextureFormat */
         public function get format():String { return mFormat; }
+
+        /** The width of the texture in pixels. */
         public function get width():int { return mWidth; }
+
+        /** The height of the texture in pixels. */
         public function get height():int { return mHeight; }
+
+        /** The number of encoded textures. '1' means that there are no mip maps. */
         public function get numTextures():int { return mNumTextures; }
+
+        /** Indicates if the ATF data encodes a cube map. Not supported by Starling! */
+        public function get isCubeMap():Boolean { return mIsCubeMap; }
+
+        /** The actual byte data, including header. */
         public function get data():ByteArray { return mData; }
     }
 }

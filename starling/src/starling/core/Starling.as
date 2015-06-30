@@ -1,47 +1,46 @@
 package starling.core
 {
-    import flash.display.Shape;
+	import starling.animation.Juggler;
+	import starling.display.DisplayObject;
+	import starling.display.Stage;
+	import starling.events.EventDispatcher;
+	import starling.events.ResizeEvent;
+	import starling.events.TouchPhase;
+	import starling.events.TouchProcessor;
+	import starling.utils.HAlign;
+	import starling.utils.SystemUtil;
+	import starling.utils.VAlign;
+	import starling.utils.execute;
+
+	import flash.display.Shape;
 	import flash.display.Sprite;
 	import flash.display.Stage3D;
 	import flash.display.StageAlign;
 	import flash.display.StageScaleMode;
 	import flash.display3D.Context3D;
 	import flash.display3D.Context3DCompareMode;
-    import flash.display3D.Context3DRenderMode;
-
-    import flash.display3D.Context3DTriangleFace;
-    import flash.display3D.Program3D;
-    import flash.errors.IllegalOperationError;
-    import flash.events.ErrorEvent;
-    import flash.events.Event;
-    import flash.events.KeyboardEvent;
-    import flash.events.MouseEvent;
-    import flash.events.TouchEvent;
-    import flash.geom.Rectangle;
-    import flash.system.Capabilities;
-    import flash.text.TextField;
-    import flash.text.TextFieldAutoSize;
-    import flash.text.TextFormat;
-    import flash.text.TextFormatAlign;
-    import flash.ui.Mouse;
-    import flash.ui.Multitouch;
-    import flash.ui.MultitouchInputMode;
-    import flash.utils.ByteArray;
-    import flash.utils.Dictionary;
-    import flash.utils.getTimer;
-    import flash.utils.setTimeout;
-
-    import starling.animation.Juggler;
-    import starling.display.DisplayObject;
-    import starling.display.Stage;
-    import starling.events.EventDispatcher;
-    import starling.events.ResizeEvent;
-    import starling.events.TouchPhase;
-    import starling.events.TouchProcessor;
-    import starling.utils.HAlign;
-    import starling.utils.SystemUtil;
-    import starling.utils.VAlign;
-    import starling.utils.execute;
+	import flash.display3D.Context3DRenderMode;
+	import flash.display3D.Context3DTriangleFace;
+	import flash.display3D.Program3D;
+	import flash.errors.IllegalOperationError;
+	import flash.events.ErrorEvent;
+	import flash.events.Event;
+	import flash.events.KeyboardEvent;
+	import flash.events.MouseEvent;
+	import flash.events.TouchEvent;
+	import flash.geom.Rectangle;
+	import flash.system.Capabilities;
+	import flash.text.TextField;
+	import flash.text.TextFieldAutoSize;
+	import flash.text.TextFormat;
+	import flash.text.TextFormatAlign;
+	import flash.ui.Mouse;
+	import flash.ui.Multitouch;
+	import flash.ui.MultitouchInputMode;
+	import flash.utils.ByteArray;
+	import flash.utils.Dictionary;
+	import flash.utils.getTimer;
+	import flash.utils.setTimeout;
 
 
     /** Dispatched when a new render context is created. The 'data' property references the context. */
@@ -474,7 +473,9 @@ package starling.core
             if (passedTime > 1.0) passedTime = 1.0;
 
             advanceTime(passedTime);
-            render();
+			
+			// added mRendering check as advanceTime might have stopped rendering
+            if (mRendering) render();
         }
         
         /** Dispatches ENTER_FRAME events on the display list, advances the Juggler 
@@ -649,6 +650,7 @@ package starling.core
         { 
             mStarted = mRendering = true;
             mLastFrameTimestamp = getTimer() / 1000.0;
+//			Utils.printStackTrace();	
         }
         
         /** Stops all logic and input processing, effectively freezing the app in its current state.
@@ -664,6 +666,7 @@ package starling.core
         { 
             mStarted = false;
             mRendering = !suspendRendering;
+//			Utils.printStackTrace("mRendering:" + mRendering);
         }
         
         // event handlers
@@ -710,7 +713,6 @@ package starling.core
                 else if (mRendering) render();
 				
 				frameLength = new Date().getTime() - enterFrameDate.getTime();
-//				Utils.print(frameLength);
             }
 
             updateNativeOverlay();

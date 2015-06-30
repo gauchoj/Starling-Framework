@@ -507,6 +507,7 @@ package starling.core
 
             dispatchEventWith(starling.events.Event.RENDER);
             var scaleX:Number = mViewPort.width  / mStage.stageWidth;
+            var scaleY:Number = mViewPort.height  / mStage.stageHeight;
             
             mContext.setDepthTest(false, Context3DCompareMode.ALWAYS); 
             mContext.setCulling(Context3DTriangleFace.NONE); 

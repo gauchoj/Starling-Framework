@@ -186,7 +186,7 @@ package starling.display
         public function reverseFrames():void
         {
             mTextures.reverse();
-            mSounds.reverse();
+            //mSounds.reverse();
             mDurations.reverse();
 
             updateStartTimes();

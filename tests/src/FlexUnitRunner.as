@@ -16,6 +16,8 @@ package
     import tests.display.QuadTest;
     import tests.display.Sprite3DTest;
     import tests.events.EventTest;
+    import tests.geom.PolygonTest;
+    import tests.text.TextFieldTest;
     import tests.textures.TextureAtlasTest;
     import tests.textures.TextureTest;
     import tests.utils.AssetManagerTest;
@@ -54,6 +56,7 @@ package
             testsToRun.push(tests.animation.DelayedCallTest);
             testsToRun.push(tests.display.DisplayObjectTest);
             testsToRun.push(tests.utils.ColorTest);
+            testsToRun.push(tests.text.TextFieldTest);
             testsToRun.push(tests.textures.TextureTest);
             testsToRun.push(tests.textures.TextureAtlasTest);
             testsToRun.push(tests.events.EventTest);
@@ -63,6 +66,8 @@ package
             testsToRun.push(tests.utils.MatrixUtilTest);
             testsToRun.push(tests.utils.MathUtilTest);
             testsToRun.push(tests.display.Sprite3DTest);
+            testsToRun.push(tests.geom.PolygonTest);
+            testsToRun.push(tests.utils.ArrayUtilTest);
             return testsToRun;
         }
     }

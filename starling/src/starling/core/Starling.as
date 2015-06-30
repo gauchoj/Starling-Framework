@@ -8,40 +8,42 @@ package starling.core
 	import flash.display3D.Context3D;
 	import flash.display3D.Context3DCompareMode;
     import flash.display3D.Context3DRenderMode;
-	import flash.display3D.Context3DTriangleFace;
-	import flash.display3D.Program3D;
-	import flash.errors.IllegalOperationError;
-	import flash.events.ErrorEvent;
-	import flash.events.Event;
-	import flash.events.KeyboardEvent;
-	import flash.events.MouseEvent;
-	import flash.events.TouchEvent;
-	import flash.geom.Rectangle;
-	import flash.system.Capabilities;
-	import flash.text.TextField;
-	import flash.text.TextFieldAutoSize;
-	import flash.text.TextFormat;
-	import flash.text.TextFormatAlign;
-	import flash.ui.Mouse;
-	import flash.ui.Multitouch;
-	import flash.ui.MultitouchInputMode;
-	import flash.utils.ByteArray;
-	import flash.utils.Dictionary;
-	import flash.utils.getTimer;
-	import flash.utils.setTimeout;
-	
-	import starling.animation.Juggler;
-	import starling.display.DisplayObject;
-	import starling.display.Stage;
-	import starling.events.EventDispatcher;
-	import starling.events.ResizeEvent;
-	import starling.events.TouchPhase;
-	import starling.events.TouchProcessor;
-	import starling.utils.HAlign;
-	import starling.utils.SystemUtil;
-	import starling.utils.VAlign;
-	import starling.utils.execute;
-    
+
+    import flash.display3D.Context3DTriangleFace;
+    import flash.display3D.Program3D;
+    import flash.errors.IllegalOperationError;
+    import flash.events.ErrorEvent;
+    import flash.events.Event;
+    import flash.events.KeyboardEvent;
+    import flash.events.MouseEvent;
+    import flash.events.TouchEvent;
+    import flash.geom.Rectangle;
+    import flash.system.Capabilities;
+    import flash.text.TextField;
+    import flash.text.TextFieldAutoSize;
+    import flash.text.TextFormat;
+    import flash.text.TextFormatAlign;
+    import flash.ui.Mouse;
+    import flash.ui.Multitouch;
+    import flash.ui.MultitouchInputMode;
+    import flash.utils.ByteArray;
+    import flash.utils.Dictionary;
+    import flash.utils.getTimer;
+    import flash.utils.setTimeout;
+
+    import starling.animation.Juggler;
+    import starling.display.DisplayObject;
+    import starling.display.Stage;
+    import starling.events.EventDispatcher;
+    import starling.events.ResizeEvent;
+    import starling.events.TouchPhase;
+    import starling.events.TouchProcessor;
+    import starling.utils.HAlign;
+    import starling.utils.SystemUtil;
+    import starling.utils.VAlign;
+    import starling.utils.execute;
+
+
     /** Dispatched when a new render context is created. The 'data' property references the context. */
     [Event(name="context3DCreate", type="starling.events.Event")]
     
@@ -50,6 +52,10 @@ package starling.core
     
     /** Dispatched when a fatal error is encountered. The 'data' property contains an error string. */
     [Event(name="fatalError", type="starling.events.Event")]
+
+    /** Dispatched when the display list is about to be rendered. This event provides the last
+     *  opportunity to make changes before the display list is rendered. */
+    [Event(name="render", type="starling.events.Event")]
 
     /** The Starling class represents the core of the Starling framework.
      *
@@ -171,7 +177,7 @@ package starling.core
     public class Starling extends EventDispatcher
     {
         /** The version of the Starling framework. */
-        public static const VERSION:String = "1.6";
+        public static const VERSION:String = "1.7";
         
         /** The key for the shader programs stored in 'contextData' */
         private static const PROGRAM_DATA_NAME:String = "Starling.programs"; 
@@ -207,16 +213,18 @@ package starling.core
         private var mNativeStageContentScaleFactor:Number;
 
         private static var sCurrent:Starling;
-        private static var sHandleLostContext:Boolean;
+        private static var sHandleLostContext:Boolean = true;
         private static var sContextData:Dictionary = new Dictionary(true);
         private static var sAll:Vector.<Starling> = new <Starling>[];
         
         // construction
         
         /** Creates a new Starling instance. 
-         *  @param rootClass  A subclass of a Starling display object. It will be created as soon as
-         *                    initialization is finished and will become the first child of the
-         *                    Starling stage.
+         *  @param rootClass  A subclass of 'starling.display.DisplayObject'. It will be created
+         *                    as soon as initialization is finished and will become the first child
+         *                    of the Starling stage. Pass <code>null</code> if you don't want to
+         *                    create a root object right away. (You can use the
+         *                    <code>rootClass</code> property later to make that happen.)
          *  @param stage      The Flash (2D) stage.
          *  @param viewPort   A rectangle describing the area into which the content will be 
          *                    rendered. Default: stage size
@@ -240,14 +248,13 @@ package starling.core
                                  renderMode:String="auto", profile:Object="baselineConstrained")
         {
             if (stage == null) throw new ArgumentError("Stage must not be null");
-            if (rootClass == null) throw new ArgumentError("Root class must not be null");
             if (viewPort == null) viewPort = new Rectangle(0, 0, stage.stageWidth, stage.stageHeight);
             if (stage3D == null) stage3D = stage.stage3Ds[0];
 
             SystemUtil.initialize();
             sAll.push(this);
             makeCurrent();
-            
+
             mRootClass = rootClass;
             mViewPort = viewPort;
             mPreviousViewPort = new Rectangle();
@@ -303,6 +310,10 @@ package starling.core
             }
             else
             {
+                if (!SystemUtil.supportsDepthAndStencil)
+                    trace("[Starling] Mask support requires 'depthAndStencil' to be enabled" +
+                          " in the application descriptor.");
+
                 mShareContext = false;
                 requestContext3D(stage3D, renderMode, profile);
             }
@@ -350,7 +361,7 @@ package starling.core
             var currentProfile:String;
             
             if (profile == "auto")
-                profiles = ["standard", "baselineExtended", "baseline", "baselineConstrained"];
+                profiles = ["standardExtended", "standard", "standardConstrained", "baselineExtended", "baseline", "baselineConstrained"];
             else if (profile is String)
                 profiles = [profile as String];
             else if (profile is Array)
@@ -427,30 +438,32 @@ package starling.core
             
             trace("[Starling] Initialization complete.");
             trace("[Starling] Display Driver:", mContext.driverInfo);
-            
+
             updateViewPort(true);
             dispatchEventWith(Event.CONTEXT3D_CREATE, false, mContext);
         }
         
         private function initializeRoot():void
         {
-            if (mRoot == null)
+            if (mRoot == null && mRootClass != null)
             {
                 mRoot = new mRootClass() as DisplayObject;
                 if (mRoot == null) throw new Error("Invalid root class: " + mRootClass);
                 mStage.addChildAt(mRoot, 0);
-            
+
                 dispatchEventWith(starling.events.Event.ROOT_CREATED, false, mRoot);
             }
         }
         
         /** Calls <code>advanceTime()</code> (with the time that has passed since the last frame)
          *  and <code>render()</code>. */
+
 //		private var passedTime:Number;
 		public function get framePassedTime(): Number
 		{
 			return (getTimer() / 1000.0) - mLastFrameTimestamp;
 		}
+
         public function nextFrame():void
         {
             var now:Number = getTimer() / 1000.0;
@@ -479,7 +492,11 @@ package starling.core
         }
         
         /** Renders the complete display list. Before rendering, the context is cleared; afterwards,
-         *  it is presented. This can be avoided by enabling <code>shareContext</code>.*/ 
+         *  it is presented (to avoid this, enable <code>shareContext</code>).
+         *
+         *  <p>This method also dispatches an <code>Event.RENDER</code>-event on the Starling
+         *  instance. That's the last opportunity to make changes before the display list is
+         *  rendered.</p> */
         public function render():void
         {
             if (!contextValid)
@@ -487,14 +504,16 @@ package starling.core
             
             makeCurrent();
             updateViewPort();
-            mSupport.nextFrame();
-            
-            var scaleX:Number = mViewPort.width  / mStage.stageWidth; 
-            var scaleY:Number = mViewPort.height / mStage.stageHeight;
+
+            dispatchEventWith(starling.events.Event.RENDER);
+            var scaleX:Number = mViewPort.width  / mStage.stageWidth;
             
             mContext.setDepthTest(false, Context3DCompareMode.ALWAYS); 
-            mContext.setCulling(Context3DTriangleFace.NONE);
-			
+            mContext.setCulling(Context3DTriangleFace.NONE); 
+
+            mSupport.nextFrame();
+            mSupport.stencilReferenceValue = 0;
+
             mSupport.renderTarget = null; // back buffer
             mSupport.setProjectionMatrix(
                 mViewPort.x < 0 ? -mViewPort.x / scaleX : 0.0,
@@ -540,18 +559,20 @@ package starling.core
                     // the size happens in a separate operation) -- so we have no choice but to
                     // set the backbuffer to a very small size first, to be on the safe side.
                     
+
                     if (mProfile == "baselineConstrained") {
 						configureBackBuffer(32, 32, mAntiAliasing, false);
 					}
-                    
+
                     mStage3D.x = mClippedViewPort.x;
                     mStage3D.y = mClippedViewPort.y;
                     
+
 					configureBackBuffer(mClippedViewPort.width, mClippedViewPort.height, mAntiAliasing, //
-						false, //
-						//true, //
+						//false, //
+						true, //
 					mSupportHighResolutions);
-                    
+   
                     if (mSupportHighResolutions && "contentsScaleFactor" in mNativeStage)
                         mNativeStageContentScaleFactor = mNativeStage["contentsScaleFactor"];
                     else
@@ -566,6 +587,8 @@ package starling.core
                                              enableDepthAndStencil:Boolean,
                                              wantsBestResolution:Boolean=false):void
         {
+            enableDepthAndStencil &&= SystemUtil.supportsDepthAndStencil;
+
             var configureBackBuffer:Function = mContext.configureBackBuffer;
             var methodArgs:Array = [width, height, antiAlias, enableDepthAndStencil];
             if (configureBackBuffer.length > 4) methodArgs.push(wantsBestResolution);
@@ -955,7 +978,14 @@ package starling.core
          *  Flash components. */ 
         public function get nativeOverlay():Sprite { return mNativeOverlay; }
         
-        /** Indicates if a small statistics box (with FPS, memory usage and draw count) is displayed. */
+        /** Indicates if a small statistics box (with FPS, memory usage and draw count) is
+         *  displayed.
+         *
+         *  <p>Beware that the memory usage should be taken with a grain of salt. The value is
+         *  determined via <code>System.totalMemory</code> and does not take texture memory
+         *  into account. It is recommended to use Adobe Scout for reliable and comprehensive
+         *  memory analysis.</p>
+         */
         public function get showStats():Boolean { return mStatsDisplay && mStatsDisplay.parent; }
         public function set showStats(value:Boolean):void
         {
@@ -1019,7 +1049,29 @@ package starling.core
         /** The instance of the root class provided in the constructor. Available as soon as 
          *  the event 'ROOT_CREATED' has been dispatched. */
         public function get root():DisplayObject { return mRoot; }
-        
+
+        /** The class that will be instantiated by Starling as the 'root' display object.
+         *  Must be a subclass of 'starling.display.DisplayObject'.
+         *
+         *  <p>If you passed <code>null</code> as first parameter to the Starling constructor,
+         *  you can use this property to set the root class at a later time. As soon as the class
+         *  is instantiated, Starling will dispatch a <code>ROOT_CREATED</code> event.</p>
+         *
+         *  <p>Beware: you cannot change the root class once the root object has been
+         *  instantiated.</p>
+         */
+        public function get rootClass():Class { return mRootClass; }
+        public function set rootClass(value:Class):void
+        {
+            if (mRootClass != null && mRoot != null)
+                throw new Error("Root class may not change after root has been instantiated");
+            else if (mRootClass == null)
+            {
+                mRootClass = value;
+                if (mContext) initializeRoot();
+            }
+        }
+
         /** Indicates if the Context3D render calls are managed externally to Starling, 
          *  to allow other frameworks to share the Stage3D instance. @default false */
         public function get shareContext() : Boolean { return mShareContext; }

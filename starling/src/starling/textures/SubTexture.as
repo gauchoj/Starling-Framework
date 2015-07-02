@@ -10,6 +10,7 @@
 
 package starling.textures
 {
+	import com.assukar.airong.utils.Utils;
     import flash.display3D.textures.TextureBase;
     import flash.geom.Matrix;
     import flash.geom.Point;
@@ -72,12 +73,14 @@ package starling.textures
                 mTransformationMatrix.translate(0, -1);
                 mTransformationMatrix.rotate(Math.PI / 2.0);
             }
-
-            if (mFrame && (mFrame.x > 0 || mFrame.y > 0 ||
-                mFrame.right < mWidth || mFrame.bottom < mHeight))
-            {
-                trace("[Starling] Warning: frames inside the texture's region are unsupported.");
-            }
+			
+			 
+			//if (mFrame && (mFrame.x > 0 || mFrame.y > 0 || mFrame.right < mRegion.width || mFrame.bottom < mRegion.height)) 
+			//if (mFrame && (mFrame.x > 0 || mFrame.y > 0 || mFrame.right < mWidth || mFrame.bottom < mHeight))
+			//{
+                //trace("[Starling] Warning: frames inside the texture's region are unsupported.");
+            //}
+			
 
             mTransformationMatrix.scale(mRegion.width  / mParent.width,
                                         mRegion.height / mParent.height);

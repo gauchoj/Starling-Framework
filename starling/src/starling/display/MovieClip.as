@@ -56,8 +56,11 @@ package starling.display
         private var mCurrentFrame:int;
         private var mLoop:Boolean;
         private var mPlaying:Boolean;
-//        private var mMuted:Boolean;
-//        private var mSoundTransform:SoundTransform = null;
+
+        private var mMuted:Boolean;
+        private var mWasStopped:Boolean;
+        private var mSoundTransform:SoundTransform = null;
+
         
         /** Creates a movie clip from the provided textures and with the specified default framerate.
          *  The movie will have the size of the first frame. */  
@@ -84,6 +87,7 @@ package starling.display
             mPlaying = true;
             mCurrentTime = 0.0;
             mCurrentFrame = 0;
+            mWasStopped = true;
             mTextures = textures.concat();
 //            mSounds = new Vector.<Sound>(numFrames);
             mDurations = new Vector.<Number>(numFrames);
@@ -213,6 +217,7 @@ package starling.display
         public function stop():void
         {
             mPlaying = false;
+            mWasStopped = true;
             currentFrame = 0;
         }
 
@@ -228,6 +233,12 @@ package starling.display
             for (var i:int=1; i<numFrames; ++i)
                 mStartTimes[i] = mStartTimes[int(i-1)] + mDurations[int(i-1)];
         }
+
+        private function playSound(frame:int):void
+        {
+            if (!mMuted && mSounds[frame])
+                mSounds[frame].play(0, 0, mSoundTransform);
+        }
         
         // IAnimatable
         
@@ -235,14 +246,22 @@ package starling.display
         public function advanceTime(passedTime:Number):void
         {
             if (!mPlaying || passedTime <= 0.0) return;
-            
+
             var finalFrame:int;
             var previousFrame:int = mCurrentFrame;
             var restTime:Number = 0.0;
-            var breakAfterFrame:Boolean = false;
             var dispatchCompleteEvent:Boolean = false;
             var totalTime:Number = this.totalTime;
-            
+
+            if (mWasStopped)
+            {
+                // if the clip was stopped and started again,
+                // we need to play the frame's sound manually.
+
+                mWasStopped = false;
+                playSound(mCurrentFrame);
+            }
+
             if (mLoop && mCurrentTime >= totalTime)
             { 
                 mCurrentTime = 0.0; 
@@ -265,22 +284,24 @@ package starling.display
                         }
                         else
                         {
-                            breakAfterFrame = true;
                             restTime = mCurrentTime - totalTime;
                             dispatchCompleteEvent = true;
                             mCurrentFrame = finalFrame;
                             mCurrentTime = totalTime;
+                            break;
                         }
                     }
                     else
                     {
                         mCurrentFrame++;
                     }
+
                     
 //                    var sound:Sound = mSounds[mCurrentFrame];
 //                    if (sound && !mMuted) sound.play(0, 0, mSoundTransform);
 					
-                    if (breakAfterFrame) break;
+                    if (mSounds[mCurrentFrame]) playSound(mCurrentFrame);
+
                 }
                 
                 // special case when we reach *exactly* the total time.
@@ -333,17 +354,21 @@ package starling.display
 //        public function set soundTransform(value:SoundTransform):void { mSoundTransform = value; }
 
         /** The index of the frame that is currently displayed. */
-        public function get currentFrame():int { return mCurrentFrame; }
+        public function get currentFrame():int { return mCurrentFrame; } 
         public function set currentFrame(value:int):void
         {
             mCurrentFrame = value;
-            mCurrentTime = 0.0;
+            mCurrentTime = 0.0; 
             
             for (var i:int=0; i<value; ++i)
                 mCurrentTime += getFrameDuration(i);
             
             texture = mTextures[mCurrentFrame];
+
 //            if (!mMuted && mSounds[mCurrentFrame]) mSounds[mCurrentFrame].play();
+
+            if (mPlaying && !mWasStopped) playSound(mCurrentFrame);
+
         }
         
         /** The default number of frames per second. Individual frames can have different 

@@ -77,6 +77,7 @@ package starling.display
         private var mSyncRequired:Boolean;
         private var mBatchable:Boolean;
         private var mForceTinted:Boolean;
+        private var mOwnsTexture:Boolean;
 
         private var mTinted:Boolean;
         private var mTexture:Texture;
@@ -118,15 +119,16 @@ package starling.display
 			mIgnoreFilters = false;
 
             mForceTinted = false;
+            mOwnsTexture = false;
 
             // Handle lost context. We use the conventional event here (not the one from Starling)
             // so we're able to create a weak event listener; this avoids memory leaks when people 
             // forget to call "dispose" on the QuadBatch.
             Starling.current.stage3D.addEventListener(Event.CONTEXT3D_CREATE, 
-                                                      onContextCreated, false, 0, true);
+                                                      onContextCreated, false, 0, true); 
         }
         
-        /** Disposes vertex- and index-buffer. */
+        /** Disposes vertex- and index-buffer. */ 
         public override function dispose():void
         {
             Starling.current.stage3D.removeEventListener(Event.CONTEXT3D_CREATE, onContextCreated);
@@ -135,8 +137,14 @@ package starling.display
             mVertexData.numVertices = 0;
             mIndexData.length = 0;
             mNumQuads = 0;
+
 			
 			mIgnoreFilters = false;
+
+
+            if (mTexture && mOwnsTexture)
+                mTexture.dispose();
+
             
             super.dispose();
         }
@@ -291,9 +299,12 @@ package starling.display
         }
         
         /** Resets the batch. The vertex- and index-buffers remain their size, so that they
-         *  can be reused quickly. */  
+         *  can be reused quickly. */
         public function reset():void
         {
+            if (mTexture && mOwnsTexture)
+                mTexture.dispose();
+
             mNumQuads = 0;
             mTexture = null;
             mSmoothing = null;
@@ -583,8 +594,8 @@ package starling.display
                 objectAlpha = 1.0;
                 blendMode = object.blendMode;
                 ignoreCurrentFilter = true;
-                if (quadBatches.length == 0) quadBatches.push(new QuadBatch());
-                else quadBatches[0].reset();
+                if (quadBatches.length == 0) quadBatches[0] = new QuadBatch();
+                else { quadBatches[0].reset(); quadBatches[0].ownsTexture = false; }
             }
             else
             {
@@ -602,10 +613,13 @@ package starling.display
                     quadBatchID = compileObject(object, quadBatches, quadBatchID,
                                                 transformationMatrix, alpha, blendMode, true);
                 }
-                
+
                 quadBatchID = compileObject(filter.compile(object), quadBatches, quadBatchID,
                                             transformationMatrix, alpha, blendMode);
-                
+
+                // textures of a compiled filter need to be disposed!
+                quadBatches[quadBatchID].ownsTexture = true;
+
                 if (filter.mode == FragmentFilterMode.BELOW)
                 {
                     quadBatchID = compileObject(object, quadBatches, quadBatchID,
@@ -658,7 +672,7 @@ package starling.display
                 }
                 
                 quadBatch = quadBatches[quadBatchID];
-                
+
                 if (quadBatch.isStateChange(tinted, alpha*objectAlpha, texture, 
                                             smoothing, blendMode, numQuads, ignoreFilters))
                 {
@@ -666,8 +680,9 @@ package starling.display
                     if (quadBatches.length <= quadBatchID) quadBatches.push(new QuadBatch());
                     quadBatch = quadBatches[quadBatchID];
                     quadBatch.reset();
+                    quadBatch.ownsTexture = false;
                 }
-                
+
                 if (quad)
                     quadBatch.addQuad(quad, alpha, texture, smoothing, transformationMatrix, blendMode);
                 else
@@ -726,6 +741,10 @@ package starling.display
         {
             mForceTinted = value;
         }
+
+        /** If enabled, the texture (if there is one) will be disposed when the QuadBatch is. */
+        public function get ownsTexture():Boolean { return mOwnsTexture; }
+        public function set ownsTexture(value:Boolean):void { mOwnsTexture = value; }
 
         /** Indicates the number of quads for which space is allocated (vertex- and index-buffers).
          *  If you add more quads than what fits into the current capacity, the QuadBatch is

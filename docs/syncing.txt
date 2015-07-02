@@ -13,7 +13,7 @@ git remote -v
 
 // se nao houver upstream, add
 
-git remote add upstream https://github.com/PrimaryFeather/Starling-Framework.git
+git remote add upstream https://github.com/Gamua/Starling-Framework.git
 
 
 
@@ -24,8 +24,8 @@ git remote -v
 
 # origin    https://github.com/gauchoj/Starling-Framework.git (fetch)
 # origin    https://github.com/gauchoj/Starling-Framework.git (push)
-# upstream  https://github.com/PrimaryFeather/Starling-Framework.git (fetch)
-# upstream  https://github.com/PrimaryFeather/Starling-Framework.git (push)
+# upstream  https://github.com/Gamua/Starling-Framework.git (fetch)
+# upstream  https://github.com/Gamua/Starling-Framework.git (push)
 
 
 

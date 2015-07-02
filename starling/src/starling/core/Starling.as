@@ -472,6 +472,9 @@ package starling.core
             // to avoid overloading time-based animations, the maximum delta is truncated.
             if (passedTime > 1.0) passedTime = 1.0;
 
+            // after about 25 days, 'getTimer()' will roll over. A rare event, but still ...
+            if (passedTime < 0.0) passedTime = 1.0 / mNativeStage.frameRate;
+
             advanceTime(passedTime);
 			
 			// added mRendering check as advanceTime might have stopped rendering
@@ -825,7 +828,7 @@ package starling.core
             mTouchProcessor.enqueue(touchID, phase, globalX, globalY, pressure, width, height);
             
             // allow objects that depend on mouse-over state to be updated immediately
-            if (event.type == MouseEvent.MOUSE_UP)
+            if (event.type == MouseEvent.MOUSE_UP && Mouse.supportsCursor)
                 mTouchProcessor.enqueue(touchID, TouchPhase.HOVER, globalX, globalY);
         }
         
@@ -1113,11 +1116,15 @@ package starling.core
         }
         
         /** Indicates if the Context3D object is currently valid (i.e. it hasn't been lost or
-         *  disposed). Beware that each call to this method causes a String allocation (due to
-         *  internal code Starling can't avoid), so do not call this method too often. */
+         *  disposed). */
         public function get contextValid():Boolean
         {
-            return mContext && mContext.driverInfo != "Disposed";
+            if (mContext)
+            {
+                const driverInfo:String = mContext.driverInfo;
+                return driverInfo != null && driverInfo != "" && driverInfo != "Disposed";
+            }
+            else return false;
         }
 
         // static properties

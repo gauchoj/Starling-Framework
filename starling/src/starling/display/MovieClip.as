@@ -47,7 +47,7 @@ package starling.display
     public class MovieClip extends Image implements IAnimatable
     {
         private var mTextures:Vector.<Texture>;
-//        private var mSounds:Vector.<Sound>;
+        private var mSounds:Vector.<Sound>;
         private var mDurations:Vector.<Number>;
         private var mStartTimes:Vector.<Number>;
 
@@ -89,7 +89,7 @@ package starling.display
             mCurrentFrame = 0;
             mWasStopped = true;
             mTextures = textures.concat();
-//            mSounds = new Vector.<Sound>(numFrames);
+            mSounds = new Vector.<Sound>(numFrames);
             mDurations = new Vector.<Number>(numFrames);
             mStartTimes = new Vector.<Number>(numFrames);
             
@@ -117,7 +117,7 @@ package starling.display
             if (duration < 0) duration = mDefaultFrameDuration;
             
             mTextures.splice(frameID, 0, texture);
-//            mSounds.splice(frameID, 0, sound);
+            mSounds.splice(frameID, 0, sound);
             mDurations.splice(frameID, 0, duration);
             
             if (frameID > 0 && frameID == numFrames) 
@@ -133,7 +133,7 @@ package starling.display
             if (numFrames == 1) throw new IllegalOperationError("Movie clip must not be empty");
             
             mTextures.splice(frameID, 1);
-//            mSounds.splice(frameID, 1);
+            mSounds.splice(frameID, 1);
             mDurations.splice(frameID, 1);
             
             updateStartTimes();
@@ -190,7 +190,7 @@ package starling.display
         public function reverseFrames():void
         {
             mTextures.reverse();
-            //mSounds.reverse();
+            mSounds.reverse();
             mDurations.reverse();
 
             updateStartTimes();

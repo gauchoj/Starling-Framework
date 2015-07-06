@@ -315,7 +315,7 @@ package starling.filters
                 context.setTextureAt(mBaseTextureID, passTexture.base);
                 
                 activate(i, context, passTexture);
-                context.drawTriangles(mIndexBuffer, 0, 2);
+				context.drawTriangles(mIndexBuffer, 0, 2);				
                 deactivate(i, context, passTexture);
             }
             

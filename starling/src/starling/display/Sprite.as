@@ -228,7 +228,7 @@ package starling.display
                 {
                     QuadBatch.compile(this, mFlattenedContents);
                     if (mFlattenOptimized) QuadBatch.optimize(mFlattenedContents);
-                    support.applyClipRect(); // compiling filters might change scissor rect. :-\
+                    support.applyClipRect(); // compiling filters might change scissor rect. :-
                     mFlattenRequested = false;
                 }
                 

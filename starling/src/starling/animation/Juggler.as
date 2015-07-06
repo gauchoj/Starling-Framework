@@ -100,7 +100,7 @@ package starling.animation
         {
             if (target == null) return;
             
-			CONFIG::DEBUG{print("REMOVE TWEENS " + target);}
+//			CONFIG::DEBUG{print("REMOVE TWEENS " + target);}
 							
 			var tween:Tween;
             for (var i:int=mObjects.length-1; i>=0; --i)
@@ -120,7 +120,7 @@ package starling.animation
         {
             if (target == null) return false;
             
-			CONFIG::DEBUG{print("COINTAINS TWEENS");}
+//			CONFIG::DEBUG{print("COINTAINS TWEENS");}
 			
             for (var i:int=mObjects.length-1; i>=0; --i)
             {
@@ -139,7 +139,7 @@ package starling.animation
             // vector is filled with 'null' values. They will be cleaned up on the next call
             // to 'advanceTime'.
             
-			CONFIG::DEBUG{print("PURGE");}
+//			CONFIG::DEBUG{print("PURGE");}
 			
 			var dispatcher:EventDispatcher;
             for (var i:int=mObjects.length-1; i>=0; --i)
@@ -325,7 +325,7 @@ package starling.animation
             }
         }
         
-        private function onRemove(event:Event):void
+        protected function onRemove(event:Event):void
         {
             remove(event.target as IAnimatable);
             

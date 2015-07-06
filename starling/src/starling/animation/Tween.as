@@ -130,17 +130,18 @@ package starling.animation
          *    <li>The string <code>#deg</code> does the same for angles in degrees.</li>
          *  </ul>
          */
+//		private var pos1:int;
         public function animate(property:String, endValue:Number):void
         {
             if (mTarget == null) return; // tweening null just does nothing.
 
-            var pos:int = mProperties.length;
-            var updateFunc:Function = getUpdateFuncFromProperty(property);
+            var pos1:int = mProperties.length;
+//            var updateFunc:Function = getUpdateFuncFromProperty(property);
 
-            mProperties[pos] = getPropertyName(property);
-            mStartValues[pos] = Number.NaN;
-            mEndValues[pos] = endValue;
-            mUpdateFuncs[pos] = updateFunc;
+            mProperties[pos1] = getPropertyName(property);
+            mStartValues[pos1] = Number.NaN;
+            mEndValues[pos1] = endValue;
+            mUpdateFuncs[pos1] = getUpdateFuncFromProperty(property);
         }
 
         /** Animates the 'scaleX' and 'scaleY' properties of an object simultaneously. */
@@ -176,7 +177,7 @@ package starling.animation
         {
             if (time == 0 || (mRepeatCount == 1 && mCurrentTime == mTotalTime)) return;
             
-            var i:int;
+//            var i:int;
             var previousTime:Number = mCurrentTime;
             var restTime:Number = mTotalTime - mCurrentTime;
             var carryOverTime:Number = time > restTime ? time - restTime : 0.0;
@@ -199,7 +200,7 @@ package starling.animation
             var numProperties:int = mStartValues.length;
             mProgress = reversed ? mTransitionFunc(1.0 - ratio) : mTransitionFunc(ratio);
 
-            for (i=0; i<numProperties; ++i)
+            for (var i:int=0; i<numProperties; ++i)
             {                
                 if (mStartValues[i] != mStartValues[i]) // isNaN check - "isNaN" causes allocation! 
                     mStartValues[i] = mTarget[mProperties[i]] as Number;
@@ -450,7 +451,7 @@ package starling.animation
         {
 //            if (sTweenPool.length) return sTweenPool.pop().reset(target, time, transition);
 //            else return new Tween(target, time, transition);
-				return new Tween(target, time, transition);
+			return new Tween(target, time, transition);
         }
         
         /** @private */

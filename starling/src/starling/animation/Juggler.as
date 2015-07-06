@@ -14,8 +14,6 @@ package starling.animation
 	import starling.events.Event;
 	import starling.events.EventDispatcher;
 
-	import com.assukar.airong.utils.Utils;
-
     /** The Juggler takes objects that implement IAnimatable (like Tweens) and executes them.
      * 
      *  <p>A juggler is a simple object. It does no more than saving a list of objects implementing 
@@ -49,7 +47,7 @@ package starling.animation
     public class Juggler 
 	implements IAnimatable
     {
-        private var mObjects:Vector.<IAnimatable>;
+        protected var mObjects:Vector.<IAnimatable>;
         private var mElapsedTime:Number;
         
         /** Create an empty juggler. */
@@ -82,21 +80,19 @@ package starling.animation
         {
             if (object == null) return;
             
-            var dispatcher:EventDispatcher = object as EventDispatcher;
-				if (dispatcher) dispatcher.removeEventListener(Event.REMOVE_FROM_JUGGLER, onRemove);
+			if (object is EventDispatcher) EventDispatcher(object).removeEventListener(Event.REMOVE_FROM_JUGGLER, onRemove);
 
-				try
-				{
-					var index:int = object.jugglerIndex;
-		            if (index != -1) mObjects[index] = null;
-					object.jugglerIndex = -1;
-				}
-				catch (e: Error)
-				{
-					Utils.log("mObjects:" + mObjects + " object:" + object + " index:" + index);
-					Utils.log(e);
-					throw e;
-				}
+            if (object.jugglerIndex != -1) mObjects[object.jugglerIndex] = null;
+			object.jugglerIndex = -1;
+//			try
+//			{
+//			}
+//			catch (e: Error)
+//			{
+//				Utils.log("mObjects:" + mObjects + " object:" + object + " index:" + object.jugglerIndex);
+//				Utils.log(e);
+//				throw e;
+//			}
         }
         
         /** Removes all tweens with a certain target. */
@@ -104,9 +100,12 @@ package starling.animation
         {
             if (target == null) return;
             
+//			CONFIG::DEBUG{print("REMOVE TWEENS " + target);}
+							
+			var tween:Tween;
             for (var i:int=mObjects.length-1; i>=0; --i)
             {
-                var tween:Tween = mObjects[i] as Tween;
+                tween = mObjects[i] as Tween;
                 if (tween && tween.target == target)
                 {
                     tween.removeEventListener(Event.REMOVE_FROM_JUGGLER, onRemove);
@@ -121,6 +120,8 @@ package starling.animation
         {
             if (target == null) return false;
             
+//			CONFIG::DEBUG{print("COINTAINS TWEENS");}
+			
             for (var i:int=mObjects.length-1; i>=0; --i)
             {
                 var tween:Tween = mObjects[i] as Tween;
@@ -138,9 +139,12 @@ package starling.animation
             // vector is filled with 'null' values. They will be cleaned up on the next call
             // to 'advanceTime'.
             
+//			CONFIG::DEBUG{print("PURGE");}
+			
+			var dispatcher:EventDispatcher;
             for (var i:int=mObjects.length-1; i>=0; --i)
             {
-                var dispatcher:EventDispatcher = mObjects[i] as EventDispatcher;
+                dispatcher = mObjects[i] as EventDispatcher;
                 if (dispatcher) dispatcher.removeEventListener(Event.REMOVE_FROM_JUGGLER, onRemove);
 				mObjects[i].jugglerIndex = -1;
                 mObjects[i] = null;
@@ -321,13 +325,12 @@ package starling.animation
             }
         }
         
-        private function onRemove(event:Event):void
+        protected function onRemove(event:Event):void
         {
             remove(event.target as IAnimatable);
             
             var tween:Tween = event.target as Tween;
-            if (tween && tween.isComplete)
-                add(tween.nextTween);
+            if (tween && tween.isComplete) add(tween.nextTween);
         }
         
         /** The total life time of the juggler (in seconds). */

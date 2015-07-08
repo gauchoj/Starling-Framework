@@ -110,7 +110,7 @@ package starling.display
          *           the number of draw calls. Naturally, this is not an option for all use-cases.
          */
         public function flatten(ignoreChildOrder:Boolean=false):void
-        {						
+        {					
 //			if (IGNORE_FLATTEN)
 //			{
 //				mFlattenRequested = false;

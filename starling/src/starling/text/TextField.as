@@ -20,6 +20,7 @@ package starling.text
     import flash.text.AntiAliasType;
     import flash.text.TextFormat;
     import flash.utils.Dictionary;
+	import starling.errors.AbstractMethodError;
 
     import starling.core.RenderSupport;
     import starling.core.Starling;
@@ -354,16 +355,21 @@ package starling.text
             
             return bitmapData;
         }
+		
+		
+		protected function resizeTextBorderBuffer():uint {
+			return 4;
+		}
         
         private function autoScaleNativeTextField(textField:flash.text.TextField):void
         {
             var size:Number   = Number(textField.defaultTextFormat.size);
-            var maxHeight:int = textField.height - 4;
-            var maxWidth:int  = textField.width  - 4;
+            var maxHeight:int = textField.height - resizeTextBorderBuffer(); 
+            var maxWidth:int  = textField.width  - resizeTextBorderBuffer();
             
             while (textField.textWidth > maxWidth || textField.textHeight > maxHeight)
             {
-                if (size <= 4) break;
+                if (size <= resizeTextBorderBuffer()) break;  
                 
                 var format:TextFormat = textField.defaultTextFormat;
                 format.size = size--;
@@ -371,7 +377,7 @@ package starling.text
 
                 if (mIsHtmlText) textField.htmlText = mText;
                 else             textField.text     = mText;
-            }
+            }			
         }
         
         private function calculateFilterOffset(textField:flash.text.TextField,

@@ -10,31 +10,29 @@
 
 package starling.display
 {
-	import com.assukar.airong.error.AssukarError;
-	
-    import flash.errors.IllegalOperationError;
-    import flash.geom.Matrix;
-    import flash.geom.Matrix3D;
-    import flash.geom.Point;
-    import flash.geom.Rectangle;
-    import flash.geom.Vector3D;
-    import flash.system.Capabilities;
-    import flash.ui.Mouse;
-    import flash.ui.MouseCursor;
-    import flash.utils.getQualifiedClassName;
-    
-    import starling.core.RenderSupport;
-    import starling.core.Starling;
-    import starling.errors.AbstractClassError;
-    import starling.errors.AbstractMethodError;
-    import starling.events.Event;
-    import starling.events.EventDispatcher;
-    import starling.events.TouchEvent;
-    import starling.filters.FragmentFilter;
-    import starling.utils.HAlign;
-    import starling.utils.MathUtil;
-    import starling.utils.MatrixUtil;
-    import starling.utils.VAlign;
+	import starling.core.RenderSupport;
+	import starling.core.Starling;
+	import starling.errors.AbstractClassError;
+	import starling.errors.AbstractMethodError;
+	import starling.events.Event;
+	import starling.events.EventDispatcher;
+	import starling.events.TouchEvent;
+	import starling.filters.FragmentFilter;
+	import starling.utils.HAlign;
+	import starling.utils.MathUtil;
+	import starling.utils.MatrixUtil;
+	import starling.utils.VAlign;
+
+	import flash.errors.IllegalOperationError;
+	import flash.geom.Matrix;
+	import flash.geom.Matrix3D;
+	import flash.geom.Point;
+	import flash.geom.Rectangle;
+	import flash.geom.Vector3D;
+	import flash.system.Capabilities;
+	import flash.ui.Mouse;
+	import flash.ui.MouseCursor;
+	import flash.utils.getQualifiedClassName;
     
     /** Dispatched when an object is added to a parent. */
     [Event(name="added", type="starling.events.Event")]

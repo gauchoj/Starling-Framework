@@ -90,6 +90,8 @@ package starling.events
         public static const SELECT:String = "select";
         /** An event type to be utilized in custom events. Not used by Starling right now. */
         public static const READY:String = "ready";
+		
+		private static var sEventPool:Vector.<Event> = new <Event>[];
         
         private var mTarget:EventDispatcher;
         private var mCurrentTarget:EventDispatcher;
@@ -160,21 +162,18 @@ package starling.events
         
         // event pooling
         
-//        private static var sEventPool:Vector.<Event> = new <Event>[];
-        
         /** @private */
         starling_internal static function fromPool(type:String, bubbles:Boolean=false, data:Object=null):Event
         {
-//            if (sEventPool.length) return sEventPool.pop().reset(type, bubbles, data);
-//            else return new Event(type, bubbles, data);
-				return new Event(type, bubbles, data);
+            if (sEventPool.length) return sEventPool.pop().reset(type, bubbles, data);
+            else return new Event(type, bubbles, data);			
         }
         
         /** @private */
         starling_internal static function toPool(event:Event):void
         {
             event.mData = event.mTarget = event.mCurrentTarget = null;
-//            sEventPool[sEventPool.length] = event; // avoiding 'push'
+            sEventPool[sEventPool.length] = event; // avoiding 'push'
         }
         
         /** @private */

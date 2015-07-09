@@ -84,15 +84,6 @@ package starling.animation
 
             if (object.jugglerIndex != -1) mObjects[object.jugglerIndex] = null;
 			object.jugglerIndex = -1;
-//			try
-//			{
-//			}
-//			catch (e: Error)
-//			{
-//				Utils.log("mObjects:" + mObjects + " object:" + object + " index:" + object.jugglerIndex);
-//				Utils.log(e);
-//				throw e;
-//			}
         }
         
         /** Removes all tweens with a certain target. */
@@ -122,9 +113,10 @@ package starling.animation
             
 //			CONFIG::DEBUG{print("COINTAINS TWEENS");}
 			
+			var tween:Tween;
             for (var i:int=mObjects.length-1; i>=0; --i)
             {
-                var tween:Tween = mObjects[i] as Tween;
+				tween = mObjects[i] as Tween;
                 if (tween && tween.target == target) return true;
             }
             
@@ -165,7 +157,6 @@ package starling.animation
             var delayedCall:DelayedCall = DelayedCall.starling_internal::fromPool(call, delay, args);
             delayedCall.addEventListener(Event.REMOVE_FROM_JUGGLER, onPooledDelayedCallComplete);
             add(delayedCall);
-
             return delayedCall; 
         }
 
@@ -230,9 +221,10 @@ package starling.animation
 
             var tween:Tween = Tween.starling_internal::fromPool(target, time);
             
+			var value:Object;
             for (var property:String in properties)
             {
-                var value:Object = properties[property];
+                value = properties[property];
                 
                 if (tween.hasOwnProperty(property))
                     tween[property] = value;

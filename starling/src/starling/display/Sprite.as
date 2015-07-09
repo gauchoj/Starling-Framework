@@ -242,8 +242,8 @@ package starling.display
                 for (var i:int=0; i<numBatches; ++i)
                 {	
                     var quadBatch:QuadBatch = mFlattenedContents[i];		
-                    var blendMode:String = quadBatch.blendMode == BlendMode.AUTO ? support.blendMode : quadBatch.blendMode;
-                    quadBatch.renderCustom(mvpMatrix, alpha, blendMode);
+//                    var blendMode:String = quadBatch.blendMode == BlendMode.AUTO ? support.blendMode : quadBatch.blendMode;
+                    quadBatch.renderCustom(mvpMatrix, alpha, (quadBatch.blendMode == BlendMode.AUTO ? support.blendMode : quadBatch.blendMode));
                 }
             }
             else super.render(support, parentAlpha);

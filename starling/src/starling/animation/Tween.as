@@ -205,8 +205,8 @@ package starling.animation
                 if (mStartValues[i] != mStartValues[i]) // isNaN check - "isNaN" causes allocation! 
                     mStartValues[i] = mTarget[mProperties[i]] as Number;
 
-                var updateFunc:Function = mUpdateFuncs[i] as Function;
-                updateFunc(mProperties[i], mStartValues[i], mEndValues[i]);
+//                var updateFunc:Function = (mUpdateFuncs[i] as Function);
+                (mUpdateFuncs[i] as Function)(mProperties[i], mStartValues[i], mEndValues[i]);
             }
 
             if (mOnUpdate != null) 
@@ -243,21 +243,21 @@ package starling.animation
 
         private function getUpdateFuncFromProperty(property:String):Function
         {
-            var updateFunc:Function;
-            var hint:String = getPropertyHint(property);
+//            var updateFunc:Function;
+//            var hint:String = getPropertyHint(property);
 
-            switch (hint)
+            switch (getPropertyHint(property))
             {
-                case null:  updateFunc = updateStandard; break;
-                case "rgb": updateFunc = updateRgb; break;
-                case "rad": updateFunc = updateRad; break;
-                case "deg": updateFunc = updateDeg; break;
+                case null:  return updateStandard; break;
+                case "rgb": return updateRgb; break;
+                case "rad": return updateRad; break;
+                case "deg": return updateDeg; break;
                 default:
-                    trace("[Starling] Ignoring unknown property hint:", hint);
-                    updateFunc = updateStandard;
+                    trace("[Starling] Ignoring unknown property hint:", getPropertyHint(property));
+//                    return updateStandard;
             }
-
-            return updateFunc;
+			return updateStandard;
+//            return updateFunc;
         }
 
         /** @private */
@@ -267,15 +267,16 @@ package starling.animation
             if (property.indexOf("color") != -1 || property.indexOf("Color") != -1)
                 return "rgb";
 
-            var hintMarkerIndex:int = property.indexOf(HINT_MARKER);
+            hintMarkerIndex = property.indexOf(HINT_MARKER);
             if (hintMarkerIndex != -1) return property.substr(hintMarkerIndex+1);
             else return null;
         }
 
         /** @private */
+		static private var hintMarkerIndex:int;
         internal static function getPropertyName(property:String):String
         {
-            var hintMarkerIndex:int = property.indexOf(HINT_MARKER);
+            hintMarkerIndex = property.indexOf(HINT_MARKER);
             if (hintMarkerIndex != -1) return property.substring(0, hintMarkerIndex);
             else return property;
         }
@@ -443,15 +444,14 @@ package starling.animation
         
         // tween pooling
         
-//        private static var sTweenPool:Vector.<Tween> = new <Tween>[];
+        private static var sTweenPool:Vector.<Tween> = new <Tween>[];
         
         /** @private */
         starling_internal static function fromPool(target:Object, time:Number, 
                                                    transition:Object="linear"):Tween
         {
-//            if (sTweenPool.length) return sTweenPool.pop().reset(target, time, transition);
-//            else return new Tween(target, time, transition);
-			return new Tween(target, time, transition);
+            if (sTweenPool.length) return sTweenPool.pop().reset(target, time, transition);
+            else return new Tween(target, time, transition);
         }
         
         /** @private */
@@ -463,7 +463,7 @@ package starling.animation
             tween.mTarget = null;
             tween.mTransitionFunc = null;
             tween.removeEventListeners();
-//            sTweenPool.push(tween);
+            sTweenPool.push(tween);
         }
 		
 		/* INTERFACE starling.animation.IAnimatable */

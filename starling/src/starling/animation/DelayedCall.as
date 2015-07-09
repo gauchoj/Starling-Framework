@@ -10,9 +10,9 @@
 
 package starling.animation
 {
-    import starling.core.starling_internal;
-    import starling.events.Event;
-    import starling.events.EventDispatcher;
+	import starling.core.starling_internal;
+	import starling.events.Event;
+	import starling.events.EventDispatcher;
 
     /** A DelayedCall allows you to execute a method after a certain time has passed. Since it 
      *  implements the IAnimatable interface, it can be added to a juggler. In most cases, you 
@@ -111,15 +111,13 @@ package starling.animation
         
         // delayed call pooling
         
-//        private static var sPool:Vector.<DelayedCall> = new <DelayedCall>[];
+        private static var sPool:Vector.<DelayedCall> = new <DelayedCall>[];
         
         /** @private */
-        starling_internal static function fromPool(call:Function, delay:Number, 
-                                                   args:Array=null):DelayedCall
+        starling_internal static function fromPool(call:Function, delay:Number, args:Array=null):DelayedCall
         {
-//            if (sPool.length) return sPool.pop().reset(call, delay, args);
-//            else return new DelayedCall(call, delay, args);
-				return new DelayedCall(call, delay, args);
+            if (sPool.length) return sPool.pop().reset(call, delay, args);
+            else return new DelayedCall(call, delay, args);
         }
         
         /** @private */
@@ -129,7 +127,7 @@ package starling.animation
             delayedCall.mCall = null;
             delayedCall.mArgs = null;
             delayedCall.removeEventListeners();
-//            sPool.push(delayedCall);
+            sPool.push(delayedCall);
         }
 		
 		/* INTERFACE starling.animation.IAnimatable */

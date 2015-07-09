@@ -137,10 +137,13 @@ package starling.events
                 // when somebody modifies the list while we're looping, "addEventListener" is not
                 // problematic, and "removeEventListener" will create a new Vector, anyway.
                 
+				var listener:Function;
+				var numArgs:int;
+				
                 for (var i:int=0; i<numListeners; ++i)
                 {
-                    var listener:Function = listeners[i] as Function;
-                    var numArgs:int = listener.length;
+                    listener = listeners[i] as Function;
+                    numArgs = listener.length;
                     
                     if (numArgs == 0) listener();
                     else if (numArgs == 1) listener(event);
@@ -198,10 +201,20 @@ package starling.events
         }
         
         /** Returns if there are listeners registered for a certain event type. */
+		private var vec1: Vector.<Function>;
         public function hasEventListener(type:String):Boolean
         {
-            var listeners:Vector.<Function> = mEventListeners ? mEventListeners[type] : null;
-            return listeners ? listeners.length != 0 : false;
+			if (mEventListeners)
+			{
+				vec1 = mEventListeners[type] as Vector.<Function>;
+				return vec1 && vec1.length;
+			}
+			else
+			{
+				return false;
+			}
+//            var listeners:Vector.<Function> = mEventListeners ? mEventListeners[type] : null;
+//            return listeners ? listeners.length != 0 : false;
         }
     }
 }

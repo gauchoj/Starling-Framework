@@ -127,6 +127,7 @@ package starling.animation
             // reset any object-references, to make sure we don't prevent any garbage collection
             delayedCall.mCall = null;
             delayedCall.mArgs = null;
+			delayedCall._jugglerIndex = -1;
             delayedCall.removeEventListeners();
             sPool.push(delayedCall);
         }

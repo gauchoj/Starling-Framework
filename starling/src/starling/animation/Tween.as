@@ -463,6 +463,7 @@ package starling.animation
             tween.mOnStartArgs = tween.mOnUpdateArgs = tween.mOnRepeatArgs = tween.mOnCompleteArgs = null;
             tween.mTarget = null;
             tween.mTransitionFunc = null;
+			tween._jugglerIndex = -1;
             tween.removeEventListeners();
             sTweenPool.push(tween);
         }

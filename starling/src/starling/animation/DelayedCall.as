@@ -14,6 +14,8 @@ package starling.animation
 	import starling.events.Event;
 	import starling.events.EventDispatcher;
 
+	import com.assukar.airong.error.AssukarError;
+
     /** A DelayedCall allows you to execute a method after a certain time has passed. Since it 
      *  implements the IAnimatable interface, it can be added to a juggler. In most cases, you 
      *  do not have to use this class directly; the juggler class contains a method to delay
@@ -47,7 +49,9 @@ package starling.animation
             mCall = call;
             mArgs = args;
             mRepeatCount = 1;
+			if (_jugglerIndex != -1) throw new AssukarError();
 			_jugglerIndex = -1;
+			_juggler = null;
             
             return this;
         }
@@ -112,13 +116,20 @@ package starling.animation
         
         // delayed call pooling
         
-        private static var sPool:Vector.<DelayedCall> = new <DelayedCall>[];
+//        private static var sPool:Vector.<DelayedCall> = new <DelayedCall>[];
         
+		static private var dcCount:int = 0;
+		
         /** @private */
         starling_internal static function fromPool(call:Function, delay:Number, args:Array=null):DelayedCall
         {
-            if (sPool.length) return sPool.pop().reset(call, delay, args);
-            else return new DelayedCall(call, delay, args);
+//			return new DelayedCall(call, delay, args);
+//            if (sPool.length) return sPool.pop().reset(call, delay, args);
+//            else 
+			dcCount++;
+			if (dcCount%100==0) log("delayedCallCount:" + dcCount);
+
+			return new DelayedCall(call, delay, args);
         }
         
         /** @private */
@@ -127,10 +138,11 @@ package starling.animation
             // reset any object-references, to make sure we don't prevent any garbage collection
             delayedCall.mCall = null;
             delayedCall.mArgs = null;
+            delayedCall.removeEventListeners();
 			delayedCall._juggler.removeJugglerIndex(delayedCall._jugglerIndex);
 			delayedCall._jugglerIndex = -1;
-            delayedCall.removeEventListeners();
-            sPool.push(delayedCall);
+			delayedCall._juggler = null;
+//            sPool.push(delayedCall);
         }
 		
 		/* INTERFACE starling.animation.IAnimatable */

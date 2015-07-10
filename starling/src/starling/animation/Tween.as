@@ -100,6 +100,7 @@ package starling.animation
             mCurrentCycle = -1;
             mNextTween = null;
 			_jugglerIndex = -1;
+			_juggler = null;
             
             if (transition is String)
                 this.transition = transition as String;
@@ -445,14 +446,18 @@ package starling.animation
         
         // tween pooling
         
-        private static var sTweenPool:Vector.<Tween> = new <Tween>[];
+//        private static var sTweenPool:Vector.<Tween> = new <Tween>[];
         
+		static private var tweenCount:int = 0;
         /** @private */
         starling_internal static function fromPool(target:Object, time:Number, 
                                                    transition:Object="linear"):Tween
         {
-            if (sTweenPool.length) return sTweenPool.pop().reset(target, time, transition);
-            else return new Tween(target, time, transition);
+//            if (sTweenPool.length) return sTweenPool.pop().reset(target, time, transition);
+//            else 
+			tweenCount++;
+			if (tweenCount%100==0) log("tweenCount:" + tweenCount);
+			return new Tween(target, time, transition);
         }
         
         /** @private */
@@ -465,8 +470,9 @@ package starling.animation
             tween.mTransitionFunc = null;
 			tween._juggler.removeJugglerIndex(tween._jugglerIndex);
 			tween._jugglerIndex = -1;
+			tween._juggler = null;
             tween.removeEventListeners();
-            sTweenPool.push(tween);
+//            sTweenPool.push(tween);
         }
 		
 		/* INTERFACE starling.animation.IAnimatable */

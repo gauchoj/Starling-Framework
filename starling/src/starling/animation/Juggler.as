@@ -95,7 +95,14 @@ package starling.animation
             if (object.jugglerIndex > -1) mObjects[object.jugglerIndex] = null;
 			object.jugglerIndex = -1;
 			
-			if (object is EventDispatcher) EventDispatcher(object).removeEventListener(Event.REMOVE_FROM_JUGGLER, onRemove);
+			// TODO watch
+			if (object is IPooledAnimatable) IPooledAnimatable(object).pool();
+			//
+			 
+			if (object is EventDispatcher)
+			{
+				EventDispatcher(object).removeEventListener(Event.REMOVE_FROM_JUGGLER, onRemove);
+			}
         }
         
         /** Removes all tweens with a certain target. */
@@ -111,6 +118,9 @@ package starling.animation
                 tween = mObjects[i] as Tween;
                 if (tween && tween.target == target)
                 {
+					// TODO watch
+					tween.pool();
+					// 
                     tween.removeEventListener(Event.REMOVE_FROM_JUGGLER, onRemove);
 					tween.jugglerIndex = -1;
                     mObjects[i] = null;
@@ -148,8 +158,15 @@ package starling.animation
 			var dispatcher:EventDispatcher;
             for (var i:int=mObjects.length-1; i>=0; --i)
             {
+				// TODO watch
+				if (mObjects[i] is IPooledAnimatable) IPooledAnimatable(mObjects[i]).pool();
+				//
+				
                 dispatcher = mObjects[i] as EventDispatcher;
-                if (dispatcher) dispatcher.removeEventListener(Event.REMOVE_FROM_JUGGLER, onRemove);
+                if (dispatcher)
+				{
+					dispatcher.removeEventListener(Event.REMOVE_FROM_JUGGLER, onRemove);
+				}
 				mObjects[i].jugglerIndex = -1;
                 mObjects[i] = null;
             }

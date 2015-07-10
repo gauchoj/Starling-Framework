@@ -7,5 +7,6 @@ package starling.animation
 	extends IAnimatable
 	{
 //		function set juggler(_juggler : Juggler) : void;
+		function pool(): void;
 	}
 }

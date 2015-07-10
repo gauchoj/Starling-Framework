@@ -14,6 +14,9 @@ package starling.animation
 	import starling.events.Event;
 	import starling.events.EventDispatcher;
 
+	import com.assukar.airong.ds.LinkedList;
+	import com.assukar.airong.error.AssukarError;
+
     /** A DelayedCall allows you to execute a method after a certain time has passed. Since it 
      *  implements the IAnimatable interface, it can be added to a juggler. In most cases, you 
      *  do not have to use this class directly; the juggler class contains a method to delay
@@ -48,7 +51,7 @@ package starling.animation
             mArgs = args;
             mRepeatCount = 1;
 			_jugglerIndex = -1;
-//			_juggler = null;
+			pooled = false;
             
             return this;
         }
@@ -70,7 +73,13 @@ package starling.animation
                     
                     if (mRepeatCount > 0) mRepeatCount -= 1;
                     mCurrentTime = 0;
-                    advanceTime((previousTime + time) - mTotalTime);
+					
+					// TODO watch
+					if (!pooled)
+					// 
+					{
+	                    advanceTime((previousTime + time) - mTotalTime);
+					}
                 }
                 else
                 {
@@ -114,32 +123,39 @@ package starling.animation
         // delayed call pooling
         
 //        private static var sPool:Vector.<DelayedCall> = new <DelayedCall>[];
+		private static var sPool:LinkedList = new LinkedList();
         
 		static private var dcCount:int = 0;
 		
         /** @private */
         starling_internal static function fromPool(call:Function, delay:Number, args:Array=null):DelayedCall
         {
-//			return new DelayedCall(call, delay, args);
-//            if (sPool.length) return sPool.pop().reset(call, delay, args);
-//            else 
-			dcCount++;
-			if (dcCount%100==0) log("delayedCallCount:" + dcCount);
-
-			return new DelayedCall(call, delay, args);
+//			if (sPool.length) return sPool.pop().reset(call, delay, args);
+            if (sPool.size>=100)
+			{
+				var delayedCall:DelayedCall = DelayedCall(sPool.poll());
+				if (!delayedCall.pooled) throw new AssukarError();
+				return delayedCall.reset(call, delay, args);
+			}
+            else 
+			{
+				dcCount++;
+				if (dcCount%10==0) log("delays:" + dcCount + " pool:" + sPool.size);
+				return new DelayedCall(call, delay, args);
+			}
         }
         
         /** @private */
         starling_internal static function toPool(delayedCall:DelayedCall):void
         {
+			if (delayedCall.pooled) return;
+			delayedCall.pooled = true;
+			
             // reset any object-references, to make sure we don't prevent any garbage collection
             delayedCall.mCall = null;
             delayedCall.mArgs = null;
             delayedCall.removeEventListeners();
-//			delayedCall._juggler.removeJugglerIndex(delayedCall._jugglerIndex);
-//			delayedCall._juggler = null;
-//			delayedCall._jugglerIndex = -1;
-//            sPool.push(delayedCall);
+            sPool.push(delayedCall);
         }
 		
 		/* INTERFACE starling.animation.IAnimatable */
@@ -154,10 +170,10 @@ package starling.animation
 		}
 		
 		/* INTERFACE starling.animation.PooledIAnimatable */
-//		private var _juggler : Juggler;
-//		public function set juggler(_juggler : Juggler) : void
-//		{
-//			this._juggler = _juggler;
-//		}				
+		private var pooled: Boolean = false;
+		public function pool(): void
+		{
+			DelayedCall.starling_internal::toPool(this);
+		}				
     }
 }

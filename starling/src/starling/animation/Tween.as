@@ -15,6 +15,9 @@ package starling.animation
 	import starling.events.Event;
 	import starling.events.EventDispatcher;
 
+	import com.assukar.airong.ds.LinkedList;
+	import com.assukar.airong.error.AssukarError;
+
     /** A Tween animates numeric properties of objects. It uses different transition functions
      *  to give the animations various styles.
      *  
@@ -100,6 +103,7 @@ package starling.animation
             mCurrentCycle = -1;
             mNextTween = null;
 			_jugglerIndex = -1;
+			pooled = false;
 //			_juggler = null;
             
             if (transition is String)
@@ -177,6 +181,9 @@ package starling.animation
         /** @inheritDoc */
         public function advanceTime(time:Number):void
         {
+			// TODO watch
+			if (pooled) return;
+			
             if (time == 0 || (mRepeatCount == 1 && mCurrentTime == mTotalTime)) return;
             
 //            var i:int;
@@ -447,32 +454,44 @@ package starling.animation
         // tween pooling
         
 //        private static var sTweenPool:Vector.<Tween> = new <Tween>[];
+		private static var sTweenPool:LinkedList = new LinkedList();
+		private static var hits: int = 0;
+		private static var misses: int = 0;
+		
         
 		static private var tweenCount:int = 0;
         /** @private */
         starling_internal static function fromPool(target:Object, time:Number, 
                                                    transition:Object="linear"):Tween
         {
-//            if (sTweenPool.length) return sTweenPool.pop().reset(target, time, transition);
-//            else 
-			tweenCount++;
-			if (tweenCount%100==0) log("tweenCount:" + tweenCount);
-			return new Tween(target, time, transition);
+            if (sTweenPool.size>=100)
+			{
+				hits++;
+				var tween: Tween = Tween(sTweenPool.poll());
+				if (!tween.pooled) throw new AssukarError(); 
+				return tween.reset(target, time, transition);
+			}
+            else
+			{ 
+				misses++;
+				tweenCount++;
+				if (tweenCount%100==0) log("tweens:" + tweenCount + " pool:" + sTweenPool.size + " " + hits + ":" + misses);
+				return new Tween(target, time, transition);
+			}
         }
         
         /** @private */
         starling_internal static function toPool(tween:Tween):void
         {
+			if (tween.pooled) return;
+			tween.pooled = true;
             // reset any object-references, to make sure we don't prevent any garbage collection
             tween.mOnStart = tween.mOnUpdate = tween.mOnRepeat = tween.mOnComplete = null;
             tween.mOnStartArgs = tween.mOnUpdateArgs = tween.mOnRepeatArgs = tween.mOnCompleteArgs = null;
             tween.mTarget = null;
             tween.mTransitionFunc = null;
-//			tween._jugglerIndex = -1;
-//			tween._juggler.removeJugglerIndex(tween._jugglerIndex);
-//			tween._juggler = null;
             tween.removeEventListeners();
-//            sTweenPool.push(tween);
+            sTweenPool.push(tween);
         }
 		
 		/* INTERFACE starling.animation.IAnimatable */
@@ -487,10 +506,10 @@ package starling.animation
 		}
 		
 		/* INTERFACE starling.animation.PooledIAnimatable */
-//		private var _juggler : Juggler;
-//		public function set juggler(_juggler : Juggler) : void
-//		{
-//			this._juggler = _juggler;
-//		}		
+		private var pooled: Boolean = false;
+		public function pool(): void
+		{
+			Tween.starling_internal::toPool(this);
+		}		
     }
 }

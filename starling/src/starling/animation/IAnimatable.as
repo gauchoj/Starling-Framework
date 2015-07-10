@@ -28,6 +28,7 @@ package starling.animation
         function advanceTime(time:Number):void;
 		
 		function get jugglerIndex():int;
-		function set jugglerIndex(value:int):void;
+
+		function set jugglerIndex(value : int) : void;
     }
 }

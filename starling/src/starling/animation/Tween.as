@@ -11,9 +11,9 @@
 
 package starling.animation
 {
-    import starling.core.starling_internal;
-    import starling.events.Event;
-    import starling.events.EventDispatcher;
+	import starling.core.starling_internal;
+	import starling.events.Event;
+	import starling.events.EventDispatcher;
 
     /** A Tween animates numeric properties of objects. It uses different transition functions
      *  to give the animations various styles.
@@ -40,7 +40,7 @@ package starling.animation
      *  @see Juggler
      *  @see Transitions
      */ 
-    public class Tween extends EventDispatcher implements IAnimatable
+    public class Tween extends EventDispatcher implements IPooledAnimatable
     {
         private static const HINT_MARKER:String = '#';
 
@@ -463,6 +463,7 @@ package starling.animation
             tween.mOnStartArgs = tween.mOnUpdateArgs = tween.mOnRepeatArgs = tween.mOnCompleteArgs = null;
             tween.mTarget = null;
             tween.mTransitionFunc = null;
+			tween._juggler.removeJugglerIndex(tween._jugglerIndex);
 			tween._jugglerIndex = -1;
             tween.removeEventListeners();
             sTweenPool.push(tween);
@@ -477,6 +478,13 @@ package starling.animation
 		public function set jugglerIndex(value : int) : void
 		{
 			_jugglerIndex = value;
+		}
+		
+		/* INTERFACE starling.animation.PooledIAnimatable */
+		private var _juggler : Juggler;
+		public function set juggler(_juggler : Juggler) : void
+		{
+			this._juggler = _juggler;
 		}		
     }
 }

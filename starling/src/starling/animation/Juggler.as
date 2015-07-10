@@ -57,12 +57,16 @@ package starling.animation
             mObjects = new <IAnimatable>[];
         }
 
+		private var pooledAnimatable: IPooledAnimatable;
+		
         /** Adds an object to the juggler. */
         public function add(object:IAnimatable):void
         {
 			if (object && object.jugglerIndex == -1)
             {
 				object.jugglerIndex = mObjects.push(object)-1;
+				pooledAnimatable = object as IPooledAnimatable;
+				if (pooledAnimatable) pooledAnimatable.juggler = this;
             
                 var dispatcher:EventDispatcher = object as EventDispatcher;
                 if (dispatcher) dispatcher.addEventListener(Event.REMOVE_FROM_JUGGLER, onRemove);
@@ -75,15 +79,20 @@ package starling.animation
 			return object && object.jugglerIndex > -1;
         }
         
+		internal function removeJugglerIndex(jugglerIndex: int): void
+		{
+            if (jugglerIndex > -1) mObjects[jugglerIndex] = null;
+		}
+		
         /** Removes an object from the juggler. */
         public function remove(object:IAnimatable):void
         {
             if (object == null) return;
             
-			if (object is EventDispatcher) EventDispatcher(object).removeEventListener(Event.REMOVE_FROM_JUGGLER, onRemove);
-
-            if (object.jugglerIndex != -1) mObjects[object.jugglerIndex] = null;
+            if (object.jugglerIndex > -1) mObjects[object.jugglerIndex] = null;
 			object.jugglerIndex = -1;
+			
+			if (object is EventDispatcher) EventDispatcher(object).removeEventListener(Event.REMOVE_FROM_JUGGLER, onRemove);
         }
         
         /** Removes all tweens with a certain target. */
@@ -305,10 +314,12 @@ package starling.animation
             {
                 numObjects = mObjects.length; // count might have changed!
                 
+				if (numObjects > 1000) throw new Error();
+				
                 while (i < numObjects)
 				{
-                    object = mObjects[int(currentIndex)] = mObjects[int(i)];
-					if (object) object.jugglerIndex = int(currentIndex); 
+                    object = mObjects[currentIndex] = mObjects[i];
+					if (object) object.jugglerIndex = currentIndex; 
 					currentIndex++;
 					i++;
 				}

@@ -25,7 +25,7 @@ package starling.animation
      *  @see Juggler
      */ 
     public class DelayedCall 
-	extends EventDispatcher implements IAnimatable
+	extends EventDispatcher implements IPooledAnimatable
     {
         private var mCurrentTime:Number;
         private var mTotalTime:Number;
@@ -127,6 +127,7 @@ package starling.animation
             // reset any object-references, to make sure we don't prevent any garbage collection
             delayedCall.mCall = null;
             delayedCall.mArgs = null;
+			delayedCall._juggler.removeJugglerIndex(delayedCall._jugglerIndex);
 			delayedCall._jugglerIndex = -1;
             delayedCall.removeEventListeners();
             sPool.push(delayedCall);
@@ -142,5 +143,12 @@ package starling.animation
 		{
 			_jugglerIndex = value;
 		}
+		
+		/* INTERFACE starling.animation.PooledIAnimatable */
+		private var _juggler : Juggler;
+		public function set juggler(_juggler : Juggler) : void
+		{
+			this._juggler = _juggler;
+		}				
     }
 }

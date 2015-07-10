@@ -99,6 +99,7 @@ package starling.animation
             mRepeatCount = 1;
             mCurrentCycle = -1;
             mNextTween = null;
+			_jugglerIndex = -1;
             
             if (transition is String)
                 this.transition = transition as String;
@@ -467,7 +468,7 @@ package starling.animation
         }
 		
 		/* INTERFACE starling.animation.IAnimatable */
-		private var _jugglerIndex : int = -1;
+		private var _jugglerIndex : int;
 		public function get jugglerIndex() : int
 		{
 			return _jugglerIndex;

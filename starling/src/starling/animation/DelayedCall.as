@@ -47,6 +47,7 @@ package starling.animation
             mCall = call;
             mArgs = args;
             mRepeatCount = 1;
+			_jugglerIndex = -1;
             
             return this;
         }
@@ -131,7 +132,7 @@ package starling.animation
         }
 		
 		/* INTERFACE starling.animation.IAnimatable */
-		private var _jugglerIndex : int = -1;
+		private var _jugglerIndex : int;
 		public function get jugglerIndex() : int
 		{
 			return _jugglerIndex;

@@ -169,7 +169,7 @@ package starling.animation
             if (call == null) return null;
             
             var delayedCall:DelayedCall = DelayedCall.starling_internal::fromPool(call, delay, args);
-			if (delayedCall.jugglerIndex!=1) throw new AssukarError();
+			if (delayedCall.jugglerIndex!=-1) throw new AssukarError("delayedCall.jugglerIndex:" + delayedCall.jugglerIndex);
             delayedCall.addEventListener(Event.REMOVE_FROM_JUGGLER, onPooledDelayedCallComplete);
             add(delayedCall);
             return delayedCall; 

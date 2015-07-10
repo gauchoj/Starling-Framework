@@ -100,7 +100,7 @@ package starling.animation
             mCurrentCycle = -1;
             mNextTween = null;
 			_jugglerIndex = -1;
-			_juggler = null;
+//			_juggler = null;
             
             if (transition is String)
                 this.transition = transition as String;
@@ -468,9 +468,9 @@ package starling.animation
             tween.mOnStartArgs = tween.mOnUpdateArgs = tween.mOnRepeatArgs = tween.mOnCompleteArgs = null;
             tween.mTarget = null;
             tween.mTransitionFunc = null;
-			tween._juggler.removeJugglerIndex(tween._jugglerIndex);
 			tween._jugglerIndex = -1;
-			tween._juggler = null;
+//			tween._juggler.removeJugglerIndex(tween._jugglerIndex);
+//			tween._juggler = null;
             tween.removeEventListeners();
 //            sTweenPool.push(tween);
         }
@@ -487,10 +487,10 @@ package starling.animation
 		}
 		
 		/* INTERFACE starling.animation.PooledIAnimatable */
-		private var _juggler : Juggler;
-		public function set juggler(_juggler : Juggler) : void
-		{
-			this._juggler = _juggler;
-		}		
+//		private var _juggler : Juggler;
+//		public function set juggler(_juggler : Juggler) : void
+//		{
+//			this._juggler = _juggler;
+//		}		
     }
 }

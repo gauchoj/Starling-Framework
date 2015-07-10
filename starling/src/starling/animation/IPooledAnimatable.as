@@ -6,6 +6,6 @@ package starling.animation
 	public interface IPooledAnimatable
 	extends IAnimatable
 	{
-		function set juggler(_juggler : Juggler) : void;
+//		function set juggler(_juggler : Juggler) : void;
 	}
 }

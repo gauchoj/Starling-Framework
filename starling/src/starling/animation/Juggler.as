@@ -14,8 +14,6 @@ package starling.animation
 	import starling.events.Event;
 	import starling.events.EventDispatcher;
 
-	import com.assukar.airong.error.AssukarError;
-
     /** The Juggler takes objects that implement IAnimatable (like Tweens) and executes them.
      * 
      *  <p>A juggler is a simple object. It does no more than saving a list of objects implementing 
@@ -59,7 +57,7 @@ package starling.animation
             mObjects = new <IAnimatable>[];
         }
 
-		private var pooledAnimatable: IPooledAnimatable;
+//		private var pooledAnimatable: IPooledAnimatable;
 		private var dispatcher:EventDispatcher;
 		
         /** Adds an object to the juggler. */
@@ -69,8 +67,8 @@ package starling.animation
             {
 				object.jugglerIndex = mObjects.push(object)-1;
 				
-				pooledAnimatable = object as IPooledAnimatable;
-				if (pooledAnimatable) pooledAnimatable.juggler = this;
+//				pooledAnimatable = object as IPooledAnimatable;
+//				if (pooledAnimatable) pooledAnimatable.juggler = this;
             
                 dispatcher = object as EventDispatcher;
                 if (dispatcher) dispatcher.addEventListener(Event.REMOVE_FROM_JUGGLER, onRemove);
@@ -169,7 +167,6 @@ package starling.animation
             if (call == null) return null;
             
             var delayedCall:DelayedCall = DelayedCall.starling_internal::fromPool(call, delay, args);
-			if (delayedCall.jugglerIndex!=-1) throw new AssukarError("delayedCall.jugglerIndex:" + delayedCall.jugglerIndex);
             delayedCall.addEventListener(Event.REMOVE_FROM_JUGGLER, onPooledDelayedCallComplete);
             add(delayedCall);
             return delayedCall; 

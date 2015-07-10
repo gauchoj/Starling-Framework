@@ -48,7 +48,7 @@ package starling.animation
             mArgs = args;
             mRepeatCount = 1;
 			_jugglerIndex = -1;
-			_juggler = null;
+//			_juggler = null;
             
             return this;
         }
@@ -136,9 +136,9 @@ package starling.animation
             delayedCall.mCall = null;
             delayedCall.mArgs = null;
             delayedCall.removeEventListeners();
-			delayedCall._juggler.removeJugglerIndex(delayedCall._jugglerIndex);
+//			delayedCall._juggler.removeJugglerIndex(delayedCall._jugglerIndex);
+//			delayedCall._juggler = null;
 			delayedCall._jugglerIndex = -1;
-			delayedCall._juggler = null;
 //            sPool.push(delayedCall);
         }
 		
@@ -154,10 +154,10 @@ package starling.animation
 		}
 		
 		/* INTERFACE starling.animation.PooledIAnimatable */
-		private var _juggler : Juggler;
-		public function set juggler(_juggler : Juggler) : void
-		{
-			this._juggler = _juggler;
-		}				
+//		private var _juggler : Juggler;
+//		public function set juggler(_juggler : Juggler) : void
+//		{
+//			this._juggler = _juggler;
+//		}				
     }
 }

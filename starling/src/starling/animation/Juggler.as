@@ -345,7 +345,7 @@ package starling.animation
                 mObjects.length = currentIndex;
             }
 			
-			if (numObjects%100==0) wrap(mObjects.length + "/" + currentIndex);
+//			if (numObjects%100==0) wrap(mObjects.length + "/" + currentIndex);
         }
         
         protected function onRemove(event:Event):void

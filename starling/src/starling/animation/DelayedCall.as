@@ -49,7 +49,7 @@ package starling.animation
             mCall = call;
             mArgs = args;
             mRepeatCount = 1;
-			if (_jugglerIndex != -1) throw new AssukarError();
+//			if (_jugglerIndex != -1) throw new AssukarError();
 			_jugglerIndex = -1;
 			_juggler = null;
             

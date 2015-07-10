@@ -138,7 +138,7 @@ package starling.animation
             delayedCall.removeEventListeners();
 //			delayedCall._juggler.removeJugglerIndex(delayedCall._jugglerIndex);
 //			delayedCall._juggler = null;
-			delayedCall._jugglerIndex = -1;
+//			delayedCall._jugglerIndex = -1;
 //            sPool.push(delayedCall);
         }
 		

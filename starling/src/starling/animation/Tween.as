@@ -468,7 +468,7 @@ package starling.animation
             tween.mOnStartArgs = tween.mOnUpdateArgs = tween.mOnRepeatArgs = tween.mOnCompleteArgs = null;
             tween.mTarget = null;
             tween.mTransitionFunc = null;
-			tween._jugglerIndex = -1;
+//			tween._jugglerIndex = -1;
 //			tween._juggler.removeJugglerIndex(tween._jugglerIndex);
 //			tween._juggler = null;
             tween.removeEventListeners();

@@ -317,8 +317,6 @@ package starling.animation
             {
                 numObjects = mObjects.length; // count might have changed!
                 
-				if (numObjects > 1000) throw new Error();
-				
                 while (i < numObjects)
 				{
                     object = mObjects[currentIndex] = mObjects[i];
@@ -329,6 +327,8 @@ package starling.animation
                 
                 mObjects.length = currentIndex;
             }
+			
+			if (numObjects%100==0) wrap(mObjects.length + "/" + currentIndex);
         }
         
         protected function onRemove(event:Event):void

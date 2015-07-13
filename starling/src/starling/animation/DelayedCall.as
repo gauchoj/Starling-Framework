@@ -122,7 +122,7 @@ package starling.animation
         
         // delayed call pooling
         
-//        private static var sPool:Vector.<DelayedCall> = new <DelayedCall>[];
+		static private const POOLING: Boolean = false;
 		private static var sPool:LinkedList = new LinkedList();
 		private static var hits: int = 0;
 		private static var misses: int = 0;
@@ -131,20 +131,26 @@ package starling.animation
         /** @private */
         starling_internal static function fromPool(call:Function, delay:Number, args:Array=null):DelayedCall
         {
-//			if (sPool.length) return sPool.pop().reset(call, delay, args);
-            if (sPool.size>=POOL_SIZE)
+			if (POOLING)
 			{
-				var delayedCall:DelayedCall = DelayedCall(sPool.poll());
-				if (!delayedCall.pooled) throw new AssukarError();
-				hits++;
-				delayedCall.pooled = false;
-				delayedCall._jugglerIndex = -1;
-				return delayedCall.reset(call, delay, args);
+	            if (sPool.size>=POOL_SIZE)
+				{
+					var delayedCall:DelayedCall = DelayedCall(sPool.poll());
+					if (!delayedCall.pooled) throw new AssukarError();
+					hits++;
+					delayedCall.pooled = false;
+					delayedCall._jugglerIndex = -1;
+					return delayedCall.reset(call, delay, args);
+				}
+	            else 
+				{
+					misses++;
+					if (misses%10==0) log("Tween pool:" + sPool.size + " hits:" + hits + " misses:" + misses + " ratio:" + (hits/(hits+misses)).toFixed(3));
+					return new DelayedCall(call, delay, args);
+				}
 			}
-            else 
+			else
 			{
-				misses++;
-				if (misses%10==0) log("Tween pool:" + sPool.size + " hits:" + hits + " misses:" + misses + " ratio:" + (hits/(hits+misses)).toFixed(3));
 				return new DelayedCall(call, delay, args);
 			}
         }
@@ -152,17 +158,26 @@ package starling.animation
         /** @private */
         starling_internal static function toPool(delayedCall:DelayedCall):void
         {
-			if (delayedCall.pooled) return;
-			delayedCall.pooled = true;
-			
-            // reset any object-references, to make sure we don't prevent any garbage collection
-            delayedCall.mCall = null;
-            delayedCall.mArgs = null;
-            delayedCall.removeEventListeners();
-			// in case it changed in the event listener
-			delayedCall.pooled = true;
-			//
-            sPool.push(delayedCall);
+			if (POOLING)
+			{
+				if (delayedCall.pooled) return;
+				delayedCall.pooled = true;
+				
+	            // reset any object-references, to make sure we don't prevent any garbage collection
+	            delayedCall.mCall = null;
+	            delayedCall.mArgs = null;
+	            delayedCall.removeEventListeners();
+				// in case it changed in the event listener
+				delayedCall.pooled = true;
+				//
+	            sPool.push(delayedCall);
+			}
+			else
+			{
+	            delayedCall.mCall = null;
+	            delayedCall.mArgs = null;
+	            delayedCall.removeEventListeners();
+			}
         }
 		
 		/* INTERFACE starling.animation.IAnimatable */

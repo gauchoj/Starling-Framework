@@ -124,8 +124,8 @@ package starling.animation
         
 //        private static var sPool:Vector.<DelayedCall> = new <DelayedCall>[];
 		private static var sPool:LinkedList = new LinkedList();
-        
-		static private var dcCount:int = 0;
+		private static var hits: int = 0;
+		private static var misses: int = 0;
 		
         /** @private */
         starling_internal static function fromPool(call:Function, delay:Number, args:Array=null):DelayedCall
@@ -135,12 +135,13 @@ package starling.animation
 			{
 				var delayedCall:DelayedCall = DelayedCall(sPool.poll());
 				if (!delayedCall.pooled) throw new AssukarError();
+				hits++;
 				return delayedCall.reset(call, delay, args);
 			}
             else 
 			{
-				dcCount++;
-				if (dcCount%10==0) log("delays:" + dcCount + " pool:" + sPool.size);
+				misses++;
+				if (misses%10==0) log("Tween pool:" + sPool.size + " hits:" + hits + " misses:" + misses + " ratio:" + (hits/(hits+misses)).toFixed(3));
 				return new DelayedCall(call, delay, args);
 			}
         }

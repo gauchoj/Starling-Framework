@@ -458,7 +458,7 @@ package starling.animation
 		static private const POOL_SIZE: int = 200; 
 		
         
-		static private var tweenCount:int = 0;
+//		static private var tweenCount:int = 0;
         /** @private */
         starling_internal static function fromPool(target:Object, time:Number, 
                                                    transition:Object="linear"):Tween
@@ -482,8 +482,7 @@ package starling.animation
             else
 			{ 
 				misses++;
-				tweenCount++;
-				if (tweenCount%100==0) log("tweens:" + tweenCount + " pool:" + sTweenPool.size + " " + hits + ":" + misses);
+				if (misses%200==0) log("Tween pool:" + sTweenPool.size + " hits:" + hits + " misses:" + misses + " ratio:" + (hits/(hits+misses)).toFixed(3));
 				return new Tween(target, time, transition);
 			}
         }

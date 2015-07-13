@@ -50,8 +50,8 @@ package starling.animation
             mCall = call;
             mArgs = args;
             mRepeatCount = 1;
-			_jugglerIndex = -1;
-			pooled = false;
+//			_jugglerIndex = -1;
+//			pooled = false;
             
             return this;
         }
@@ -126,16 +126,19 @@ package starling.animation
 		private static var sPool:LinkedList = new LinkedList();
 		private static var hits: int = 0;
 		private static var misses: int = 0;
+		static private const POOL_SIZE: int = 200;
 		
         /** @private */
         starling_internal static function fromPool(call:Function, delay:Number, args:Array=null):DelayedCall
         {
 //			if (sPool.length) return sPool.pop().reset(call, delay, args);
-            if (sPool.size>=100)
+            if (sPool.size>=POOL_SIZE)
 			{
 				var delayedCall:DelayedCall = DelayedCall(sPool.poll());
 				if (!delayedCall.pooled) throw new AssukarError();
 				hits++;
+				delayedCall.pooled = false;
+				delayedCall._jugglerIndex = -1;
 				return delayedCall.reset(call, delay, args);
 			}
             else 
@@ -156,11 +159,14 @@ package starling.animation
             delayedCall.mCall = null;
             delayedCall.mArgs = null;
             delayedCall.removeEventListeners();
+			// in case it changed in the event listener
+			delayedCall.pooled = true;
+			//
             sPool.push(delayedCall);
         }
 		
 		/* INTERFACE starling.animation.IAnimatable */
-		private var _jugglerIndex : int;
+		private var _jugglerIndex : int = -1;
 		public function get jugglerIndex() : int
 		{
 			return _jugglerIndex;

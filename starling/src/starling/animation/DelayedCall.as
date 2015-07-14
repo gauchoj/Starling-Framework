@@ -69,17 +69,23 @@ package starling.animation
             {                
                 if (mRepeatCount == 0 || mRepeatCount > 1)
                 {
-                    mCall.apply(null, mArgs);
+					// TODO watch
+                    if (mCall)
+					{
+						mCall.apply(null, mArgs);
+					}
                     
                     if (mRepeatCount > 0) mRepeatCount -= 1;
                     mCurrentTime = 0;
 					
-					// TODO watch
-					if (!pooled)
-					// 
-					{
-	                    advanceTime((previousTime + time) - mTotalTime);
-					}
+					advanceTime((previousTime + time) - mTotalTime);
+					
+//					// TODO watch
+//					if (!pooled)
+//					// 
+//					{
+//	                    advanceTime((previousTime + time) - mTotalTime);
+//					}
                 }
                 else
                 {

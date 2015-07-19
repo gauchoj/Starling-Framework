@@ -14,9 +14,6 @@ package starling.animation
 	import starling.events.Event;
 	import starling.events.EventDispatcher;
 
-	import com.assukar.airong.ds.LinkedList;
-	import com.assukar.airong.error.AssukarError;
-
     /** A DelayedCall allows you to execute a method after a certain time has passed. Since it 
      *  implements the IAnimatable interface, it can be added to a juggler. In most cases, you 
      *  do not have to use this class directly; the juggler class contains a method to delay
@@ -28,7 +25,9 @@ package starling.animation
      *  @see Juggler
      */ 
     public class DelayedCall 
-	extends EventDispatcher implements IPooledAnimatable
+	extends EventDispatcher 
+//	implements IPooledAnimatable
+	implements IAnimatable
     {
         private var mCurrentTime:Number;
         private var mTotalTime:Number;
@@ -128,62 +127,62 @@ package starling.animation
         
         // delayed call pooling
         
-		static private const POOLING: Boolean = false;
-		private static var sPool:LinkedList = new LinkedList();
-		private static var hits: int = 0;
-		private static var misses: int = 0;
-		static private const POOL_SIZE: int = 200;
+//		static private const POOLING: Boolean = false;
+//		private static var sPool:LinkedList = new LinkedList();
+//		private static var hits: int = 0;
+//		private static var misses: int = 0;
+//		static private const POOL_SIZE: int = 200;
 		
         /** @private */
         starling_internal static function fromPool(call:Function, delay:Number, args:Array=null):DelayedCall
         {
-			if (POOLING)
-			{
-	            if (sPool.size>=POOL_SIZE)
-				{
-					var delayedCall:DelayedCall = DelayedCall(sPool.poll());
-					if (!delayedCall.pooled) throw new AssukarError();
-					hits++;
-					delayedCall.pooled = false;
-					delayedCall._jugglerIndex = -1;
-					return delayedCall.reset(call, delay, args);
-				}
-	            else 
-				{
-					misses++;
-					if (misses%10==0) log("Tween pool:" + sPool.size + " hits:" + hits + " misses:" + misses + " ratio:" + (hits/(hits+misses)).toFixed(3));
-					return new DelayedCall(call, delay, args);
-				}
-			}
-			else
-			{
+//			if (POOLING)
+//			{
+//	            if (sPool.size>=POOL_SIZE)
+//				{
+//					var delayedCall:DelayedCall = DelayedCall(sPool.poll());
+////					if (!delayedCall.pooled) throw new AssukarError();
+//					hits++;
+////					delayedCall.pooled = false;
+//					delayedCall._jugglerIndex = -1;
+//					return delayedCall.reset(call, delay, args);
+//				}
+//	            else 
+//				{
+//					misses++;
+//					if (misses%10==0) log("Tween pool:" + sPool.size + " hits:" + hits + " misses:" + misses + " ratio:" + (hits/(hits+misses)).toFixed(3));
+//					return new DelayedCall(call, delay, args);
+//				}
+//			}
+//			else
+//			{
 				return new DelayedCall(call, delay, args);
-			}
+//			}
         }
         
         /** @private */
         starling_internal static function toPool(delayedCall:DelayedCall):void
         {
-			if (POOLING)
-			{
-				if (delayedCall.pooled) return;
-				delayedCall.pooled = true;
-				
-	            // reset any object-references, to make sure we don't prevent any garbage collection
+//			if (POOLING)
+//			{
+////				if (delayedCall.pooled) return;
+////				delayedCall.pooled = true;
+//				
+//	            // reset any object-references, to make sure we don't prevent any garbage collection
+//	            delayedCall.mCall = null;
+//	            delayedCall.mArgs = null;
+//	            delayedCall.removeEventListeners();
+//				// in case it changed in the event listener
+////				delayedCall.pooled = true;
+//				//
+//	            sPool.push(delayedCall);
+//			}
+//			else
+//			{
 	            delayedCall.mCall = null;
 	            delayedCall.mArgs = null;
 	            delayedCall.removeEventListeners();
-				// in case it changed in the event listener
-				delayedCall.pooled = true;
-				//
-	            sPool.push(delayedCall);
-			}
-			else
-			{
-	            delayedCall.mCall = null;
-	            delayedCall.mArgs = null;
-	            delayedCall.removeEventListeners();
-			}
+//			}
         }
 		
 		/* INTERFACE starling.animation.IAnimatable */
@@ -197,11 +196,11 @@ package starling.animation
 			_jugglerIndex = value;
 		}
 		
-		/* INTERFACE starling.animation.PooledIAnimatable */
-		private var pooled: Boolean = false;
-		public function pool(): void
-		{
-			DelayedCall.starling_internal::toPool(this);
-		}				
+//		/* INTERFACE starling.animation.PooledIAnimatable */
+//		private var pooled: Boolean = false;
+//		public function pool(): void
+//		{
+//			DelayedCall.starling_internal::toPool(this);
+//		}				
     }
 }

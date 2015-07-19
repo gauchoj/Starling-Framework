@@ -451,7 +451,7 @@ package starling.animation
         
         // tween pooling
         
-		static private const POOLING: Boolean = false;
+		static private const POOLING: Boolean = true;
 		private static var sTweenPool:LinkedList = new LinkedList();
 		private static var hits: int = 0;
 		private static var misses: int = 0;

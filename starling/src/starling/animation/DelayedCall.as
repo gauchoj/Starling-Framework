@@ -128,7 +128,7 @@ package starling.animation
         
         // delayed call pooling
         
-		static private const POOLING: Boolean = false;
+		static private const POOLING: Boolean = false; 
 		private static var sPool:LinkedList = new LinkedList();
 		private static var hits: int = 0;
 		private static var misses: int = 0;

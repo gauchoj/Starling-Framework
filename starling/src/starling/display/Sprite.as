@@ -111,6 +111,14 @@ package starling.display
          */
         public function flatten(ignoreChildOrder:Boolean=false):void
         {					
+			
+			
+			//TODO to delete
+			//mFlattenRequested = false;
+			//return; 
+			
+			
+			
 //			if (IGNORE_FLATTEN)
 //			{
 //				mFlattenRequested = false;

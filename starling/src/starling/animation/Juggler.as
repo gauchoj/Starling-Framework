@@ -95,7 +95,7 @@ package starling.animation
 			object.jugglerIndex = -1;
 			
 			// TODO watch
-			if (object is IPooledAnimatable) IPooledAnimatable(object).pool();
+//			if (object is IPooledAnimatable) IPooledAnimatable(object).pool();
 			//
 			
 			if (object is EventDispatcher)
@@ -118,7 +118,7 @@ package starling.animation
 				if (tween && tween.target == target)
 				{
 					// TODO watch
-					tween.pool();
+//					tween.pool();
 					// 
 					tween.removeEventListener(Event.REMOVE_FROM_JUGGLER, onRemove);
 					tween.jugglerIndex = -1;
@@ -158,7 +158,7 @@ package starling.animation
 			for (var i:int = mObjects.length - 1; i >= 0; --i)
 			{
 				// TODO watch
-				if (mObjects[i] is IPooledAnimatable) IPooledAnimatable(mObjects[i]).pool();
+//				if (mObjects[i] is IPooledAnimatable) IPooledAnimatable(mObjects[i]).pool();
 				//
 				
 				dispatcher = mObjects[i] as EventDispatcher;

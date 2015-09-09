@@ -19,9 +19,9 @@ package starling.display
 	import starling.filters.FragmentFilterMode;
 	import starling.textures.Texture;
 	import starling.textures.TextureSmoothing;
+	import starling.utils.TreeUtils;
 	import starling.utils.VertexData;
 
-	import com.assukar.airong.error.AssukarError;
 	import com.assukar.airong.utils.Utils;
 
 	import flash.display3D.Context3D;
@@ -98,7 +98,7 @@ package starling.display
         private static var sProgramNameCache:Dictionary = new Dictionary();
         
 		// ignore filter ADDED BY ASSUKAR
-		private static var IGNORE_ALL_FILTERS : Boolean = false;
+//		private static var IGNORE_ALL_FILTERS : Boolean = false;
 		private var mIgnoreFilters : Boolean;
 		override public function get ignoreFilters() : Boolean
 		{
@@ -208,11 +208,13 @@ package starling.display
 	            mIndexBuffer.uploadFromVector(mIndexData, 0, numIndices);
 	            mSyncRequired = false;
 			}
-			catch (err : Error)
+			catch (e : Error)
 			{
-				Utils.logError(new AssukarError(err.message + " IGNORE_ALL_FILTERS = true"), false);
-				mSyncRequired = IGNORE_ALL_FILTERS = true;
+				mSyncRequired = true;//IGNORE_ALL_FILTERS = true;
+				if (++Starling.current.problemCount%30==0) throw e;//Utils.log(e, false);
+				Utils.log("PROBLEM RENDERING " + e.errorID + " " + Starling.current.frameCount + "/" + Starling.current.problemCount);
 				return false;
+//				Utils.logError(new AssukarError(err.message + " IGNORE_ALL_FILTERS = true"), false);
 			}
 			
 			return true;
@@ -286,7 +288,22 @@ package starling.display
                                           Context3DVertexBufferFormat.FLOAT_2);
             }
             
-            context.drawTriangles(mIndexBuffer, 0, mNumQuads * 2);
+//			if (Starling.current.firstFrameAfterActivation)
+//			{
+				try
+				{
+	            	context.drawTriangles(mIndexBuffer, 0, mNumQuads * 2);
+				}
+				catch (e: Error)
+				{
+					if (++Starling.current.problemCount%30==0) throw e;//Utils.log(e, false);
+					Utils.log("PROBLEM RENDERING " + e.errorID + " " + Starling.current.frameCount + "/" + Starling.current.problemCount);
+				}
+//			}
+//			else
+//			{
+//				context.drawTriangles(mIndexBuffer, 0, mNumQuads * 2);
+//			}
             
             if (mTexture)
             {
@@ -569,13 +586,12 @@ package starling.display
                                               blendMode:String=null,
                                               ignoreCurrentFilter:Boolean=false):int
         {
-			if (IGNORE_ALL_FILTERS && object.filter)
-			{
-				object.ignoreFilters = true;
-			}
+//			if (IGNORE_ALL_FILTERS && object.filter)
+//			{
+//				object.ignoreFilters = true;
+//			}
 						
-            if (object is Sprite3D)
-                throw new IllegalOperationError("Sprite3D objects cannot be flattened");
+            if (object is Sprite3D) throw new IllegalOperationError("Sprite3D objects cannot be flattened");
 
             var i:int;
             var quadBatch:QuadBatch;

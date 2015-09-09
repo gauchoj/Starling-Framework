@@ -7,21 +7,25 @@
 //	in accordance with the terms of the accompanying license agreement.
 //
 // =================================================================================================
+package starling.display
+{
+	import starling.core.RenderSupport;
+	import starling.core.starling_internal;
+	import starling.errors.AbstractClassError;
+	import starling.events.Event;
+	import starling.filters.FragmentFilter;
+	import starling.utils.MatrixUtil;
+	import starling.utils.TreeUtils;
 
-package starling.display { 
-	
+	import com.assukar.airong.utils.Utils;
+
 	import flash.geom.Matrix;
-    import flash.geom.Point;
-    import flash.geom.Rectangle;
-    import flash.system.Capabilities;
-    import flash.utils.getQualifiedClassName;
-    
-    import starling.core.RenderSupport;
-    import starling.core.starling_internal; 
-    import starling.errors.AbstractClassError; 
-    import starling.events.Event;
-    import starling.filters.FragmentFilter;
-    import starling.utils.MatrixUtil;
+	import flash.geom.Point;
+	import flash.geom.Rectangle;
+	import flash.system.Capabilities;
+	import flash.utils.getQualifiedClassName;
+ 
+	
 	
 	
 	use namespace starling_internal;
@@ -357,26 +361,22 @@ package starling.display {
 					if (mask)
 						support.pushMask(mask);
 					
-					if (filter) {
-						
-						//TODO to comment (try/catch)
-						//try {	 
-						
+					if (filter) 
+					{
 						filter.render(child, support, alpha);
-						
-							//}catch (err:Error) {
-							//Utils.wraplog( err.name + " - " + err.errorID);	
-							//print(StarlingUtils.dumpChildren(child, ".", false, false)); 
-							//var testChild:Object = child;
-							//while (testChild.parent) {								
-							//print(testChild);  
-							//testChild = testChild.parent; 
-							//}							
-							//}
-						
 					}
-					else {
-						child.render(support, alpha);
+					else 
+					{
+						try
+						{
+							child.render(support, alpha);
+						}
+						catch (e: Error)
+						{
+							Utils.log("\n" + TreeUtils.dump(child));
+							Utils.log(e, false);
+							return;
+						}
 					}
 					
 					if (mask)

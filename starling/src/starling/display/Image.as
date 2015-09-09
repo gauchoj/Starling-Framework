@@ -10,14 +10,17 @@
 
 package starling.display
 {
-	import flash.display.Bitmap;
-	import flash.geom.Matrix;
-	import flash.geom.Point;
-	import flash.geom.Rectangle;
 	import starling.core.RenderSupport;
 	import starling.textures.Texture;
 	import starling.textures.TextureSmoothing;
 	import starling.utils.VertexData;
+
+	import com.assukar.airong.utils.Utils;
+
+	import flash.display.Bitmap;
+	import flash.geom.Matrix;
+	import flash.geom.Point;
+	import flash.geom.Rectangle;
     
     
     /** An Image is a quad with a texture mapped onto it.
@@ -186,15 +189,10 @@ package starling.display
                 throw new ArgumentError("Invalid smoothing mode: " + value);
         }
 		
-		
-        
         /** @inheritDoc */
         public override function render(support:RenderSupport, parentAlpha:Number):void
-        {		
-            support.batchQuad(this, parentAlpha, mTexture, mSmoothing);			
+        {
+           	support.batchQuad(this, parentAlpha, mTexture, mSmoothing);
         }
-		
-		
-		
     }
 }

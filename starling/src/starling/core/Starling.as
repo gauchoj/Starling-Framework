@@ -12,6 +12,8 @@ package starling.core
 	import starling.utils.VAlign;
 	import starling.utils.execute;
 
+	import com.assukar.airong.utils.Utils;
+
 	import flash.display.Shape;
 	import flash.display.Sprite;
 	import flash.display.Stage3D;
@@ -649,11 +651,12 @@ package starling.core
          *  furthermore, the method <code>nextFrame</code> will be called once per Flash Player
          *  frame. (Except when <code>shareContext</code> is enabled: in that case, you have to
          *  call that method manually.) */
+//		public var firstFrameAfterActivation: Boolean = true;
         public function start():void 
         { 
             mStarted = mRendering = true;
             mLastFrameTimestamp = getTimer() / 1000.0;
-//			Utils.printStackTrace();	
+//			firstFrameAfterActivation = true;
         }
         
         /** Stops all logic and input processing, effectively freezing the app in its current state.
@@ -702,9 +705,16 @@ package starling.core
 		
 		private var enterFrameDate: Date;
 		public var frameLength: Number = 0;
+		public var frameCount: uint = 0;
+		public var problemCount: uint = 0;
         
         private function onEnterFrame(event:Event):void
         {
+			var originProblemCount: int = problemCount;
+			frameCount++;
+			
+//			if (firstFrameAfterActivation) Utils.print("FIRST FRAME AFTER ACTIVATION " + frameCount);
+			
             // On mobile, the native display list is only updated on stage3D draw calls.
             // Thus, we render even when Starling is paused.
             
@@ -719,6 +729,10 @@ package starling.core
             }
 
             updateNativeOverlay();
+			
+			if (problemCount == originProblemCount) problemCount = 0;
+			
+//			firstFrameAfterActivation = false;
         }
         
         private function onKey(event:KeyboardEvent):void

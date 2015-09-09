@@ -10,36 +10,38 @@
 
 package starling.filters
 {
-    import flash.display3D.Context3D;
-    import flash.display3D.Context3DProgramType;
-    import flash.display3D.Context3DVertexBufferFormat;
-    import flash.display3D.IndexBuffer3D;
-    import flash.display3D.Program3D;
-    import flash.display3D.VertexBuffer3D;
-    import flash.errors.IllegalOperationError;
-    import flash.geom.Matrix;
-    import flash.geom.Matrix3D;
-    import flash.geom.Rectangle;
-    import flash.system.Capabilities;
-    import flash.utils.getQualifiedClassName;
-    
-    import starling.core.RenderSupport;
-    import starling.core.Starling;
-    import starling.core.starling_internal;
-    import starling.display.BlendMode;
-    import starling.display.DisplayObject;
-    import starling.display.Image;
-    import starling.display.QuadBatch;
-    import starling.display.Stage;
-    import starling.errors.AbstractClassError;
-    import starling.errors.MissingContextError;
-    import starling.events.Event;
-    import starling.textures.Texture;
-    import starling.utils.MatrixUtil;
-    import starling.utils.RectangleUtil;
-    import starling.utils.SystemUtil;
-    import starling.utils.VertexData;
-    import starling.utils.getNextPowerOfTwo;
+	import starling.core.RenderSupport;
+	import starling.core.Starling;
+	import starling.core.starling_internal;
+	import starling.display.BlendMode;
+	import starling.display.DisplayObject;
+	import starling.display.Image;
+	import starling.display.QuadBatch;
+	import starling.display.Stage;
+	import starling.errors.AbstractClassError;
+	import starling.errors.MissingContextError;
+	import starling.events.Event;
+	import starling.textures.Texture;
+	import starling.utils.MatrixUtil;
+	import starling.utils.RectangleUtil;
+	import starling.utils.SystemUtil;
+	import starling.utils.VertexData;
+	import starling.utils.getNextPowerOfTwo;
+
+	import com.assukar.airong.utils.Utils;
+
+	import flash.display3D.Context3D;
+	import flash.display3D.Context3DProgramType;
+	import flash.display3D.Context3DVertexBufferFormat;
+	import flash.display3D.IndexBuffer3D;
+	import flash.display3D.Program3D;
+	import flash.display3D.VertexBuffer3D;
+	import flash.errors.IllegalOperationError;
+	import flash.geom.Matrix;
+	import flash.geom.Matrix3D;
+	import flash.geom.Rectangle;
+	import flash.system.Capabilities;
+	import flash.utils.getQualifiedClassName;
 
     /** The FragmentFilter class is the base class for all filter effects in Starling.
      *  All other filters of this package extend this class. You can attach them to any display
@@ -194,9 +196,21 @@ package starling.filters
             }
             
             if (mCache)
-                mCache.render(support, parentAlpha);
+			{
+				mCache.render(support, parentAlpha);
+			}
             else
-                renderPasses(object, support, parentAlpha, false);
+			{
+				try
+				{
+	                renderPasses(object, support, parentAlpha, false);
+				}
+				catch (e:Error)
+				{
+					if (++Starling.current.problemCount%30==0) Utils.log(e, false);
+					Utils.log("PROBLEM RENDERING " + e.errorID + " " + Starling.current.frameCount + "/" + Starling.current.problemCount);
+				}
+			}
             
             // top layer
             
@@ -234,7 +248,8 @@ package starling.filters
                 return intoCache ? new QuadBatch() : null; 
             }
             
-            updateBuffers(context, boundsPot);
+			updateBuffers(context, boundsPot);
+			
             updatePassTextures(boundsPot.width, boundsPot.height, mResolution * scale);
             
             support.finishQuadBatch();

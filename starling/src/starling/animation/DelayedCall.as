@@ -67,7 +67,7 @@ package starling.animation
                 if (mRepeatCount == 0 || mRepeatCount > 1)
                 {
 					// TODO watch
-                    if (mCall)
+                    if (mCall!=null)
 					{
 						mCall.apply(null, mArgs);
 					}

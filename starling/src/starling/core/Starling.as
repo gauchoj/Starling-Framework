@@ -13,6 +13,11 @@ package starling.core
 	import starling.utils.VAlign;
 	import starling.utils.execute;
 
+	import com.assukar.airong.ds.Cursor;
+	import com.assukar.airong.ds.LinkedList;
+	import com.assukar.airong.error.AssukarError;
+	import com.assukar.airong.utils.Utils;
+
 	import flash.display.Shape;
 	import flash.display.Sprite;
 	import flash.display.Stage3D;
@@ -532,7 +537,30 @@ package starling.core
                 RenderSupport.clear(mStage.color, 1.0);
             
             mStage.render(mSupport, 1.0);
-            mSupport.finishQuadBatch();
+			
+			mSupport.finishQuadBatch();
+			
+//			try
+//			{
+//            	mSupport.finishQuadBatch();
+//			}
+//			catch (e: Error)
+//			{
+//				Starling.current.frameProblemCount++;
+//				if (Starling.current.problemVirginFrame || Starling.current.frameProblemCount%10==1)
+//				{
+//					Utils.log("Starling:547 PROBLEM RENDERING " + e.errorID + " " + Starling.current.frameCount + "/" + Starling.current.frameProblemCount + "/" + Starling.current.problemVirginFrame);
+//				}
+//				if (Starling.current.problemVirginFrame)
+//				{
+//					Utils.log(e, false);
+//				}
+//			}
+
+			if (Starling.current.frameProblemProduces>0)
+			{
+				Starling.current.frameProblemProduces--;
+			}
             
             if (mStatsDisplay)
                 mStatsDisplay.drawCount = mSupport.drawCount;
@@ -650,11 +678,12 @@ package starling.core
          *  furthermore, the method <code>nextFrame</code> will be called once per Flash Player
          *  frame. (Except when <code>shareContext</code> is enabled: in that case, you have to
          *  call that method manually.) */
+//		public var firstFrameAfterActivation: Boolean = true;
         public function start():void 
         { 
             mStarted = mRendering = true;
             mLastFrameTimestamp = getTimer() / 1000.0;
-//			Utils.printStackTrace();	
+//			firstFrameAfterActivation = true;
         }
         
         /** Stops all logic and input processing, effectively freezing the app in its current state.
@@ -703,9 +732,40 @@ package starling.core
 		
 		private var enterFrameDate: Date;
 		public var frameLength: Number = 0;
+		public var frameCount: uint = 0;
+		public var frameProblemCount: uint = 0;
+		public var frameProblemProduces: uint = 0;
+		public var problemVirginFrame: Boolean = true;
+		public var consecutiveProblematicFrames: int = 0;
+//		public var currentProblematicChildren: LinkedList = new LinkedList();
+//		public var previousProblematicChildren: LinkedList = new LinkedList();
         
         private function onEnterFrame(event:Event):void
         {
+//			if (!previousProblematicChildren.empty)
+//			{
+//				var c: Cursor = previousProblematicChildren.cursor;
+//				while (c.next) c.current.visible = true;
+//				previousProblematicChildren.clear();
+//			}
+			
+//			var originProblemCount: int = problemCount;
+			problemVirginFrame = frameProblemCount == 0;
+			if (problemVirginFrame) consecutiveProblematicFrames = 0;
+			else consecutiveProblematicFrames++;
+			if (consecutiveProblematicFrames == 60*5)
+			{
+				frameProblemCount = 0;
+				consecutiveProblematicFrames = 0;
+				Utils.logError(new AssukarError(), true);
+				return;
+			}
+			frameProblemCount = 0;
+			frameProblemProduces = 0;
+			frameCount++;
+			
+//			if (firstFrameAfterActivation) Utils.print("FIRST FRAME AFTER ACTIVATION " + frameCount);
+			
             // On mobile, the native display list is only updated on stage3D draw calls.
             // Thus, we render even when Starling is paused.
             
@@ -720,6 +780,10 @@ package starling.core
             }
 
             updateNativeOverlay();
+			
+//			if (problemCount == originProblemCount) problemCount = 0;
+			
+//			firstFrameAfterActivation = false;
         }
         
         private function onKey(event:KeyboardEvent):void

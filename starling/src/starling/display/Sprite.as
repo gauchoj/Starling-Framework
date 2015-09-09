@@ -10,15 +10,18 @@
 
 package starling.display
 {
-    import flash.geom.Matrix;
-    import flash.geom.Matrix3D;
-    import flash.geom.Point;
-    import flash.geom.Rectangle;
-    
-    import starling.core.RenderSupport;
-    import starling.events.Event;
-    import starling.utils.MatrixUtil;
-    import starling.utils.RectangleUtil;
+	import starling.core.RenderSupport;
+	import starling.events.Event;
+	import starling.utils.MatrixUtil;
+	import starling.utils.RectangleUtil;
+	import starling.utils.TreeUtils;
+
+	import com.assukar.airong.utils.Utils;
+
+	import flash.geom.Matrix;
+	import flash.geom.Matrix3D;
+	import flash.geom.Point;
+	import flash.geom.Rectangle;
 
     /** Dispatched on all children when the object is flattened. */
     [Event(name="flatten", type="starling.events.Event")]
@@ -257,7 +260,9 @@ package starling.display
             else super.render(support, parentAlpha);
             
             if (mClipRect)
-                support.popClipRect();
+			{
+               	support.popClipRect();
+			}
         }
     }
 }

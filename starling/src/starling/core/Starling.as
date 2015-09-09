@@ -752,7 +752,7 @@ package starling.core
 			problemVirginFrame = frameProblemCount == 0;
 			if (problemVirginFrame) consecutiveProblematicFrames = 0;
 			else consecutiveProblematicFrames++;
-			if (consecutiveProblematicFrames == 100)
+			if (consecutiveProblematicFrames == 60*5)
 			{
 				frameProblemCount = 0;
 				consecutiveProblematicFrames = 0;

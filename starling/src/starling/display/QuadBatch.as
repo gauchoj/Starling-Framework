@@ -200,22 +200,22 @@ package starling.display
             if (numVertices == 0) return true;
             if (context == null)  throw new MissingContextError();
             
-			try
-			{
+//			try
+//			{
 	            mVertexBuffer = context.createVertexBuffer(numVertices, VertexData.ELEMENTS_PER_VERTEX);
 	            mVertexBuffer.uploadFromVector(mVertexData.rawData, 0, numVertices);
 	            mIndexBuffer = context.createIndexBuffer(numIndices);
 	            mIndexBuffer.uploadFromVector(mIndexData, 0, numIndices);
 	            mSyncRequired = false;
-			}
-			catch (e : Error)
-			{
-				mSyncRequired = true;//IGNORE_ALL_FILTERS = true;
-				if (++Starling.current.problemCount%30==0) throw e;//Utils.log(e, false);
-				Utils.log("PROBLEM RENDERING " + e.errorID + " " + Starling.current.frameCount + "/" + Starling.current.problemCount);
-				return false;
-//				Utils.logError(new AssukarError(err.message + " IGNORE_ALL_FILTERS = true"), false);
-			}
+//			}
+//			catch (e : Error)
+//			{
+//				mSyncRequired = true;
+//				Starling.current.problemCount++;
+//				Utils.log("QuadBatch:216 PROBLEM RENDERING " + e.errorID + " " + Starling.current.frameCount + "/" + Starling.current.problemCount);
+//				if (Starling.current.problemCount==1 || Starling.current.problemCount%30==0) throw e;//Utils.log(e, false);
+//				return false;
+//			}
 			
 			return true;
 	    }
@@ -288,22 +288,20 @@ package starling.display
                                           Context3DVertexBufferFormat.FLOAT_2);
             }
             
-//			if (Starling.current.firstFrameAfterActivation)
-//			{
-				try
+			try
+			{
+	           	context.drawTriangles(mIndexBuffer, 0, mNumQuads * 2);
+			}
+			catch (e: Error)
+			{
+				Starling.current.frameProblemCount++;
+				if (Starling.current.problemVirginFrame || Starling.current.frameProblemCount%10==1)
 				{
-	            	context.drawTriangles(mIndexBuffer, 0, mNumQuads * 2);
+					Utils.log("QuadBatch:300 PROBLEM RENDERING " + e.errorID + " " + Starling.current.frameCount + "/" + Starling.current.frameProblemCount + "/" + Starling.current.problemVirginFrame);
 				}
-				catch (e: Error)
-				{
-					if (++Starling.current.problemCount%30==0) throw e;//Utils.log(e, false);
-					Utils.log("PROBLEM RENDERING " + e.errorID + " " + Starling.current.frameCount + "/" + Starling.current.problemCount);
-				}
-//			}
-//			else
-//			{
-//				context.drawTriangles(mIndexBuffer, 0, mNumQuads * 2);
-//			}
+				if (Starling.current.problemVirginFrame) throw e;
+				return;
+			}
             
             if (mTexture)
             {

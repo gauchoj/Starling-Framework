@@ -10,6 +10,7 @@
 package starling.display
 {
 	import starling.core.RenderSupport;
+	import starling.core.Starling;
 	import starling.core.starling_internal;
 	import starling.errors.AbstractClassError;
 	import starling.events.Event;
@@ -361,22 +362,24 @@ package starling.display
 					if (mask)
 						support.pushMask(mask);
 					
-					if (filter) 
+					try
 					{
-						filter.render(child, support, alpha);
+						if (filter) filter.render(child, support, alpha); 
+						else child.render(support, alpha);
 					}
-					else 
+					catch (e: Error)
 					{
-						try
+						Starling.current.frameProblemCount++;
+						if (Starling.current.problemVirginFrame || Starling.current.frameProblemCount%10==1)
 						{
-							child.render(support, alpha);
+							Utils.log("DisplayObjectContainer:375 PROBLEM RENDERING " + e.errorID + " " + Starling.current.frameCount + "/" + Starling.current.frameProblemCount + "/" + Starling.current.problemVirginFrame);
 						}
-						catch (e: Error)
+						if (Starling.current.problemVirginFrame)
 						{
 							Utils.log("\n" + TreeUtils.dump(child));
 							Utils.log(e, false);
-							return;
 						}
+						return;
 					}
 					
 					if (mask)

@@ -9,6 +9,7 @@ package starling.core
 	import starling.events.TouchProcessor;
 	import starling.utils.HAlign;
 	import starling.utils.SystemUtil;
+	import starling.utils.TreeUtils;
 	import starling.utils.VAlign;
 	import starling.utils.execute;
 
@@ -533,7 +534,24 @@ package starling.core
                 RenderSupport.clear(mStage.color, 1.0);
             
             mStage.render(mSupport, 1.0);
-            mSupport.finishQuadBatch();
+			
+			try
+			{
+            	mSupport.finishQuadBatch();
+			}
+			catch (e: Error)
+			{
+				Starling.current.frameProblemCount++;
+				if (Starling.current.problemVirginFrame || Starling.current.frameProblemCount%10==1)
+				{
+					Utils.log("Starling:547 PROBLEM RENDERING " + e.errorID + " " + Starling.current.frameCount + "/" + Starling.current.frameProblemCount + "/" + Starling.current.problemVirginFrame);
+				}
+				if (Starling.current.problemVirginFrame)
+				{
+					Utils.log(e, false);
+				}
+				return;
+			}
             
             if (mStatsDisplay)
                 mStatsDisplay.drawCount = mSupport.drawCount;
@@ -706,11 +724,14 @@ package starling.core
 		private var enterFrameDate: Date;
 		public var frameLength: Number = 0;
 		public var frameCount: uint = 0;
-		public var problemCount: uint = 0;
+		public var frameProblemCount: uint = 0;
+		public var problemVirginFrame: Boolean = true;
         
         private function onEnterFrame(event:Event):void
         {
-			var originProblemCount: int = problemCount;
+//			var originProblemCount: int = problemCount;
+			problemVirginFrame = frameProblemCount == 0;
+			frameProblemCount = 0;
 			frameCount++;
 			
 //			if (firstFrameAfterActivation) Utils.print("FIRST FRAME AFTER ACTIVATION " + frameCount);
@@ -730,7 +751,7 @@ package starling.core
 
             updateNativeOverlay();
 			
-			if (problemCount == originProblemCount) problemCount = 0;
+//			if (problemCount == originProblemCount) problemCount = 0;
 			
 //			firstFrameAfterActivation = false;
         }

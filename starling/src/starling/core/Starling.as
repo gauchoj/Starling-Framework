@@ -9,10 +9,12 @@ package starling.core
 	import starling.events.TouchProcessor;
 	import starling.utils.HAlign;
 	import starling.utils.SystemUtil;
-	import starling.utils.TreeUtils;
 	import starling.utils.VAlign;
 	import starling.utils.execute;
 
+	import com.assukar.airong.ds.Cursor;
+	import com.assukar.airong.ds.LinkedList;
+	import com.assukar.airong.error.AssukarError;
 	import com.assukar.airong.utils.Utils;
 
 	import flash.display.Shape;
@@ -535,22 +537,28 @@ package starling.core
             
             mStage.render(mSupport, 1.0);
 			
-			try
+			mSupport.finishQuadBatch();
+			
+//			try
+//			{
+//            	mSupport.finishQuadBatch();
+//			}
+//			catch (e: Error)
+//			{
+//				Starling.current.frameProblemCount++;
+//				if (Starling.current.problemVirginFrame || Starling.current.frameProblemCount%10==1)
+//				{
+//					Utils.log("Starling:547 PROBLEM RENDERING " + e.errorID + " " + Starling.current.frameCount + "/" + Starling.current.frameProblemCount + "/" + Starling.current.problemVirginFrame);
+//				}
+//				if (Starling.current.problemVirginFrame)
+//				{
+//					Utils.log(e, false);
+//				}
+//			}
+
+			if (Starling.current.frameProblemProduces>0)
 			{
-            	mSupport.finishQuadBatch();
-			}
-			catch (e: Error)
-			{
-				Starling.current.frameProblemCount++;
-				if (Starling.current.problemVirginFrame || Starling.current.frameProblemCount%10==1)
-				{
-					Utils.log("Starling:547 PROBLEM RENDERING " + e.errorID + " " + Starling.current.frameCount + "/" + Starling.current.frameProblemCount + "/" + Starling.current.problemVirginFrame);
-				}
-				if (Starling.current.problemVirginFrame)
-				{
-					Utils.log(e, false);
-				}
-				return;
+				Starling.current.frameProblemProduces--;
 			}
             
             if (mStatsDisplay)
@@ -725,13 +733,34 @@ package starling.core
 		public var frameLength: Number = 0;
 		public var frameCount: uint = 0;
 		public var frameProblemCount: uint = 0;
+		public var frameProblemProduces: uint = 0;
 		public var problemVirginFrame: Boolean = true;
+		public var consecutiveProblematicFrames: int = 0;
+//		public var currentProblematicChildren: LinkedList = new LinkedList();
+//		public var previousProblematicChildren: LinkedList = new LinkedList();
         
         private function onEnterFrame(event:Event):void
         {
+//			if (!previousProblematicChildren.empty)
+//			{
+//				var c: Cursor = previousProblematicChildren.cursor;
+//				while (c.next) c.current.visible = true;
+//				previousProblematicChildren.clear();
+//			}
+			
 //			var originProblemCount: int = problemCount;
 			problemVirginFrame = frameProblemCount == 0;
+			if (problemVirginFrame) consecutiveProblematicFrames = 0;
+			else consecutiveProblematicFrames++;
+			if (consecutiveProblematicFrames == 100)
+			{
+				frameProblemCount = 0;
+				consecutiveProblematicFrames = 0;
+				Utils.logError(new AssukarError(), true);
+				return;
+			}
 			frameProblemCount = 0;
+			frameProblemProduces = 0;
 			frameCount++;
 			
 //			if (firstFrameAfterActivation) Utils.print("FIRST FRAME AFTER ACTIVATION " + frameCount);

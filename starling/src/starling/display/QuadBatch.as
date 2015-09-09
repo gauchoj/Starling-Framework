@@ -200,22 +200,24 @@ package starling.display
             if (numVertices == 0) return true;
             if (context == null)  throw new MissingContextError();
             
-//			try
-//			{
+			try
+			{
 	            mVertexBuffer = context.createVertexBuffer(numVertices, VertexData.ELEMENTS_PER_VERTEX);
 	            mVertexBuffer.uploadFromVector(mVertexData.rawData, 0, numVertices);
 	            mIndexBuffer = context.createIndexBuffer(numIndices);
 	            mIndexBuffer.uploadFromVector(mIndexData, 0, numIndices);
 	            mSyncRequired = false;
-//			}
-//			catch (e : Error)
-//			{
-//				mSyncRequired = true;
-//				Starling.current.problemCount++;
-//				Utils.log("QuadBatch:216 PROBLEM RENDERING " + e.errorID + " " + Starling.current.frameCount + "/" + Starling.current.problemCount);
-//				if (Starling.current.problemCount==1 || Starling.current.problemCount%30==0) throw e;//Utils.log(e, false);
-//				return false;
-//			}
+			}
+			catch (e : Error)
+			{
+				if (e.errorID != 3672) throw e;
+				mSyncRequired = true;
+				Starling.current.frameProblemCount++;
+				Starling.current.frameProblemProduces++;
+				Utils.log("QuadBatch.createBuffers PROBLEM RENDERING " + e.errorID + " " + Starling.current.frameCount + "/" + Starling.current.frameProblemCount + "/" + Starling.current.problemVirginFrame);
+				if (Starling.current.problemVirginFrame) Starling.current.frameProblemProduces++;
+				return false;
+			}
 			
 			return true;
 	    }
@@ -294,13 +296,11 @@ package starling.display
 			}
 			catch (e: Error)
 			{
+				if (e.errorID != 3605 && e.errorId != 3700) throw e;
 				Starling.current.frameProblemCount++;
-				if (Starling.current.problemVirginFrame || Starling.current.frameProblemCount%10==1)
-				{
-					Utils.log("QuadBatch:300 PROBLEM RENDERING " + e.errorID + " " + Starling.current.frameCount + "/" + Starling.current.frameProblemCount + "/" + Starling.current.problemVirginFrame);
-				}
-				if (Starling.current.problemVirginFrame) throw e;
-				return;
+				Starling.current.frameProblemProduces++;
+				Utils.log("QuadBatch PROBLEM RENDERING " + e.errorID + " " + Starling.current.frameCount + "/" + Starling.current.frameProblemCount + "/" + Starling.current.problemVirginFrame);
+				if (Starling.current.problemVirginFrame) Starling.current.frameProblemProduces++;
 			}
             
             if (mTexture)

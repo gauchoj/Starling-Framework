@@ -370,16 +370,23 @@ package starling.display
 					catch (e: Error)
 					{
 						Starling.current.frameProblemCount++;
-						if (Starling.current.problemVirginFrame || Starling.current.frameProblemCount%10==1)
-						{
-							Utils.log("DisplayObjectContainer:375 PROBLEM RENDERING " + e.errorID + " " + Starling.current.frameCount + "/" + Starling.current.frameProblemCount + "/" + Starling.current.problemVirginFrame);
-						}
+//						if (Starling.current.problemVirginFrame || Starling.current.frameProblemCount%10==1)
+//						{
+							Utils.log("DisplayObjectContainer PROBLEM RENDERING " + e.errorID + " " + Starling.current.frameCount + "/" + Starling.current.frameProblemCount + "/" + Starling.current.problemVirginFrame);
+//						}
 						if (Starling.current.problemVirginFrame)
 						{
 							Utils.log("\n" + TreeUtils.dump(child));
 							Utils.log(e, false);
 						}
-						return;
+					}
+					
+					if (Starling.current.frameProblemProduces>0)
+					{
+						Starling.current.frameProblemProduces--;
+//						Starling.current.problematicChildren.push(child);
+//						child.visible = false;
+						if (Starling.current.problemVirginFrame) Utils.log("\n" + TreeUtils.dump(child));
 					}
 					
 					if (mask)

@@ -10,8 +10,9 @@ package starling.utils
 	{
 		static public function dump(dob: DisplayObject, header: String = ""): String
 		{
-			return header + ReflectionUtils.getClassName(dob) + ":" + dob + 
-				(dob.parent?"\n" + dump(dob.parent, header+"..."):"");
+			if (ReflectionUtils.getClassName(dob) == "StarlingSprite") return "";
+			else return header + ReflectionUtils.getClassName(dob) + ":" + dob + 
+				(dob.parent?"\n" + dump(dob.parent, header+"."):"");
 		}
 	}
 }

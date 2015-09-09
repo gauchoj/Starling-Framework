@@ -10,6 +10,8 @@
 
 package starling.display { 
 	
+	import com.assukar.airong.utils.Utils;
+	import com.assukar.view.starling.StarlingUtils;
 	import flash.geom.Matrix;
     import flash.geom.Point;
     import flash.geom.Rectangle;
@@ -357,26 +359,53 @@ package starling.display {
 					if (mask)
 						support.pushMask(mask);
 					
+					//TODO comment to deploy (try/catch)
+					//var testChild:Object;
+					
 					if (filter) {
 						
-						//TODO to comment (try/catch)
-						//try {	 
 						
-						filter.render(child, support, alpha);
+						//TODO comment to deploy (try/catch)
+						//try 
+						//{	 		
+							
+							filter.render(child, support, alpha);
 						
-							//}catch (err:Error) {
-							//Utils.wraplog( err.name + " - " + err.errorID);	
+						//}
+						//catch (err:Error)
+						//{
+							//Utils.wraplog( err.name + " - " + err.errorID + " - " + err.message);	
 							//print(StarlingUtils.dumpChildren(child, ".", false, false)); 
-							//var testChild:Object = child;
+							//testChild = child;
 							//while (testChild.parent) {								
-							//print(testChild);  
-							//testChild = testChild.parent; 
+								//print(testChild);  
+								//testChild = testChild.parent;  
 							//}							
-							//}
+						//} 
+						
 						
 					}
 					else {
-						child.render(support, alpha);
+						
+						
+						//TODO comment to deploy (try/catch)
+						//try
+						//{		
+						
+							child.render(support, alpha);
+							
+						//}
+						//catch (err:Error)
+						//{
+							//Utils.wraplog( err.name + " - " + err.errorID + " - " + err.message);	 
+							//print(StarlingUtils.dumpChildren(child, ".", false, false)); 
+							//testChild = child;
+							//while (testChild.parent) {								
+								//print(testChild, testChild.visible );   
+								//testChild = testChild.parent; 
+							//}			
+						//}
+						
 					}
 					
 					if (mask)

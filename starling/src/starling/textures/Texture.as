@@ -124,6 +124,19 @@ package starling.textures
                 throw new AbstractClassError();
             }
         }
+		
+		
+		
+		CONFIG::DEBUG
+		{
+			public var name:String;
+			public function toString():String
+			{
+				return "Texture[" + name + "]";
+			}
+		}
+		
+		
 
         /** Disposes the underlying texture data. Note that not all textures need to be disposed:
          *  SubTextures (created with 'Texture.fromTexture') just reference other textures and

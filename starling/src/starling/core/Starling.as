@@ -1,5 +1,6 @@
 package starling.core
 {
+	import com.assukar.airong.error.AssukarError;
 	import starling.animation.Juggler;
 	import starling.display.DisplayObject;
 	import starling.display.Stage;
@@ -1018,6 +1019,9 @@ package starling.core
         public function get enableErrorChecking():Boolean { return mEnableErrorChecking; }
         public function set enableErrorChecking(value:Boolean):void 
         { 
+			
+			if (value)  throw new AssukarError("set \"enableErrorChecking\" to false!");     
+			
             mEnableErrorChecking = value;
             if (mContext) mContext.enableErrorChecking = value; 
         }

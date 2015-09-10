@@ -7,26 +7,23 @@
 //	in accordance with the terms of the accompanying license agreement.
 //
 // =================================================================================================
-package starling.display
-{
-	import starling.core.RenderSupport;
-	import starling.core.Starling;
-	import starling.core.starling_internal;
-	import starling.errors.AbstractClassError;
-	import starling.events.Event;
-	import starling.filters.FragmentFilter;
-	import starling.utils.MatrixUtil;
-	import starling.utils.TreeUtils;
 
-	import com.assukar.airong.utils.Utils;
-
-	import flash.geom.Matrix;
-	import flash.geom.Point;
-	import flash.geom.Rectangle;
-	import flash.system.Capabilities;
-	import flash.utils.getQualifiedClassName;
- 
+package starling.display { 
 	
+	import com.assukar.airong.utils.Utils;
+	import com.assukar.view.starling.StarlingUtils;
+	import flash.geom.Matrix;
+    import flash.geom.Point;
+    import flash.geom.Rectangle;
+    import flash.system.Capabilities;
+    import flash.utils.getQualifiedClassName;
+    
+    import starling.core.RenderSupport;
+    import starling.core.starling_internal; 
+    import starling.errors.AbstractClassError; 
+    import starling.events.Event;
+    import starling.filters.FragmentFilter;
+    import starling.utils.MatrixUtil;
 	
 	
 	use namespace starling_internal;
@@ -362,31 +359,53 @@ package starling.display
 					if (mask)
 						support.pushMask(mask);
 					
-					try
-					{
-						if (filter) filter.render(child, support, alpha); 
-						else child.render(support, alpha);
-					}
-					catch (e: Error)
-					{
-						Starling.current.frameProblemCount++;
-//						if (Starling.current.problemVirginFrame || Starling.current.frameProblemCount%10==1)
-//						{
-							Utils.log("DisplayObjectContainer PROBLEM RENDERING " + e.errorID + " " + Starling.current.frameCount + "/" + Starling.current.frameProblemCount + "/" + Starling.current.problemVirginFrame);
-//						}
-						if (Starling.current.problemVirginFrame)
-						{
-							Utils.log("\n" + TreeUtils.dump(child));
-							Utils.log(e, false);
-						}
-					}
+					//TODO comment to deploy (try/catch)
+					//var testChild:Object;
 					
-					if (Starling.current.frameProblemProduces>0)
-					{
-						Starling.current.frameProblemProduces--;
-//						Starling.current.problematicChildren.push(child);
-//						child.visible = false;
-						if (Starling.current.problemVirginFrame) Utils.log("\n" + TreeUtils.dump(child));
+					if (filter) {
+						
+						
+						//TODO comment to deploy (try/catch)
+						//try 
+						//{	 		
+							
+							filter.render(child, support, alpha);
+						
+						//}
+						//catch (err:Error)
+						//{
+							//Utils.wraplog( err.name + " - " + err.errorID + " - " + err.message);	
+							//print(StarlingUtils.dumpChildren(child, ".", false, false)); 
+							//testChild = child;
+							//while (testChild.parent) {								
+								//print(testChild);  
+								//testChild = testChild.parent;  
+							//}							
+						//} 
+						
+						
+					}
+					else {
+						
+						
+						//TODO comment to deploy (try/catch)
+						//try
+						//{		
+						
+							child.render(support, alpha);
+							
+						//}
+						//catch (err:Error)
+						//{
+							//Utils.wraplog( err.name + " - " + err.errorID + " - " + err.message);	 
+							//print(StarlingUtils.dumpChildren(child, ".", false, false)); 
+							//testChild = child;
+							//while (testChild.parent) {								
+								//print(testChild, testChild.visible );   
+								//testChild = testChild.parent; 
+							//}			
+						//}
+						
 					}
 					
 					if (mask)

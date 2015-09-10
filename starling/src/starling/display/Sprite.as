@@ -116,7 +116,7 @@ package starling.display
         {					
 			
 			
-			//TODO to delete
+			//TODO comment to deploy
 			//mFlattenRequested = false;
 			//return; 
 			

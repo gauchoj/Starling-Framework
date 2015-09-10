@@ -43,6 +43,8 @@ package starling.textures
         private static const TEXTURE_READY:String = "textureReady"; // defined here for backwards compatibility
         
         private var mBase:TextureBase;
+        //public var mBase:TextureBase;
+		
         private var mFormat:String;
         private var mWidth:int;
         private var mHeight:int;

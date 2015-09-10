@@ -15,8 +15,6 @@ package starling.display
 	import starling.textures.TextureSmoothing;
 	import starling.utils.VertexData;
 
-	import com.assukar.airong.utils.Utils;
-
 	import flash.display.Bitmap;
 	import flash.geom.Matrix;
 	import flash.geom.Point;

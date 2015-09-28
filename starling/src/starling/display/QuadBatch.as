@@ -282,18 +282,18 @@ package starling.display
 				context.setVertexBufferAt(2, mVertexBuffer, VertexData.TEXCOORD_OFFSET, Context3DVertexBufferFormat.FLOAT_2);
 			}
 			
-			try
-			{
-				context.drawTriangles(mIndexBuffer, 0, mNumQuads * 2);
-			}
-			catch (e:Error)
-			{
-				if (e.errorID != 3605 && e.errorId != 3700) throw e;
-				Starling.current.frameProblemCount++;
-				Starling.current.frameProblemProduces++;
-				Utils.log("QuadBatch PROBLEM RENDERING " + e.errorID + " " + Starling.current.frameCount + "/" + Starling.current.frameProblemCount + "/" + Starling.current.problemVirginFrame);
-				if (Starling.current.problemVirginFrame) Starling.current.frameProblemProduces++;
-			}
+			//try
+			//{
+				context.drawTriangles(mIndexBuffer, 0, mNumQuads * 2); 
+			//}
+			//catch (e:Error)
+			//{
+				//if (e.errorID != 3605 && e.errorId != 3700) throw e;
+				//Starling.current.frameProblemCount++;
+				//Starling.current.frameProblemProduces++;
+				//Utils.log("QuadBatch PROBLEM RENDERING " + e.errorID + " " + Starling.current.frameCount + "/" + Starling.current.frameProblemCount + "/" + Starling.current.problemVirginFrame);
+				//if (Starling.current.problemVirginFrame) Starling.current.frameProblemProduces++;
+			//}
 			
 			if (mTexture)
 			{

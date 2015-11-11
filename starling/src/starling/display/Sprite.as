@@ -14,9 +14,6 @@ package starling.display
 	import starling.events.Event;
 	import starling.utils.MatrixUtil;
 	import starling.utils.RectangleUtil;
-	import starling.utils.TreeUtils;
-
-	import com.assukar.airong.utils.Utils;
 
 	import flash.geom.Matrix;
 	import flash.geom.Matrix3D;

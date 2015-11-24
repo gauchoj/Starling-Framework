@@ -1,6 +1,5 @@
 package starling.core
 {
-	import com.assukar.airong.error.AssukarError;
 	import starling.animation.Juggler;
 	import starling.display.DisplayObject;
 	import starling.display.Stage;
@@ -13,8 +12,6 @@ package starling.core
 	import starling.utils.VAlign;
 	import starling.utils.execute;
 
-	import com.assukar.airong.ds.Cursor;
-	import com.assukar.airong.ds.LinkedList;
 	import com.assukar.airong.error.AssukarError;
 	import com.assukar.airong.utils.Utils;
 
@@ -540,28 +537,6 @@ package starling.core
 			
 			mSupport.finishQuadBatch();
 			
-//			try
-//			{
-//            	mSupport.finishQuadBatch();
-//			}
-//			catch (e: Error)
-//			{
-//				Starling.current.frameProblemCount++;
-//				if (Starling.current.problemVirginFrame || Starling.current.frameProblemCount%10==1)
-//				{
-//					Utils.log("Starling:547 PROBLEM RENDERING " + e.errorID + " " + Starling.current.frameCount + "/" + Starling.current.frameProblemCount + "/" + Starling.current.problemVirginFrame);
-//				}
-//				if (Starling.current.problemVirginFrame)
-//				{
-//					Utils.log(e, false);
-//				}
-//			}
-
-			if (Starling.current.frameProblemProduces>0)
-			{
-				Starling.current.frameProblemProduces--;
-			}
-            
             if (mStatsDisplay)
                 mStatsDisplay.drawCount = mSupport.drawCount;
             
@@ -733,38 +708,26 @@ package starling.core
 		private var enterFrameDate: Date;
 		public var frameLength: Number = 0;
 		public var frameCount: uint = 0;
-		public var frameProblemCount: uint = 0;
-		public var frameProblemProduces: uint = 0;
-		public var problemVirginFrame: Boolean = true;
-		public var consecutiveProblematicFrames: int = 0;
-//		public var currentProblematicChildren: LinkedList = new LinkedList();
-//		public var previousProblematicChildren: LinkedList = new LinkedList();
+//		public var frameProblemCount: uint = 0;
+//		public var frameProblemProduces: uint = 0;
+//		public var problemVirginFrame: Boolean = true;
+//		public var consecutiveProblematicFrames: int = 0;
         
         private function onEnterFrame(event:Event):void
         {
-//			if (!previousProblematicChildren.empty)
+//			problemVirginFrame = frameProblemCount == 0;
+//			if (problemVirginFrame) consecutiveProblematicFrames = 0;
+//			else consecutiveProblematicFrames++;
+//			if (consecutiveProblematicFrames == 60*5)
 //			{
-//				var c: Cursor = previousProblematicChildren.cursor;
-//				while (c.next) c.current.visible = true;
-//				previousProblematicChildren.clear();
+//				frameProblemCount = 0;
+//				consecutiveProblematicFrames = 0;
+//				Utils.logError(new AssukarError(), true);
+//				return;
 //			}
-			
-//			var originProblemCount: int = problemCount;
-			problemVirginFrame = frameProblemCount == 0;
-			if (problemVirginFrame) consecutiveProblematicFrames = 0;
-			else consecutiveProblematicFrames++;
-			if (consecutiveProblematicFrames == 60*5)
-			{
-				frameProblemCount = 0;
-				consecutiveProblematicFrames = 0;
-				Utils.logError(new AssukarError(), true);
-				return;
-			}
-			frameProblemCount = 0;
-			frameProblemProduces = 0;
+//			frameProblemCount = 0;
+//			frameProblemProduces = 0;
 			frameCount++;
-			
-//			if (firstFrameAfterActivation) Utils.print("FIRST FRAME AFTER ACTIVATION " + frameCount);
 			
             // On mobile, the native display list is only updated on stage3D draw calls.
             // Thus, we render even when Starling is paused.

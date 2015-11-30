@@ -10,7 +10,17 @@
 
 package starling.display
 {
-	import com.assukar.airong.utils.Utils;
+	import starling.core.RenderSupport;
+	import starling.core.Starling;
+	import starling.core.starling_internal;
+	import starling.errors.MissingContextError;
+	import starling.events.Event;
+	import starling.filters.FragmentFilter;
+	import starling.filters.FragmentFilterMode;
+	import starling.textures.Texture;
+	import starling.textures.TextureSmoothing;
+	import starling.utils.VertexData;
+
 	import flash.display3D.Context3D;
 	import flash.display3D.Context3DProgramType;
 	import flash.display3D.Context3DTextureFormat;
@@ -24,17 +34,6 @@ package starling.display
 	import flash.geom.Rectangle;
 	import flash.utils.Dictionary;
 	import flash.utils.getQualifiedClassName;
-	import starling.core.RenderSupport;
-	import starling.core.Starling;
-	import starling.errors.MissingContextError;
-	import starling.events.Event;
-	import starling.filters.FragmentFilter;
-	import starling.filters.FragmentFilterMode;
-	import starling.textures.Texture;
-	import starling.textures.TextureSmoothing;
-	import starling.utils.VertexData;
-	
-	import starling.core.starling_internal;
 	
 	use namespace starling_internal;
 	
@@ -98,8 +97,6 @@ package starling.display
 		// ignore filter ADDED BY ASSUKAR
 		//		private static var IGNORE_ALL_FILTERS : Boolean = false;
 		private var mIgnoreFilters:Boolean;
-		
-		//static public var HAS_ERROR:Boolean = false;
 		
 		override public function get ignoreFilters():Boolean
 		{
@@ -186,8 +183,8 @@ package starling.display
 			this.capacity = oldCapacity < 8 ? 16 : oldCapacity * 2;
 		}
 		
-		// ASSUKAR CHANGED to return a boolean
-		private function createBuffers():Boolean
+		// DEPRECATED ASSUKAR CHANGED to return a boolean
+		private function createBuffers():void//Boolean
 		{
 			destroyBuffers();
 			
@@ -195,32 +192,29 @@ package starling.display
 			var numIndices:int = mIndexData.length;
 			var context:Context3D = Starling.context;
 			
-			if (numVertices == 0) return true;
+			if (numVertices == 0) return;// true;
 			if (context == null) throw new MissingContextError();
 			
-			try
-			{
+//			try
+//			{
 				mVertexBuffer = context.createVertexBuffer(numVertices, VertexData.ELEMENTS_PER_VERTEX);
 				mVertexBuffer.uploadFromVector(mVertexData.rawData, 0, numVertices);
 				mIndexBuffer = context.createIndexBuffer(numIndices);
-				mIndexBuffer.uploadFromVector(mIndexData, 0, numIndices); 
+				mIndexBuffer.uploadFromVector(mIndexData, 0, numIndices);
 				mSyncRequired = false;
-			}
-			catch (e:Error)
-			{
-				if (e.errorID != 3672) throw e;
-				mSyncRequired = true;
-				Starling.current.frameProblemCount++;
-				Starling.current.frameProblemProduces++;
-				Utils.log("QuadBatch.createBuffers PROBLEM RENDERING " + e.errorID + " " + Starling.current.frameCount + "/" + Starling.current.frameProblemCount + "/" + Starling.current.problemVirginFrame);
-				if (Starling.current.problemVirginFrame) Starling.current.frameProblemProduces++;
-				
-				//HAS_ERROR = true;
-				
-				return false;
-			}
+//			}
+//			catch (e:Error)
+//			{
+//				if (e.errorID != 3672) throw e;
+//				mSyncRequired = true;
+////				Starling.current.frameProblemCount++;
+////				Starling.current.frameProblemProduces++;
+//				Utils.log("QuadBatch.createBuffers PROBLEM RENDERING " + e.errorID + " " + Starling.current.frameCount);// + "/" + Starling.current.frameProblemCount + "/" + Starling.current.problemVirginFrame);
+////				if (Starling.current.problemVirginFrame) Starling.current.frameProblemProduces++;
+//				return false;
+//			}
 			
-			return true;
+//			return true;
 		}
 		
 		private function destroyBuffers():void

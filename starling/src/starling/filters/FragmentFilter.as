@@ -201,18 +201,19 @@ package starling.filters
 			}
             else
 			{
-				try
-				{
-	                renderPasses(object, support, parentAlpha, false);
-				}
-				catch (e:Error)
-				{
-					if (e.errorID != 3672) throw e;
-					Starling.current.frameProblemCount++;
-					Starling.current.frameProblemProduces++;
-					Utils.log("FragmentFilter PROBLEM RENDERING " + e.errorID + " " + Starling.current.frameCount + "/" + Starling.current.frameProblemCount + "/" + Starling.current.problemVirginFrame);
-					if (Starling.current.problemVirginFrame) Starling.current.frameProblemProduces++;
-				}
+				renderPasses(object, support, parentAlpha, false);
+//				try
+//				{
+//	                renderPasses(object, support, parentAlpha, false);
+//				}
+//				catch (e:Error)
+//				{
+//					if (e.errorID != 3672) throw e;
+////					Starling.current.frameProblemCount++;
+////					Starling.current.frameProblemProduces++;
+//					Utils.log("FragmentFilter PROBLEM RENDERING " + e.errorID + " " + Starling.current.frameCount);// + "/" + Starling.current.frameProblemCount + "/" + Starling.current.problemVirginFrame);
+////					if (Starling.current.problemVirginFrame) Starling.current.frameProblemProduces++;
+//				}
 			}
             
             // top layer

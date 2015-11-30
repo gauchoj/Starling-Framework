@@ -21,6 +21,8 @@ package starling.display
 	import starling.textures.TextureSmoothing;
 	import starling.utils.VertexData;
 
+	import com.assukar.airong.utils.Utils;
+
 	import flash.display3D.Context3D;
 	import flash.display3D.Context3DProgramType;
 	import flash.display3D.Context3DTextureFormat;
@@ -193,7 +195,7 @@ package starling.display
 			var numIndices:int = mIndexData.length;
 			var context:Context3D = Starling.context;
 			
-			if (numVertices == 0) return;// true;
+			if (numVertices == 0) return true;// true;
 			if (context == null) throw new MissingContextError();
 			
 			try
@@ -206,12 +208,13 @@ package starling.display
 			}
 			catch (e:Error)
 			{
-				if (e.errorID != 3672) throw e;
 				mSyncRequired = true;
-				Starling.current.frameProblemCount++;
-				Starling.current.frameProblemProduces++;
-				Utils.log("QuadBatch.createBuffers PROBLEM RENDERING " + e.errorID + " " + Starling.current.frameCount);// + "/" + Starling.current.frameProblemCount + "/" + Starling.current.problemVirginFrame);
-				if (Starling.current.problemVirginFrame) Starling.current.frameProblemProduces++;
+				mVertexBuffer = null;
+				Utils.log("QuadBatch.createBuffers PROBLEM RENDERING numVertices=" + numVertices + " error=" + e.errorID + " frameCount=" + Starling.current.frameCount);// + "/" + Starling.current.frameProblemCount + "/" + Starling.current.problemVirginFrame);
+				if (e.errorID != 3672) throw e;
+//				Starling.current.frameProblemCount++;
+//				Starling.current.frameProblemProduces++;
+//				if (Starling.current.problemVirginFrame) Starling.current.frameProblemProduces++;
 				return false;
 			}
 			

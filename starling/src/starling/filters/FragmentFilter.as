@@ -398,10 +398,10 @@ package starling.filters
 			}
 			catch (e:Error)
 			{
-				Starling.current.frameProblemCount++;
-				Starling.current.frameProblemProduces++;
-				Utils.log("FragmentFilter.updateBuffers PROBLEM RENDERING " + e.errorID + " " + Starling.current.frameCount + "/" + Starling.current.frameProblemCount + "/" + Starling.current.problemVirginFrame);
-				if (Starling.current.problemVirginFrame) Starling.current.frameProblemProduces++;
+//				Starling.current.frameProblemCount++;
+//				Starling.current.frameProblemProduces++;
+				Utils.log("FragmentFilter.updateBuffers PROBLEM RENDERING " + e.errorID + " " + Starling.current.frameCount);// + "/" + Starling.current.frameProblemCount + "/" + Starling.current.problemVirginFrame);
+//				if (Starling.current.problemVirginFrame) Starling.current.frameProblemProduces++;
 			}
         }
         

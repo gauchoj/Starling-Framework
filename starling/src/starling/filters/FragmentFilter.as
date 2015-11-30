@@ -379,8 +379,8 @@ package starling.filters
         
         private function updateBuffers(context:Context3D, bounds:Rectangle):void
         {
-			try
-			{				
+			//try
+			//{				
 				mVertexData.setPosition(0, bounds.x, bounds.y);
 				mVertexData.setPosition(1, bounds.right, bounds.y);
 				mVertexData.setPosition(2, bounds.x, bounds.bottom);
@@ -395,14 +395,14 @@ package starling.filters
 				
 				mVertexBuffer.uploadFromVector(mVertexData.rawData, 0, 4);
 				
-			}
-			catch (e:Error)
-			{
-				Starling.current.frameProblemCount++;
-				Starling.current.frameProblemProduces++;
-				Utils.log("FragmentFilter.updateBuffers PROBLEM RENDERING " + e.errorID + " " + Starling.current.frameCount + "/" + Starling.current.frameProblemCount + "/" + Starling.current.problemVirginFrame);
-				if (Starling.current.problemVirginFrame) Starling.current.frameProblemProduces++;
-			}
+			//}
+			//catch (e:Error)
+			//{
+				//Starling.current.frameProblemCount++;
+				//Starling.current.frameProblemProduces++;
+				//Utils.log("FragmentFilter.updateBuffers PROBLEM RENDERING " + e.errorID + " " + Starling.current.frameCount + "/" + Starling.current.frameProblemCount + "/" + Starling.current.problemVirginFrame);
+				//if (Starling.current.problemVirginFrame) Starling.current.frameProblemProduces++;
+			//}
         }
         
         private function updatePassTextures(width:Number, height:Number, scale:Number):void

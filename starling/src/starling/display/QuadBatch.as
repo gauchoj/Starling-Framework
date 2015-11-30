@@ -183,9 +183,8 @@ package starling.display
 			this.capacity = oldCapacity < 8 ? 16 : oldCapacity * 2;
 		}
 		
-		// DEPRECATED ASSUKAR CHANGED to return a boolean
-		//private function createBuffers():void//Boolean
-		private function createBuffers():Boolean 
+		// DEPRECATED ASSUKAR CHANGED to return a boolean		
+		private function createBuffers():void//Boolean
 		{
 			destroyBuffers();
 			
@@ -196,26 +195,26 @@ package starling.display
 			if (numVertices == 0) return;// true;
 			if (context == null) throw new MissingContextError();
 			
-			try
-			{
+			//try
+			//{
 				mVertexBuffer = context.createVertexBuffer(numVertices, VertexData.ELEMENTS_PER_VERTEX);
 				mVertexBuffer.uploadFromVector(mVertexData.rawData, 0, numVertices);
 				mIndexBuffer = context.createIndexBuffer(numIndices);
 				mIndexBuffer.uploadFromVector(mIndexData, 0, numIndices);
 				mSyncRequired = false;
-			}
-			catch (e:Error)
-			{
-				if (e.errorID != 3672) throw e;
-				mSyncRequired = true;
-				Starling.current.frameProblemCount++;
-				Starling.current.frameProblemProduces++;
-				Utils.log("QuadBatch.createBuffers PROBLEM RENDERING " + e.errorID + " " + Starling.current.frameCount);// + "/" + Starling.current.frameProblemCount + "/" + Starling.current.problemVirginFrame);
-				if (Starling.current.problemVirginFrame) Starling.current.frameProblemProduces++;
-				return false;
-			}
+			//}
+			//catch (e:Error)
+			//{
+				//if (e.errorID != 3672) throw e;
+				//mSyncRequired = true;
+				//Starling.current.frameProblemCount++;
+				//Starling.current.frameProblemProduces++;
+				//Utils.log("QuadBatch.createBuffers PROBLEM RENDERING " + e.errorID + " " + Starling.current.frameCount);// + "/" + Starling.current.frameProblemCount + "/" + Starling.current.problemVirginFrame);
+				//if (Starling.current.problemVirginFrame) Starling.current.frameProblemProduces++;
+				//return false;
+			//}
 			
-			return true;
+			//return true; 
 		}
 		
 		private function destroyBuffers():void

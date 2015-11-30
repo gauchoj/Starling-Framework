@@ -378,19 +378,30 @@ package starling.filters
         
         private function updateBuffers(context:Context3D, bounds:Rectangle):void
         {
-            mVertexData.setPosition(0, bounds.x, bounds.y);
-            mVertexData.setPosition(1, bounds.right, bounds.y);
-            mVertexData.setPosition(2, bounds.x, bounds.bottom);
-            mVertexData.setPosition(3, bounds.right, bounds.bottom);
-            
-            if (mVertexBuffer == null)
-            {
-                mVertexBuffer = context.createVertexBuffer(4, VertexData.ELEMENTS_PER_VERTEX);
-                mIndexBuffer  = context.createIndexBuffer(6);
-                mIndexBuffer.uploadFromVector(mIndexData, 0, 6);
-            }
-            
-            mVertexBuffer.uploadFromVector(mVertexData.rawData, 0, 4);
+			try
+			{				
+				mVertexData.setPosition(0, bounds.x, bounds.y);
+				mVertexData.setPosition(1, bounds.right, bounds.y);
+				mVertexData.setPosition(2, bounds.x, bounds.bottom);
+				mVertexData.setPosition(3, bounds.right, bounds.bottom);
+				
+				if (mVertexBuffer == null)
+				{
+					mVertexBuffer = context.createVertexBuffer(4, VertexData.ELEMENTS_PER_VERTEX);
+					mIndexBuffer  = context.createIndexBuffer(6);
+					mIndexBuffer.uploadFromVector(mIndexData, 0, 6);
+				}
+				
+				mVertexBuffer.uploadFromVector(mVertexData.rawData, 0, 4);
+				
+			}
+			catch (e:Error)
+			{
+				Starling.current.frameProblemCount++;
+				Starling.current.frameProblemProduces++;
+				Utils.log("FragmentFilter.updateBuffers PROBLEM RENDERING " + e.errorID + " " + Starling.current.frameCount + "/" + Starling.current.frameProblemCount + "/" + Starling.current.problemVirginFrame);
+				if (Starling.current.problemVirginFrame) Starling.current.frameProblemProduces++;
+			}
         }
         
         private function updatePassTextures(width:Number, height:Number, scale:Number):void

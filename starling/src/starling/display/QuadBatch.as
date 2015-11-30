@@ -99,6 +99,8 @@ package starling.display
 		//		private static var IGNORE_ALL_FILTERS : Boolean = false;
 		private var mIgnoreFilters:Boolean;
 		
+		//static public var HAS_ERROR:Boolean = false;
+		
 		override public function get ignoreFilters():Boolean
 		{
 			return mIgnoreFilters;
@@ -201,7 +203,7 @@ package starling.display
 				mVertexBuffer = context.createVertexBuffer(numVertices, VertexData.ELEMENTS_PER_VERTEX);
 				mVertexBuffer.uploadFromVector(mVertexData.rawData, 0, numVertices);
 				mIndexBuffer = context.createIndexBuffer(numIndices);
-				mIndexBuffer.uploadFromVector(mIndexData, 0, numIndices);
+				mIndexBuffer.uploadFromVector(mIndexData, 0, numIndices); 
 				mSyncRequired = false;
 			}
 			catch (e:Error)
@@ -212,6 +214,9 @@ package starling.display
 				Starling.current.frameProblemProduces++;
 				Utils.log("QuadBatch.createBuffers PROBLEM RENDERING " + e.errorID + " " + Starling.current.frameCount + "/" + Starling.current.frameProblemCount + "/" + Starling.current.problemVirginFrame);
 				if (Starling.current.problemVirginFrame) Starling.current.frameProblemProduces++;
+				
+				//HAS_ERROR = true;
+				
 				return false;
 			}
 			

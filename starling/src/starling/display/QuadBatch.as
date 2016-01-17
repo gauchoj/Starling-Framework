@@ -592,11 +592,11 @@ package starling.display
 			}
 			else
 			{
-				if (object.mask)
-					trace("[Starling] Masks are ignored on children of a flattened sprite.");
+//				if (object.mask)
+//					trace("[Starling] Masks are ignored on children of a flattened sprite.");
 				
-				if ((object is Sprite) && (object as Sprite).clipRect)
-					trace("[Starling] ClipRects are ignored on children of a flattened sprite.");
+//				if ((object is Sprite) && (object as Sprite).clipRect)
+//					trace("[Starling] ClipRects are ignored on children of a flattened sprite.");
 			}
 			
 			if (filter && !ignoreCurrentFilter)

@@ -47,8 +47,6 @@ package starling.animation
             mCall = call;
             mArgs = args;
             mRepeatCount = 1;
-//			_jugglerIndex = -1;
-//			pooled = false;
             
             return this;
         }

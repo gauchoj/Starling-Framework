@@ -98,13 +98,11 @@ package starling.display
 		
 		// ignore filter ADDED BY ASSUKAR
 		//		private static var IGNORE_ALL_FILTERS : Boolean = false;
-		private var mIgnoreFilters:Boolean;
-		
-		override public function get ignoreFilters():Boolean
-		{
-			return mIgnoreFilters;
-		}
-		
+//		private var mIgnoreFilters:Boolean;
+//		public function get ignoreFilters():Boolean
+//		{
+//			return mIgnoreFilters;
+//		}
 		// 
 		
 		/** Creates a new QuadBatch instance with empty batch data. */
@@ -117,7 +115,7 @@ package starling.display
 			mSyncRequired = false;
 			mBatchable = false;
 			
-			mIgnoreFilters = false;
+//			mIgnoreFilters = false;
 			
 			mForceTinted = false;
 			mOwnsTexture = false;
@@ -138,7 +136,7 @@ package starling.display
 			mIndexData.length = 0;
 			mNumQuads = 0;
 			
-			mIgnoreFilters = false;
+//			mIgnoreFilters = false;
 			
 			if (mTexture && mOwnsTexture)
 				mTexture.dispose();
@@ -171,7 +169,7 @@ package starling.display
 			clone.blendMode = blendMode;
 			clone.alpha = alpha;
 			
-			clone.mIgnoreFilters = mIgnoreFilters;
+//			clone.mIgnoreFilters = mIgnoreFilters;
 			return clone;
 		}
 		
@@ -254,6 +252,9 @@ package starling.display
 			}
 		}
 		
+		// obj-tion
+		private var pma1:Boolean, context1:Context3D, tinted1:Boolean;
+		
 		/** Renders the current batch with custom settings for model-view-projection matrix, alpha
 		 *  and blend mode. This makes it possible to render batches that are not part of the
 		 *  display list. */
@@ -262,50 +263,39 @@ package starling.display
 			if (mNumQuads == 0) return;
 			if (mSyncRequired && !syncBuffers()) return;
 			
-			var pma:Boolean = mVertexData.premultipliedAlpha;
-			var context:Context3D = Starling.context;
-			var tinted:Boolean = mTinted || (parentAlpha != 1.0);
+			pma1 = mVertexData.mPremultipliedAlpha;
+			context1 = Starling.context;
+			tinted1 = mTinted || (parentAlpha != 1.0);
 			
-			sRenderAlpha[0] = sRenderAlpha[1] = sRenderAlpha[2] = pma ? parentAlpha : 1.0;
+			sRenderAlpha[0] = sRenderAlpha[1] = sRenderAlpha[2] = pma1 ? parentAlpha : 1.0;
 			sRenderAlpha[3] = parentAlpha;
 			
-			RenderSupport.setBlendFactors(pma, blendMode ? blendMode : this.blendMode);
+			RenderSupport.setBlendFactors(pma1, blendMode ? blendMode : this.blendMode);
 			
-			context.setProgram(getProgram(tinted));
-			context.setProgramConstantsFromVector(Context3DProgramType.VERTEX, 0, sRenderAlpha, 1);
-			context.setProgramConstantsFromMatrix(Context3DProgramType.VERTEX, 1, mvpMatrix, true);
-			context.setVertexBufferAt(0, mVertexBuffer, VertexData.POSITION_OFFSET, Context3DVertexBufferFormat.FLOAT_2);
+			context1.setProgram(getProgram(tinted1));
+			context1.setProgramConstantsFromVector(Context3DProgramType.VERTEX, 0, sRenderAlpha, 1);
+			context1.setProgramConstantsFromMatrix(Context3DProgramType.VERTEX, 1, mvpMatrix, true);
+			context1.setVertexBufferAt(0, mVertexBuffer, VertexData.POSITION_OFFSET, Context3DVertexBufferFormat.FLOAT_2);
 			
-			if (mTexture == null || tinted)
-				context.setVertexBufferAt(1, mVertexBuffer, VertexData.COLOR_OFFSET, Context3DVertexBufferFormat.FLOAT_4);
-			
-			if (mTexture)
-			{
-				context.setTextureAt(0, mTexture.base);
-				context.setVertexBufferAt(2, mVertexBuffer, VertexData.TEXCOORD_OFFSET, Context3DVertexBufferFormat.FLOAT_2);
-			}
-			
-			//try
-			//{
-				context.drawTriangles(mIndexBuffer, 0, mNumQuads * 2); 
-			//}
-			//catch (e:Error)
-			//{
-				//if (e.errorID != 3605 && e.errorId != 3700) throw e;
-				//Starling.current.frameProblemCount++;
-				//Starling.current.frameProblemProduces++;
-				//Utils.log("QuadBatch PROBLEM RENDERING " + e.errorID + " " + Starling.current.frameCount + "/" + Starling.current.frameProblemCount + "/" + Starling.current.problemVirginFrame);
-				//if (Starling.current.problemVirginFrame) Starling.current.frameProblemProduces++;
-			//}
+			if (mTexture == null || tinted1)
+				context1.setVertexBufferAt(1, mVertexBuffer, VertexData.COLOR_OFFSET, Context3DVertexBufferFormat.FLOAT_4);
 			
 			if (mTexture)
 			{
-				context.setTextureAt(0, null);
-				context.setVertexBufferAt(2, null);
+				context1.setTextureAt(0, mTexture.base);
+				context1.setVertexBufferAt(2, mVertexBuffer, VertexData.TEXCOORD_OFFSET, Context3DVertexBufferFormat.FLOAT_2);
 			}
 			
-			context.setVertexBufferAt(1, null);
-			context.setVertexBufferAt(0, null);
+			context1.drawTriangles(mIndexBuffer, 0, mNumQuads * 2); 
+			
+			if (mTexture)
+			{
+				context1.setTextureAt(0, null);
+				context1.setVertexBufferAt(2, null);
+			}
+			
+			context1.setVertexBufferAt(1, null);
+			context1.setVertexBufferAt(0, null);
 		}
 		
 		/** Resets the batch. The vertex- and index-buffers remain their size, so that they
@@ -319,7 +309,7 @@ package starling.display
 			mTexture = null;
 			mSmoothing = null;
 			mSyncRequired = true;
-			mIgnoreFilters = false;
+//			mIgnoreFilters = false;
 		}
 		
 		/** Adds an image to the batch. This method internally calls 'addQuad' with the correct
@@ -335,7 +325,7 @@ package starling.display
 		 *  the batch. */
 		public function addQuad(quad:Quad, parentAlpha:Number = 1.0, texture:Texture = null, smoothing:String = null, modelViewMatrix:Matrix = null, blendMode:String = null):void
 		{
-			mIgnoreFilters = quad.ignoreFilters;
+//			mIgnoreFilters = quad.ignoreFilters;
 			
 			if (modelViewMatrix == null)
 				modelViewMatrix = quad.transformationMatrix;
@@ -366,7 +356,7 @@ package starling.display
 		 *  make sure that you only add batches with an equal state. */
 		public function addQuadBatch(quadBatch:QuadBatch, parentAlpha:Number = 1.0, modelViewMatrix:Matrix = null, blendMode:String = null):void
 		{
-			mIgnoreFilters = quadBatch.mIgnoreFilters;
+//			mIgnoreFilters = quadBatch.mIgnoreFilters;
 			
 			if (modelViewMatrix == null)
 				modelViewMatrix = quadBatch.transformationMatrix;
@@ -403,7 +393,8 @@ package starling.display
 			if (mNumQuads == 0) return false;
 			else if (mNumQuads + numQuads > MAX_NUM_QUADS) return true; // maximum buffer size
 			else if (mTexture == null && texture == null)
-				return this.blendMode != blendMode || this.ignoreFilters != ignoreFilters;
+//				return this.blendMode != blendMode || this.ignoreFilters != ignoreFilters;
+				return this.blendMode != blendMode;
 			else if (mTexture != null && texture != null)
 				return mTexture.base != texture.base || mTexture.repeat != texture.repeat || mSmoothing != smoothing || mTinted != (mForceTinted || tinted || parentAlpha != 1.0) || this.blendMode != blendMode;
 			else return true;
@@ -546,7 +537,7 @@ package starling.display
 				for (var j:int = i + 1; j < quadBatches.length; )
 				{
 					batch2 = quadBatches[j];
-					if (!batch1.isStateChange(batch2.tinted, 1.0, batch2.texture, batch2.smoothing, batch2.blendMode, 1, batch2.ignoreFilters))
+					if (!batch1.isStateChange(batch2.tinted, 1.0, batch2.texture, batch2.smoothing, batch2.blendMode, 1, false))
 					{
 						batch1.addQuadBatch(batch2);
 						batch2.dispose();
@@ -639,7 +630,7 @@ package starling.display
 				var smoothing:String;
 				var tinted:Boolean;
 				var numQuads:int;
-				var ignoreFilters:Boolean;
+//				var ignoreFilters:Boolean;
 				
 				if (quad)
 				{
@@ -648,7 +639,7 @@ package starling.display
 					smoothing = image ? image.smoothing : null;
 					tinted = quad.tinted;
 					numQuads = 1;
-					ignoreFilters = quad.ignoreFilters;
+//					ignoreFilters = quad.ignoreFilters;
 				}
 				else
 				{
@@ -656,12 +647,12 @@ package starling.display
 					smoothing = batch.mSmoothing;
 					tinted = batch.mTinted;
 					numQuads = batch.mNumQuads;
-					ignoreFilters = batch.ignoreFilters;
+//					ignoreFilters = batch.ignoreFilters;
 				}
 				
 				quadBatch = quadBatches[quadBatchID];
 				
-				if (quadBatch.isStateChange(tinted, alpha * objectAlpha, texture, smoothing, blendMode, numQuads, ignoreFilters))
+				if (quadBatch.isStateChange(tinted, alpha * objectAlpha, texture, smoothing, blendMode, numQuads, false))//ignoreFilters))
 				{
 					quadBatchID++;
 					if (quadBatches.length <= quadBatchID) quadBatches.push(new QuadBatch());

@@ -498,6 +498,9 @@ package starling.core
             mJuggler.advanceTime(passedTime);
         }
         
+		// obj-tion
+		private var scaleX1:Number, scaleY1:Number;
+		
         /** Renders the complete display list. Before rendering, the context is cleared; afterwards,
          *  it is presented (to avoid this, enable <code>shareContext</code>).
          *
@@ -506,15 +509,14 @@ package starling.core
          *  rendered.</p> */
         public function render():void
         {
-            if (!contextValid)
-                return;
+            if (!contextValid) return;
             
             makeCurrent();
             updateViewPort();
 
             dispatchEventWith(starling.events.Event.RENDER);
-            var scaleX:Number = mViewPort.width  / mStage.stageWidth;
-            var scaleY:Number = mViewPort.height  / mStage.stageHeight;
+            scaleX1 = mViewPort.width  / mStage.stageWidth;
+            scaleY1 = mViewPort.height  / mStage.stageHeight;
             
             mContext.setDepthTest(false, Context3DCompareMode.ALWAYS); 
             mContext.setCulling(Context3DTriangleFace.NONE); 
@@ -524,24 +526,20 @@ package starling.core
 
             mSupport.renderTarget = null; // back buffer
             mSupport.setProjectionMatrix(
-                mViewPort.x < 0 ? -mViewPort.x / scaleX : 0.0,
-                mViewPort.y < 0 ? -mViewPort.y / scaleY : 0.0,
-                mClippedViewPort.width  / scaleX,
-                mClippedViewPort.height / scaleY,
+                mViewPort.x < 0 ? -mViewPort.x / scaleX1 : 0.0,
+                mViewPort.y < 0 ? -mViewPort.y / scaleY1 : 0.0,
+                mClippedViewPort.width  / scaleX1,
+                mClippedViewPort.height / scaleY1,
                 mStage.stageWidth, mStage.stageHeight, mStage.cameraPosition);
             
-            if (!mShareContext)
-                RenderSupport.clear(mStage.color, 1.0);
+            if (!mShareContext) RenderSupport.clear(mStage.color, 1.0);
             
             mStage.render(mSupport, 1.0);
-			
 			mSupport.finishQuadBatch();
 			
-            if (mStatsDisplay)
-                mStatsDisplay.drawCount = mSupport.drawCount;
+            if (mStatsDisplay) mStatsDisplay.drawCount = mSupport.drawCount;
             
-            if (!mShareContext)
-                mContext.present();
+            if (!mShareContext) mContext.present();
         }
         
         private function updateViewPort(forceUpdate:Boolean=false):void
@@ -1145,14 +1143,17 @@ package starling.core
             }
         }
         
+		// obj-tion
+		private var driverInfo1:String;
+		
         /** Indicates if the Context3D object is currently valid (i.e. it hasn't been lost or
          *  disposed). */
         public function get contextValid():Boolean
         {
             if (mContext)
             {
-                const driverInfo:String = mContext.driverInfo;
-                return driverInfo != null && driverInfo != "" && driverInfo != "Disposed";
+                driverInfo1 = mContext.driverInfo;
+                return driverInfo1 != null && driverInfo1 != "" && driverInfo1 != "Disposed";
             }
             else return false;
         }

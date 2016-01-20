@@ -142,16 +142,16 @@ package starling.display
         private var mAlpha:Number;
         private var mVisible:Boolean;
         private var mTouchable:Boolean;
-        private var mBlendMode:String;
+        public var mBlendMode:String;
         private var mName:String;
         private var mUseHandCursor:Boolean;
         private var mParent:DisplayObjectContainer;  
         private var mTransformationMatrix:Matrix;
         private var mTransformationMatrix3D:Matrix3D;
         private var mOrientationChanged:Boolean;
-        private var mFilter:FragmentFilter;
+        public var mFilter:FragmentFilter;
         private var mIs3D:Boolean;
-        private var mMask:DisplayObject;
+        public var mMask:DisplayObject;
         private var mIsMask:Boolean;
         
         /** Helper objects. */
@@ -919,7 +919,7 @@ package starling.display
         /** The blend mode determines how the object is blended with the objects underneath. 
          *   @default auto
          *   @see starling.display.BlendMode */ 
-        public function get blendMode():String { return mBlendMode; }
+        final public function get blendMode():String { return mBlendMode; }
         public function set blendMode(value:String):void { mBlendMode = value; }
         
         /** The name of the display object (default: null). Used by 'getChildByName()' of 
@@ -935,13 +935,16 @@ package starling.display
          *  (since you might want to reuse it). */
 
 		
-        //public function get filter():FragmentFilter { return mFilter; }  
-        public function get filter():FragmentFilter {			
-			return mIgnoreFilters ? null : mFilter;
+        final public function get filter():FragmentFilter 
+		{			
+//			return mIgnoreFilters ? null : mFilter;
+			return mFilter;
 		}
 		
-        public function set filter(value:FragmentFilter):void { 
-			mFilter = mIgnoreFilters ? null : value;
+        public function set filter(value:FragmentFilter):void 
+		{ 
+//			mFilter = mIgnoreFilters ? null : value;
+			mFilter = value;
 		}
  
 
@@ -965,7 +968,7 @@ package starling.display
          *  @see Canvas
          *  @default null
          */
-        public function get mask():DisplayObject { return mMask; }
+        final public function get mask():DisplayObject { return mMask; }
         public function set mask(value:DisplayObject):void
         {
             if (mMask != value)
@@ -1067,36 +1070,14 @@ package starling.display
 		}
 		
 		
-		
-		
-		
-		
-		// back side
-		//private var mBackSide:Boolean = false;  // false
-		//public function get backSide():Boolean {			
-			//return this.mBackSide;
-		//}		
-		//public function set backSide(value:Boolean):void {				
-			//this.mBackSide = value; 
-		//}	
-		
-		
-		
 		// ignoreFilters
-		private var mIgnoreFilters:Boolean = false; //false;   
-		public function get ignoreFilters():Boolean {			
-			return this.mIgnoreFilters;
-		}		
-		public function set ignoreFilters(value:Boolean):void {			
-			this.mIgnoreFilters = value;
-		}	
-		
-		
-		
-		
+//		private var mIgnoreFilters:Boolean = false;   
+//		public function get ignoreFilters():Boolean {			
+//			return this.mIgnoreFilters;
+//		}		
+//		public function set ignoreFilters(value:Boolean):void {			
+//			this.mIgnoreFilters = value;
+//		}	
 		/* end of ASSUKAR */
-		
-		
-		
     }
 }

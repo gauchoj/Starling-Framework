@@ -129,6 +129,8 @@ package starling.display
             destroyBuffers();
         }
 
+		private var context1:Context3D;
+		
         /** @inheritDoc */
         public override function render(support:RenderSupport, parentAlpha:Number):void
         {
@@ -141,22 +143,22 @@ package starling.display
             sRenderAlpha[0] = sRenderAlpha[1] = sRenderAlpha[2] = 1.0;
             sRenderAlpha[3] = parentAlpha * this.alpha;
 
-            var context:Context3D = Starling.context;
-            if (context == null) throw new MissingContextError();
+            context1 = Starling.context;
+            if (context1 == null) throw new MissingContextError();
 
             // apply the current blend mode
             support.applyBlendMode(false);
 
-            context.setProgram(Starling.current.getProgram(PROGRAM_NAME));
-            context.setVertexBufferAt(0, mVertexBuffer, 0, Context3DVertexBufferFormat.FLOAT_2);
-            context.setVertexBufferAt(1, mVertexBuffer, VertexData.COLOR_OFFSET, Context3DVertexBufferFormat.FLOAT_4);
-            context.setProgramConstantsFromMatrix(Context3DProgramType.VERTEX, 0, support.mvpMatrix3D, true);
-            context.setProgramConstantsFromVector(Context3DProgramType.VERTEX, 4, sRenderAlpha, 1);
+            context1.setProgram(Starling.current.getProgram(PROGRAM_NAME));
+            context1.setVertexBufferAt(0, mVertexBuffer, 0, Context3DVertexBufferFormat.FLOAT_2);
+            context1.setVertexBufferAt(1, mVertexBuffer, VertexData.COLOR_OFFSET, Context3DVertexBufferFormat.FLOAT_4);
+            context1.setProgramConstantsFromMatrix(Context3DProgramType.VERTEX, 0, support.mvpMatrix3D, true);
+            context1.setProgramConstantsFromVector(Context3DProgramType.VERTEX, 4, sRenderAlpha, 1);
 
-            context.drawTriangles(mIndexBuffer, 0, mIndexData.length / 3);
+            context1.drawTriangles(mIndexBuffer, 0, mIndexData.length / 3);
 
-            context.setVertexBufferAt(0, null);
-            context.setVertexBufferAt(1, null);
+            context1.setVertexBufferAt(0, null);
+            context1.setVertexBufferAt(1, null);
         }
 
         /** @inheritDoc */

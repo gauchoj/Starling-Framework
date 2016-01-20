@@ -111,14 +111,6 @@ package starling.display
          */
         public function flatten(ignoreChildOrder:Boolean=false):void
         {					
-			
-			
-			//TODO comment to deploy
-			//mFlattenRequested = false;
-			//return; 
-			
-			
-			
 //			if (IGNORE_FLATTEN)
 //			{
 //				mFlattenRequested = false;
@@ -213,13 +205,16 @@ package starling.display
                 return super.hitTest(localPoint, forTouch);
         }
         
+		// obj-tion
+		private var alpha1:Number, numBatches1:int, mvpMatrix1:Matrix3D, i1:int, clipRect1:Rectangle, quadBatch1:QuadBatch;
+		
         /** @inheritDoc */
         public override function render(support:RenderSupport, parentAlpha:Number):void
         {
             if (mClipRect)
             {
-                var clipRect:Rectangle = support.pushClipRect(getClipRect(stage, sHelperRect));
-                if (clipRect.isEmpty())
+                clipRect1 = support.pushClipRect(getClipRect(stage, sHelperRect));
+                if (clipRect1.isEmpty())
                 {
                     // empty clipping bounds - no need to render children.
                     support.popClipRect();
@@ -229,8 +224,7 @@ package starling.display
             
             if (mFlattenedContents || mFlattenRequested)
             {
-                if (mFlattenedContents == null)
-                    mFlattenedContents = new <QuadBatch>[];
+                if (mFlattenedContents == null) mFlattenedContents = new <QuadBatch>[];
                 
                 if (mFlattenRequested)
                 {
@@ -240,18 +234,17 @@ package starling.display
                     mFlattenRequested = false;
                 }
                 
-                var alpha:Number = parentAlpha * this.alpha;
-                var numBatches:int = mFlattenedContents.length;
-                var mvpMatrix:Matrix3D = support.mvpMatrix3D;
-                
+                alpha1 = parentAlpha * this.alpha;
+                numBatches1 = mFlattenedContents.length;
+                mvpMatrix1 = support.mvpMatrix3D;
+				
                 support.finishQuadBatch();
-                support.raiseDrawCount(numBatches);
+                support.raiseDrawCount(numBatches1);
                 
-                for (var i:int=0; i<numBatches; ++i)
+				for (i1=0; i1<numBatches1; ++i1)
                 {	
-                    var quadBatch:QuadBatch = mFlattenedContents[i];		
-//                    var blendMode:String = quadBatch.blendMode == BlendMode.AUTO ? support.blendMode : quadBatch.blendMode;
-                    quadBatch.renderCustom(mvpMatrix, alpha, (quadBatch.blendMode == BlendMode.AUTO ? support.blendMode : quadBatch.blendMode));
+                    quadBatch1 = mFlattenedContents[i1];		
+                    quadBatch1.renderCustom(mvpMatrix1, alpha1, (quadBatch1.blendMode == BlendMode.AUTO ? support.blendMode : quadBatch1.blendMode));
                 }
             }
             else super.render(support, parentAlpha);

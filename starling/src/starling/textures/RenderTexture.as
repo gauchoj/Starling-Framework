@@ -198,24 +198,27 @@ package starling.textures
             renderBundled(drawingBlock, null, null, 1.0, antiAliasing);
         }
         
+		// obj-tion
+		private var filter1:FragmentFilter, mask1:DisplayObject;
+		
         private function render(object:DisplayObject, matrix:Matrix=null, alpha:Number=1.0):void
         {
-            var filter:FragmentFilter = object.filter;
-            var mask:DisplayObject = object.mask;
+            filter1 = object.mFilter;
+            mask1 = object.mMask;
 
             mSupport.loadIdentity();
-            mSupport.blendMode = object.blendMode == BlendMode.AUTO ?
-                BlendMode.NORMAL : object.blendMode;
+            mSupport.blendMode = object.mBlendMode == BlendMode.AUTO ?
+                BlendMode.NORMAL : object.mBlendMode;
 
             if (matrix) mSupport.prependMatrix(matrix);
             else        mSupport.transformMatrix(object);
 
-            if (mask)   mSupport.pushMask(mask);
+            if (mask1)   mSupport.pushMask(mask1);
 
-            if (filter) filter.render(object, mSupport, alpha);
+            if (filter1) filter1.render(object, mSupport, alpha);
             else        object.render(mSupport, alpha);
 
-            if (mask)   mSupport.popMask();
+            if (mask1)   mSupport.popMask();
         }
         
         private function renderBundled(renderBlock:Function, object:DisplayObject=null,

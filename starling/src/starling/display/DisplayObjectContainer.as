@@ -369,42 +369,37 @@ package starling.display
 			return null;
 		}
 		
+		// obj-tion
+		private var alpha1:Number, numChildren1:int, blendMode1:String, i1:int, child1:DisplayObject, filter1:FragmentFilter, mask1:DisplayObject;
+		
 		/** @inheritDoc */
 		public override function render(support:RenderSupport, parentAlpha:Number):void
 		{
-			var alpha:Number = parentAlpha * this.alpha;
-			var numChildren:int = mChildren.length;
-			var blendMode:String = support.blendMode;
+			alpha1 = parentAlpha * this.alpha;
+			numChildren1 = mChildren.length;
+			blendMode1 = support.mBlendMode;
 			
-			for (var i:int = 0; i < numChildren; ++i)
+			for (i1 = 0; i1 < numChildren1; ++i1)
 			{
-				var child:DisplayObject = mChildren[i];
+				child1 = mChildren[i1];
 				
-				if (child.hasVisibleArea)
+				if (child1.hasVisibleArea)
 				{
-					var filter:FragmentFilter = child.filter;
-					var mask:DisplayObject = child.mask;
+					filter1 = child1.mFilter;
+					mask1 = child1.mMask;
 					
 					support.pushMatrix();
-					support.transformMatrix(child);
-					support.blendMode = child.blendMode;
+					support.transformMatrix(child1);
+					support.blendMode = child1.mBlendMode;
 					
-					if (mask)
-						support.pushMask(mask);
+					if (mask1) support.pushMask(mask1);
 					
-					if (filter)
-					{
-						filter.render(child, support, alpha);
-					}
-					else
-					{
-						child.render(support, alpha);
-					}
+					if (filter1) filter1.render(child1, support, alpha1);
+					else child1.render(support, alpha1);
 					
-					if (mask)
-						support.popMask();
+					if (mask1) support.popMask();
 					
-					support.blendMode = blendMode;
+					support.blendMode = blendMode1;
 					support.popMatrix();
 				}
 			}

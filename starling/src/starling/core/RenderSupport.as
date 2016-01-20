@@ -10,33 +10,33 @@
 
 package starling.core
 {
-    import com.adobe.utils.AGALMiniAssembler;
+	import starling.display.BlendMode;
+	import starling.display.DisplayObject;
+	import starling.display.Quad;
+	import starling.display.QuadBatch;
+	import starling.display.Stage;
+	import starling.errors.MissingContextError;
+	import starling.textures.Texture;
+	import starling.textures.TextureSmoothing;
+	import starling.utils.Color;
+	import starling.utils.MatrixUtil;
+	import starling.utils.RectangleUtil;
+	import starling.utils.SystemUtil;
 
-    import flash.display3D.Context3D;
-    import flash.display3D.Context3DCompareMode;
-    import flash.display3D.Context3DProgramType;
-    import flash.display3D.Context3DStencilAction;
-    import flash.display3D.Context3DTextureFormat;
-    import flash.display3D.Context3DTriangleFace;
-    import flash.display3D.Program3D;
-    import flash.geom.Matrix;
-    import flash.geom.Matrix3D;
-    import flash.geom.Point;
-    import flash.geom.Rectangle;
-    import flash.geom.Vector3D;
+	import com.adobe.utils.AGALMiniAssembler;
 
-    import starling.display.BlendMode;
-    import starling.display.DisplayObject;
-    import starling.display.Quad;
-    import starling.display.QuadBatch;
-    import starling.display.Stage;
-    import starling.errors.MissingContextError;
-    import starling.textures.Texture;
-    import starling.textures.TextureSmoothing;
-    import starling.utils.Color;
-    import starling.utils.MatrixUtil;
-    import starling.utils.RectangleUtil;
-    import starling.utils.SystemUtil;
+	import flash.display3D.Context3D;
+	import flash.display3D.Context3DCompareMode;
+	import flash.display3D.Context3DProgramType;
+	import flash.display3D.Context3DStencilAction;
+	import flash.display3D.Context3DTextureFormat;
+	import flash.display3D.Context3DTriangleFace;
+	import flash.display3D.Program3D;
+	import flash.geom.Matrix;
+	import flash.geom.Matrix3D;
+	import flash.geom.Point;
+	import flash.geom.Rectangle;
+	import flash.geom.Vector3D;
 
     /** A class that contains helper methods simplifying Stage3D rendering.
      *
@@ -65,7 +65,7 @@ package starling.core
         private var mMatrixStack3DSize:int;
 
         private var mDrawCount:int;
-        private var mBlendMode:String;
+        public var mBlendMode:String;
 
         private var mClipRectStack:Vector.<Rectangle>;
         private var mClipRectStackSize:int;
@@ -341,7 +341,7 @@ package starling.core
         
         /** The blend mode to be used on rendering. To apply the factor, you have to manually call
          *  'applyBlendMode' (because the actual blend factors depend on the PMA mode). */
-        public function get blendMode():String { return mBlendMode; }
+        final public function get blendMode():String { return mBlendMode; }
         public function set blendMode(value:String):void
         {
             if (value != BlendMode.AUTO) mBlendMode = value;
@@ -471,6 +471,9 @@ package starling.core
         private var mMasks:Vector.<DisplayObject> = new <DisplayObject>[];
         private var mStencilReferenceValue:uint = 0;
 
+		// obj-tion
+		private var context1:Context3D;
+
         /** Draws a display object into the stencil buffer, incrementing the buffer on each
          *  used pixel. The stencil reference value is incremented as well; thus, any subsequent
          *  stencil tests outside of this area will fail.
@@ -483,20 +486,23 @@ package starling.core
             mMasks[mMasks.length] = mask;
             mStencilReferenceValue++;
 
-            var context:Context3D = Starling.context;
-            if (context == null) return;
+            context1 = Starling.context;
+            if (context1 == null) return;
 
             finishQuadBatch();
 
-            context.setStencilActions(Context3DTriangleFace.FRONT_AND_BACK,
+            context1.setStencilActions(Context3DTriangleFace.FRONT_AND_BACK,
                     Context3DCompareMode.EQUAL, Context3DStencilAction.INCREMENT_SATURATE);
 
             drawMask(mask);
 
-            context.setStencilReferenceValue(mStencilReferenceValue);
-            context.setStencilActions(Context3DTriangleFace.FRONT_AND_BACK,
+            context1.setStencilReferenceValue(mStencilReferenceValue);
+            context1.setStencilActions(Context3DTriangleFace.FRONT_AND_BACK,
                     Context3DCompareMode.EQUAL, Context3DStencilAction.KEEP);
         }
+
+		// obj-tion
+		private var context2:Context3D, mask2:DisplayObject;
 
         /** Redraws the most recently pushed mask into the stencil buffer, decrementing the
          *  buffer on each used pixel. This effectively removes the object from the stencil buffer,
@@ -504,31 +510,34 @@ package starling.core
          */
         public function popMask():void
         {
-            var mask:DisplayObject = mMasks.pop();
+            mask2 = mMasks.pop();
             mStencilReferenceValue--;
 
-            var context:Context3D = Starling.context;
-            if (context == null) return;
+            context2 = Starling.context;
+            if (context2 == null) return;
 
             finishQuadBatch();
 
-            context.setStencilActions(Context3DTriangleFace.FRONT_AND_BACK,
+            context2.setStencilActions(Context3DTriangleFace.FRONT_AND_BACK,
                     Context3DCompareMode.EQUAL, Context3DStencilAction.DECREMENT_SATURATE);
 
-            drawMask(mask);
+            drawMask(mask2);
 
-            context.setStencilReferenceValue(mStencilReferenceValue);
-            context.setStencilActions(Context3DTriangleFace.FRONT_AND_BACK,
+            context2.setStencilReferenceValue(mStencilReferenceValue);
+            context2.setStencilActions(Context3DTriangleFace.FRONT_AND_BACK,
                     Context3DCompareMode.EQUAL, Context3DStencilAction.KEEP);
         }
 
+		// obj-tion
+		private var stage1:Stage;
+		
         private function drawMask(mask:DisplayObject):void
         {
             pushMatrix();
 
-            var stage:Stage = mask.stage;
-            if (stage) mask.getTransformationMatrix(stage, mModelViewMatrix);
-            else       transformMatrix(mask);
+            stage1 = mask.stage;
+            if (stage1) mask.getTransformationMatrix(stage1, mModelViewMatrix);
+            else transformMatrix(mask);
 
             mask.render(this, 0.0);
             finishQuadBatch();
@@ -554,7 +563,7 @@ package starling.core
 		
         public function batchQuad(quad:Quad, parentAlpha:Number, texture:Texture=null, smoothing:String=null):void
         {
-            if (mQuadBatches[mCurrentQuadBatchID].isStateChange(quad.tinted, parentAlpha, texture, smoothing, mBlendMode, 1, quad.ignoreFilters))
+            if (mQuadBatches[mCurrentQuadBatchID].isStateChange(quad.tinted, parentAlpha, texture, smoothing, mBlendMode, 1, false))//quad.ignoreFilters))
             {
                 finishQuadBatch();
             }
@@ -574,7 +583,7 @@ package starling.core
         public function batchQuadBatch(quadBatch:QuadBatch, parentAlpha:Number):void
         {
             if (mQuadBatches[mCurrentQuadBatchID].isStateChange(
-                quadBatch.tinted, parentAlpha, quadBatch.texture, quadBatch.smoothing, mBlendMode, 1, quadBatch.ignoreFilters))
+                quadBatch.tinted, parentAlpha, quadBatch.texture, quadBatch.smoothing, mBlendMode, 1, false))//quadBatch.ignoreFilters))
             {
                 finishQuadBatch();
             }
@@ -582,25 +591,28 @@ package starling.core
             mQuadBatches[mCurrentQuadBatchID].addQuadBatch(quadBatch, parentAlpha, mModelViewMatrix, mBlendMode);
         }
         
+		// obj-tion
+		private var currentBatch1:QuadBatch;
+		
         /** Renders the current quad batch and resets it. */
         public function finishQuadBatch():void
         {
-            var currentBatch:QuadBatch = mQuadBatches[mCurrentQuadBatchID];
+            currentBatch1 = mQuadBatches[mCurrentQuadBatchID];
             
-            if (currentBatch.numQuads != 0)
+            if (currentBatch1.numQuads != 0)
             {
                 if (mMatrixStack3DSize == 0)
                 {
-                    currentBatch.renderCustom(mProjectionMatrix3D);
+                    currentBatch1.renderCustom(mProjectionMatrix3D);
                 }
                 else
                 {
                     mMvpMatrix3D.copyFrom(mProjectionMatrix3D);
                     mMvpMatrix3D.prepend(mModelViewMatrix3D);
-                    currentBatch.renderCustom(mMvpMatrix3D);
+                    currentBatch1.renderCustom(mMvpMatrix3D);
                 }
                 
-                currentBatch.reset();
+                currentBatch1.reset();
                 
                 ++mCurrentQuadBatchID;
                 ++mDrawCount;
@@ -637,13 +649,21 @@ package starling.core
             }
         }
 
+		// obj-tion
+		private var profile1:String, quadBatch1:QuadBatch;
+
         private function createQuadBatch():QuadBatch
         {
-            var profile:String = Starling.current.profile;
-            var forceTinted:Boolean = (profile != "baselineConstrained" && profile != "baseline");
-            var quadBatch:QuadBatch = new QuadBatch();
-            quadBatch.forceTinted = forceTinted;
-            return quadBatch;
+//            var profile:String = Starling.current.profile;
+//            var forceTinted:Boolean = (profile != "baselineConstrained" && profile != "baseline");
+//            var quadBatch:QuadBatch = new QuadBatch();
+//            quadBatch.forceTinted = forceTinted;
+//            return quadBatch;
+			
+            profile1 = Starling.current.profile;
+            quadBatch1 = new QuadBatch();
+            quadBatch1.forceTinted = (profile1 != "baselineConstrained" && profile1 != "baseline");
+            return quadBatch1;
         }
         
         // other helper methods
@@ -654,11 +674,14 @@ package starling.core
             setBlendFactors(premultipliedAlpha);
         }
         
+		// obj-tion
+		static private var blendFactors1:Array;
+		
         /** Sets up the blending factors that correspond with a certain blend mode. */
         public static function setBlendFactors(premultipliedAlpha:Boolean, blendMode:String="normal"):void
         {
-            var blendFactors:Array = BlendMode.getBlendFactors(blendMode, premultipliedAlpha); 
-            Starling.context.setBlendFactors(blendFactors[0], blendFactors[1]);
+            blendFactors1 = BlendMode.getBlendFactors(blendMode, premultipliedAlpha); 
+            Starling.context.setBlendFactors(blendFactors1[0], blendFactors1[1]);
         }
         
         /** Clears the render context with a certain color and alpha value. */

@@ -57,7 +57,7 @@ package starling.utils
         public static const TEXCOORD_OFFSET:int = 6;
         
         private var mRawData:Vector.<Number>;
-        private var mPremultipliedAlpha:Boolean;
+        public var mPremultipliedAlpha:Boolean;
         private var mNumVertices:int;
 
         /** Helper object. */
@@ -503,7 +503,7 @@ package starling.utils
        /** Indicates if the rgb values are stored premultiplied with the alpha value.
         *  If you change this value, the color data is updated accordingly. If you don't want
         *  that, use the 'setPremultipliedAlpha' method instead. */
-        public function get premultipliedAlpha():Boolean { return mPremultipliedAlpha; }
+        final public function get premultipliedAlpha():Boolean { return mPremultipliedAlpha; }
         public function set premultipliedAlpha(value:Boolean):void
         {
             setPremultipliedAlpha(value);

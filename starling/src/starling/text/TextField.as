@@ -10,32 +10,31 @@
 
 package starling.text
 {
-    import flash.display.BitmapData;
-    import flash.display.StageQuality;
-    import flash.display3D.Context3DTextureFormat;
-    import flash.filters.BitmapFilter;
-    import flash.geom.Matrix;
-    import flash.geom.Point;
-    import flash.geom.Rectangle;
-    import flash.text.AntiAliasType;
-    import flash.text.TextFormat;
-    import flash.utils.Dictionary;
-	import starling.errors.AbstractMethodError;
+	import starling.core.RenderSupport;
+	import starling.core.Starling;
+	import starling.display.DisplayObject;
+	import starling.display.DisplayObjectContainer;
+	import starling.display.Image;
+	import starling.display.Quad;
+	import starling.display.QuadBatch;
+	import starling.display.Sprite;
+	import starling.events.Event;
+	import starling.textures.Texture;
+	import starling.utils.HAlign;
+	import starling.utils.RectangleUtil;
+	import starling.utils.VAlign;
+	import starling.utils.deg2rad;
 
-    import starling.core.RenderSupport;
-    import starling.core.Starling;
-    import starling.display.DisplayObject;
-    import starling.display.DisplayObjectContainer;
-    import starling.display.Image;
-    import starling.display.Quad;
-    import starling.display.QuadBatch;
-    import starling.display.Sprite;
-    import starling.events.Event;
-    import starling.textures.Texture;
-    import starling.utils.HAlign;
-    import starling.utils.RectangleUtil;
-    import starling.utils.VAlign;
-    import starling.utils.deg2rad;
+	import flash.display.BitmapData;
+	import flash.display.StageQuality;
+	import flash.display3D.Context3DTextureFormat;
+	import flash.filters.BitmapFilter;
+	import flash.geom.Matrix;
+	import flash.geom.Point;
+	import flash.geom.Rectangle;
+	import flash.text.AntiAliasType;
+	import flash.text.TextFormat;
+	import flash.utils.Dictionary;
 
     /** A TextField displays text, either using standard true type fonts or custom bitmap fonts.
      *  
@@ -173,7 +172,7 @@ package starling.text
             if (mRequiresRedraw)
             {
                 if (getBitmapFont(mFontName)) createComposedContents();
-                else                          createRenderedContents();
+                else createRenderedContents();
 
                 updateBorder();
                 mRequiresRedraw = false;

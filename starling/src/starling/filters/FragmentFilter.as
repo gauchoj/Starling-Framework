@@ -182,12 +182,9 @@ package starling.filters
         public function render(object:DisplayObject, support:RenderSupport, parentAlpha:Number):void
         {
             // bottom layer
-            
-            if (mode == FragmentFilterMode.ABOVE)
-                object.render(support, parentAlpha);
+            if (mMode == FragmentFilterMode.ABOVE) object.render(support, parentAlpha);
             
             // center layer
-            
             if (mCacheRequested)
             {
                 mCacheRequested = false;
@@ -195,31 +192,11 @@ package starling.filters
                 disposePassTextures();
             }
             
-            if (mCache)
-			{
-				mCache.render(support, parentAlpha);
-			}
-            else
-			{
-				renderPasses(object, support, parentAlpha, false);
-//				try
-//				{
-//	                renderPasses(object, support, parentAlpha, false);
-//				}
-//				catch (e:Error)
-//				{
-//					if (e.errorID != 3672) throw e;
-////					Starling.current.frameProblemCount++;
-////					Starling.current.frameProblemProduces++;
-//					Utils.log("FragmentFilter PROBLEM RENDERING " + e.errorID + " " + Starling.current.frameCount);// + "/" + Starling.current.frameProblemCount + "/" + Starling.current.problemVirginFrame);
-////					if (Starling.current.problemVirginFrame) Starling.current.frameProblemProduces++;
-//				}
-			}
+            if (mCache) mCache.render(support, parentAlpha);
+            else renderPasses(object, support, parentAlpha, false);
             
             // top layer
-            
-            if (mode == FragmentFilterMode.BELOW)
-                object.render(support, parentAlpha);
+            if (mMode == FragmentFilterMode.BELOW) object.render(support, parentAlpha);
         }
         
         private function renderPasses(object:DisplayObject, support:RenderSupport,
@@ -269,8 +246,7 @@ package starling.filters
             previousStencilRefValue = support.stencilReferenceValue;
 
             if (previousRenderTarget && !SystemUtil.supportsRelaxedTargetClearRequirement)
-                throw new IllegalOperationError(
-                    "To nest filters, you need at least Flash Player / AIR version 15.");
+                throw new IllegalOperationError("To nest filters, you need at least Flash Player / AIR version 15.");
             
             if (intoCache)
                 cacheTexture = Texture.empty(boundsPot.width, boundsPot.height, PMA, false, true,
@@ -609,7 +585,7 @@ package starling.filters
         
         /** The filter mode, which is one of the constants defined in the "FragmentFilterMode" 
          *  class. @default "replace" */
-        public function get mode():String { return mMode; }
+        final public function get mode():String { return mMode; }
         public function set mode(value:String):void { mMode = value; }
         
         /** Use the x-offset to move the filter output to the right or left. */

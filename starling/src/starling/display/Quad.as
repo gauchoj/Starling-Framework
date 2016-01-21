@@ -84,12 +84,12 @@ package starling.display
                 mVertexData.getPosition(3, sHelperPoint);
                 resultRect.setTo(0.0, 0.0, sHelperPoint.x, sHelperPoint.y);
             }
-            else if (targetSpace == parent && rotation == 0.0) // optimization
+            else if (targetSpace == mParent && rotation == 0.0) // optimization
             {
-                var scaleX:Number = this.scaleX;
-                var scaleY:Number = this.scaleY;
+                var scaleX:Number = this.mScaleX;
+                var scaleY:Number = this.mScaleY;
                 mVertexData.getPosition(3, sHelperPoint);
-                resultRect.setTo(x - pivotX * scaleX,      y - pivotY * scaleY,
+                resultRect.setTo(x - mPivotX * scaleX,      y - mPivotY * scaleY,
                                  sHelperPoint.x * scaleX, sHelperPoint.y * scaleY);
                 if (scaleX < 0) { resultRect.width  *= -1; resultRect.x -= resultRect.width;  }
                 if (scaleY < 0) { resultRect.height *= -1; resultRect.y -= resultRect.height; }
@@ -153,7 +153,7 @@ package starling.display
             mVertexData.setUniformColor(value);
             onVertexDataChanged();
             
-            if (value != 0xffffff || alpha != 1.0) mTinted = true;
+            if (value != 0xffffff || mAlpha != 1.0) mTinted = true;
             else mTinted = mVertexData.tinted;
         }
         

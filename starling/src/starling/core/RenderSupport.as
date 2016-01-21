@@ -599,7 +599,7 @@ package starling.core
         {
             currentBatch1 = mQuadBatches[mCurrentQuadBatchID];
             
-            if (currentBatch1.numQuads != 0)
+            if (currentBatch1.mNumQuads != 0)
             {
                 if (mMatrixStack3DSize == 0)
                 {

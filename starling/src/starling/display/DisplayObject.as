@@ -132,20 +132,20 @@ package starling.display
         
         private var mX:Number;
         private var mY:Number;
-        private var mPivotX:Number;
-        private var mPivotY:Number;
-        private var mScaleX:Number;
-        private var mScaleY:Number;
+        public var mPivotX:Number;
+        public var mPivotY:Number;
+        public var mScaleX:Number;
+        public var mScaleY:Number;
         private var mSkewX:Number;
         private var mSkewY:Number;
         private var mRotation:Number;
-        private var mAlpha:Number;
+        public var mAlpha:Number;
         private var mVisible:Boolean;
-        private var mTouchable:Boolean;
+        public var mTouchable:Boolean;
         public var mBlendMode:String;
         private var mName:String;
         private var mUseHandCursor:Boolean;
-        private var mParent:DisplayObjectContainer;  
+        public var mParent:DisplayObjectContainer;  
         private var mTransformationMatrix:Matrix;
         private var mTransformationMatrix3D:Matrix3D;
         private var mOrientationChanged:Boolean;
@@ -816,7 +816,7 @@ package starling.display
         }
         
         /** The x coordinate of the object's origin in its own coordinate space (default: 0). */
-        public function get pivotX():Number { return mPivotX; }
+        final public function get pivotX():Number { return mPivotX; }
         public function set pivotX(value:Number):void 
         {
             if (mPivotX != value)
@@ -827,7 +827,7 @@ package starling.display
         }
         
         /** The y coordinate of the object's origin in its own coordinate space (default: 0). */
-        public function get pivotY():Number { return mPivotY; }
+        final public function get pivotY():Number { return mPivotY; }
         public function set pivotY(value:Number):void 
         { 
             if (mPivotY != value)
@@ -839,7 +839,7 @@ package starling.display
         }
         
         /** The horizontal scale factor. '1' means no scale, negative values flip the object. */
-        public function get scaleX():Number { return mScaleX; }
+        final public function get scaleX():Number { return mScaleX; }
         public function set scaleX(value:Number):void 
         { 
             if (mScaleX != value)
@@ -851,7 +851,7 @@ package starling.display
         }
         
         /** The vertical scale factor. '1' means no scale, negative values flip the object. */
-        public function get scaleY():Number { return mScaleY; }
+        final public function get scaleY():Number { return mScaleY; }
         public function set scaleY(value:Number):void 
         { 
             if (mScaleY != value)
@@ -889,6 +889,7 @@ package starling.display
         
         /** The rotation of the object in radians. (In Starling, all angles are measured 
          *  in radians.) */
+		// cannot final 
         public function get rotation():Number { return mRotation; }
         public function set rotation(value:Number):void 
         {
@@ -902,7 +903,7 @@ package starling.display
         }
         
         /** The opacity of the object. 0 = transparent, 1 = opaque. */
-        public function get alpha():Number { return mAlpha; }
+        final public function get alpha():Number { return mAlpha; }
         public function set alpha(value:Number):void 
         { 
             mAlpha = value < 0.0 ? 0.0 : (value > 1.0 ? 1.0 : value); 
@@ -913,7 +914,7 @@ package starling.display
         public function set visible(value:Boolean):void { mVisible = value; }
         
         /** Indicates if this object (and its children) will receive touch events. */
-        public function get touchable():Boolean { return mTouchable; }
+        final public function get touchable():Boolean { return mTouchable; }
         public function set touchable(value:Boolean):void { mTouchable = value; }
         
         /** The blend mode determines how the object is blended with the objects underneath. 
@@ -982,7 +983,7 @@ package starling.display
 
 
         /** The display object container that contains this display object. */
-        public function get parent():DisplayObjectContainer { return mParent; }
+        final public function get parent():DisplayObjectContainer { return mParent; }
         
         /** The topmost object in the display tree the object is part of. */
         public function get base():DisplayObject
@@ -1001,7 +1002,7 @@ package starling.display
             while (currentObject.mParent)
             {
                 if (currentObject.mParent is Stage) return currentObject;
-                else currentObject = currentObject.parent;
+                else currentObject = currentObject.mParent;
             }
             
             return null;

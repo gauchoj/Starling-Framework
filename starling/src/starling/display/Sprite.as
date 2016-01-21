@@ -234,7 +234,7 @@ package starling.display
                     mFlattenRequested = false;
                 }
                 
-                alpha1 = parentAlpha * this.alpha;
+                alpha1 = parentAlpha * this.mAlpha;
                 numBatches1 = mFlattenedContents.length;
                 mvpMatrix1 = support.mvpMatrix3D;
 				

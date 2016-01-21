@@ -119,7 +119,7 @@ package starling.display
             if (is2D) return super.hitTest(localPoint, forTouch);
             else
             {
-                if (forTouch && (!visible || !touchable))
+                if (forTouch && (!visible || !mTouchable))
                     return null;
 
                 // We calculate the interception point between the 3D plane that is spawned up
@@ -169,10 +169,10 @@ package starling.display
         {
             var x:Number = this.x;
             var y:Number = this.y;
-            var scaleX:Number = this.scaleX;
-            var scaleY:Number = this.scaleY;
-            var pivotX:Number = this.pivotX;
-            var pivotY:Number = this.pivotY;
+            var scaleX:Number = this.mScaleX;
+            var scaleY:Number = this.mScaleY;
+            var pivotX:Number = this.mPivotX;
+            var pivotY:Number = this.mPivotY;
             var rotationZ:Number = this.rotation;
 
             mTransformationMatrix3D.identity();

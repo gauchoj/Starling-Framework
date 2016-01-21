@@ -93,7 +93,7 @@ package starling.display
          *  the stage itself if nothing else is found. */
         public override function hitTest(localPoint:Point, forTouch:Boolean=false):DisplayObject
         {
-            if (forTouch && (!visible || !touchable))
+            if (forTouch && (!visible || !mTouchable))
                 return null;
             
             // locations outside of the stage area shouldn't be accepted

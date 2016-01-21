@@ -141,7 +141,7 @@ package starling.display
             support.raiseDrawCount();
 
             sRenderAlpha[0] = sRenderAlpha[1] = sRenderAlpha[2] = 1.0;
-            sRenderAlpha[3] = parentAlpha * this.alpha;
+            sRenderAlpha[3] = parentAlpha * this.mAlpha;
 
             context1 = Starling.context;
             if (context1 == null) throw new MissingContextError();
@@ -175,7 +175,7 @@ package starling.display
         /** @inheritDoc */
         public override function hitTest(localPoint:Point, forTouch:Boolean=false):DisplayObject
         {
-            if (forTouch && (!visible || !touchable)) return null;
+            if (forTouch && (!visible || !mTouchable)) return null;
             if (!hitTestMask(localPoint)) return null;
 
             for (var i:int = 0, len:int = mPolygons.length; i < len; ++i)

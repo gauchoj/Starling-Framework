@@ -270,7 +270,7 @@ package starling.display
                 createTextField();
                 mTextField.text = value;
                 
-                if (mTextField.parent == null)
+                if (mTextField.mParent == null)
                     mContents.addChild(mTextField);
             }
         }

@@ -72,7 +72,7 @@ package starling.display
 		
 		private static const QUAD_PROGRAM_NAME:String = "QB_q";
 		
-		private var mNumQuads:int;
+		public var mNumQuads:int;
 		private var mSyncRequired:Boolean;
 		private var mBatchable:Boolean;
 		private var mForceTinted:Boolean;
@@ -167,7 +167,7 @@ package starling.display
 			clone.mSmoothing = mSmoothing;
 			clone.mSyncRequired = true;
 			clone.blendMode = blendMode;
-			clone.alpha = alpha;
+			clone.alpha = mAlpha;
 			
 //			clone.mIgnoreFilters = mIgnoreFilters;
 			return clone;
@@ -330,7 +330,7 @@ package starling.display
 			if (modelViewMatrix == null)
 				modelViewMatrix = quad.transformationMatrix;
 			
-			var alpha:Number = parentAlpha * quad.alpha;
+			var alpha:Number = parentAlpha * quad.mAlpha;
 			var vertexID:int = mNumQuads * 4;
 			
 			if (mNumQuads + 1 > mVertexData.numVertices / 4) expand();
@@ -352,6 +352,9 @@ package starling.display
 			mNumQuads++;
 		}
 		
+		// obj-tion
+		private var alpha1:Number, vertexID1:int, numQuads1:int;		
+		
 		/** Adds another QuadBatch to this batch. Just like the 'addQuad' method, you have to
 		 *  make sure that you only add batches with an equal state. */
 		public function addQuadBatch(quadBatch:QuadBatch, parentAlpha:Number = 1.0, modelViewMatrix:Matrix = null, blendMode:String = null):void
@@ -361,11 +364,11 @@ package starling.display
 			if (modelViewMatrix == null)
 				modelViewMatrix = quadBatch.transformationMatrix;
 			
-			var alpha:Number = parentAlpha * quadBatch.alpha;
-			var vertexID:int = mNumQuads * 4;
-			var numQuads:int = quadBatch.numQuads;
+			alpha1 = parentAlpha * quadBatch.mAlpha;
+			vertexID1 = mNumQuads * 4;
+			numQuads1 = quadBatch.mNumQuads;
 			
-			if (mNumQuads + numQuads > capacity) capacity = mNumQuads + numQuads;
+			if (mNumQuads + numQuads1 > capacity) capacity = mNumQuads + numQuads1;
 			if (mNumQuads == 0)
 			{
 				this.blendMode = blendMode ? blendMode : quadBatch.blendMode;
@@ -375,13 +378,13 @@ package starling.display
 				mVertexData.setPremultipliedAlpha(quadBatch.mVertexData.premultipliedAlpha, false);
 			}
 			
-			quadBatch.mVertexData.copyTransformedTo(mVertexData, vertexID, modelViewMatrix, 0, numQuads * 4);
+			quadBatch.mVertexData.copyTransformedTo(mVertexData, vertexID1, modelViewMatrix, 0, numQuads1 * 4);
 			
-			if (alpha != 1.0)
-				mVertexData.scaleAlpha(vertexID, alpha, numQuads * 4);
+			if (alpha1 != 1.0)
+				mVertexData.scaleAlpha(vertexID1, alpha1, numQuads1 * 4);
 			
 			mSyncRequired = true;
-			mNumQuads += numQuads;
+			mNumQuads += numQuads1;
 		}
 		
 		/** Indicates if specific quads can be added to the batch without causing a state change.
@@ -469,7 +472,7 @@ package starling.display
 		public function setQuad(quadID:Number, quad:Quad):void
 		{
 			var matrix:Matrix = quad.transformationMatrix;
-			var alpha:Number = quad.alpha;
+			var alpha:Number = quad.mAlpha;
 			var vertexID:int = quadID * 4;
 			
 			quad.copyVertexDataTransformedTo(mVertexData, vertexID, matrix);
@@ -509,7 +512,7 @@ package starling.display
 				{
 					support.finishQuadBatch();
 					support.raiseDrawCount();
-					renderCustom(support.mvpMatrix3D, alpha * parentAlpha, support.blendMode);
+					renderCustom(support.mvpMatrix3D, mAlpha * parentAlpha, support.blendMode);
 				}
 			}
 		}
@@ -550,17 +553,12 @@ package starling.display
 		
 		private static function compileObject(object:DisplayObject, quadBatches:Vector.<QuadBatch>, quadBatchID:int, transformationMatrix:Matrix, alpha:Number = 1.0, blendMode:String = null, ignoreCurrentFilter:Boolean = false):int
 		{
-			//			if (IGNORE_ALL_FILTERS && object.filter)
-			//			{
-			//				object.ignoreFilters = true;
-			//			}
-			
 			if (object is Sprite3D) throw new IllegalOperationError("Sprite3D objects cannot be flattened");
 			
 			var i:int;
 			var quadBatch:QuadBatch;
 			var isRootObject:Boolean = false;
-			var objectAlpha:Number = object.alpha;
+			var objectAlpha:Number = object.mAlpha;
 			
 			var container:DisplayObjectContainer = object as DisplayObjectContainer;
 			var quad:Quad = object as Quad;
@@ -580,14 +578,6 @@ package starling.display
 					quadBatches[0].reset();
 					quadBatches[0].ownsTexture = false;
 				}
-			}
-			else
-			{
-//				if (object.mask)
-//					trace("[Starling] Masks are ignored on children of a flattened sprite.");
-				
-//				if ((object is Sprite) && (object as Sprite).clipRect)
-//					trace("[Starling] ClipRects are ignored on children of a flattened sprite.");
 			}
 			
 			if (filter && !ignoreCurrentFilter)
@@ -684,7 +674,7 @@ package starling.display
 		// properties
 		
 		/** Returns the number of quads that have been added to the batch. */
-		public function get numQuads():int  { return mNumQuads; }
+		final public function get numQuads():int  { return mNumQuads; }
 		
 		/** Indicates if any vertices have a non-white color or are not fully opaque. */
 		public function get tinted():Boolean  { return mTinted || mForceTinted; }

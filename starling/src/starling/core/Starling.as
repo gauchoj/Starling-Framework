@@ -1020,7 +1020,7 @@ package starling.core
          *  into account. It is recommended to use Adobe Scout for reliable and comprehensive
          *  memory analysis.</p>
          */
-        public function get showStats():Boolean { return mStatsDisplay && mStatsDisplay.parent; }
+        public function get showStats():Boolean { return mStatsDisplay && mStatsDisplay.mParent; }
         public function set showStats(value:Boolean):void
         {
             if (value == showStats) return;

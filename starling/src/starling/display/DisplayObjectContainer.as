@@ -117,7 +117,7 @@ package starling.display
 			
 			if (index >= 0 && index <= numChildren)
 			{
-				if (child.parent == this)
+				if (child.mParent == this)
 				{
 					setChildIndex(child, index); // avoids dispatching events
 					
@@ -287,7 +287,7 @@ package starling.display
 				if (child == this)
 					return true;
 				else
-					child = child.parent;
+					child = child.mParent;
 			}
 			return false;
 		}
@@ -340,7 +340,7 @@ package starling.display
 		/** @inheritDoc */
 		public override function hitTest(localPoint:Point, forTouch:Boolean = false):DisplayObject
 		{
-			if (forTouch && (!visible || !touchable))
+			if (forTouch && (!visible || !mTouchable))
 				return null;
 			if (!hitTestMask(localPoint))
 				return null;
@@ -375,7 +375,7 @@ package starling.display
 		/** @inheritDoc */
 		public override function render(support:RenderSupport, parentAlpha:Number):void
 		{
-			alpha1 = parentAlpha * this.alpha;
+			alpha1 = parentAlpha * this.mAlpha;
 			numChildren1 = mChildren.length;
 			blendMode1 = support.mBlendMode;
 			

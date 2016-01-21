@@ -835,7 +835,6 @@ package starling.display
                 mPivotY = value;
                 mOrientationChanged = true;
             }
-			
         }
         
         /** The horizontal scale factor. '1' means no scale, negative values flip the object. */
@@ -847,7 +846,6 @@ package starling.display
                 mScaleX = value;
                 mOrientationChanged = true;
             }
-			
         }
         
         /** The vertical scale factor. '1' means no scale, negative values flip the object. */

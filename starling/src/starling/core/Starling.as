@@ -706,25 +706,9 @@ package starling.core
 		private var enterFrameDate: Date;
 		public var frameLength: Number = 0;
 		public var frameCount: uint = 0;
-//		public var frameProblemCount: uint = 0;
-//		public var frameProblemProduces: uint = 0;
-//		public var problemVirginFrame: Boolean = true;
-//		public var consecutiveProblematicFrames: int = 0;
         
         private function onEnterFrame(event:Event):void
         {
-//			problemVirginFrame = frameProblemCount == 0;
-//			if (problemVirginFrame) consecutiveProblematicFrames = 0;
-//			else consecutiveProblematicFrames++;
-//			if (consecutiveProblematicFrames == 60*5)
-//			{
-//				frameProblemCount = 0;
-//				consecutiveProblematicFrames = 0;
-//				Utils.logError(new AssukarError(), true);
-//				return;
-//			}
-//			frameProblemCount = 0;
-//			frameProblemProduces = 0;
 			frameCount++;
 			
             // On mobile, the native display list is only updated on stage3D draw calls.
@@ -739,12 +723,12 @@ package starling.core
 				
 				frameLength = new Date().getTime() - enterFrameDate.getTime();
             }
-
-            updateNativeOverlay();
 			
-//			if (problemCount == originProblemCount) problemCount = 0;
-			
-//			firstFrameAfterActivation = false;
+//            updateNativeOverlay();
+            mNativeOverlay.x = mViewPort.x;
+            mNativeOverlay.y = mViewPort.y;
+            mNativeOverlay.scaleX = mViewPort.width / mStage.stageWidth;
+            mNativeOverlay.scaleY = mViewPort.height / mStage.stageHeight;
         }
         
         private function onKey(event:KeyboardEvent):void

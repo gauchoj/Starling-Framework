@@ -111,17 +111,15 @@ package starling.display
          */
         public function flatten(ignoreChildOrder:Boolean=false):void
         {					
-//			if (IGNORE_FLATTEN)
-//			{
-//				mFlattenRequested = false;
-//			}
-//			else
-//			{
-	            mFlattenRequested = true;
-	            mFlattenOptimized = ignoreChildOrder;
-	            broadcastEventWith(Event.FLATTEN);
-//			}
+            mFlattenRequested = true;
+            mFlattenOptimized = ignoreChildOrder;
+            broadcastEventWith(Event.FLATTEN);
         }
+		
+		public function get isFlattenRequested(): Boolean
+		{
+			return mFlattenRequested;
+		}
         
         /** Removes the rendering optimizations that were created when flattening the sprite.
          *  Changes to the sprite's children will immediately become visible again. */ 

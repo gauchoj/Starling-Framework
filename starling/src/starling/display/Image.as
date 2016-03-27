@@ -181,10 +181,9 @@ package starling.display
         public function get smoothing():String { return mSmoothing; }
         public function set smoothing(value:String):void 
         {
-            if (TextureSmoothing.isValid(value))
-                mSmoothing = value;
-            else
-                throw new ArgumentError("Invalid smoothing mode: " + value);
+//            if (TextureSmoothing.isValid(value)) 
+			mSmoothing = value;
+//            else throw new ArgumentError("Invalid smoothing mode: " + value);
         }
 		
         /** @inheritDoc */

@@ -10,10 +10,10 @@
 
 package starling.textures
 {
-    import flash.geom.Rectangle;
-    import flash.utils.Dictionary;
-    
-    import starling.utils.cleanMasterString;
+	import starling.utils.cleanMasterString;
+
+	import flash.geom.Rectangle;
+	import flash.utils.Dictionary;
 
     /** A texture atlas is a collection of many smaller textures in one big image. This class
      *  is used to access textures from such an atlas.
@@ -77,15 +77,17 @@ package starling.textures
         
         /** helper objects */
         private static var sNames:Vector.<String> = new <String>[];
+		
+		private var textureHash: Dictionary;
         
         /** Create a texture atlas from a texture by parsing the regions from an XML file. */
-        public function TextureAtlas(texture:Texture, atlasXml:XML=null)
+        public function TextureAtlas(texture:Texture, atlasXml:XML, textureHash: Dictionary)
         {
             mSubTextures = new Dictionary();
             mAtlasTexture = texture;
-            
-            if (atlasXml)
-                parseAtlasXml(atlasXml);
+			this.textureHash = textureHash;
+			
+            if (atlasXml) parseAtlasXml(atlasXml);
         }
         
         /** Disposes the atlas texture. */
@@ -129,12 +131,13 @@ package starling.textures
         /** Retrieves a SubTexture by name. Returns <code>null</code> if it is not found. */
         public function getTexture(name:String):Texture
         {
-			CONFIG::DEBUG
-			{
-				var texture:Texture =  mSubTextures[name];
-				if(texture) texture.name = name;
-				return texture; 
-			}
+			// recently commented
+//			CONFIG::DEBUG
+//			{
+//				var texture:Texture =  mSubTextures[name];
+//				if(texture) texture.name = name;
+//				return texture; 
+//			}
 			
 			return mSubTextures[name];
         }
@@ -144,10 +147,7 @@ package starling.textures
         public function getTextures(prefix:String="", result:Vector.<Texture>=null):Vector.<Texture>
         {
             if (result == null) result = new <Texture>[];
-            
-            for each (var name:String in getNames(prefix, sNames)) 
-                result[result.length] = getTexture(name); // avoid 'push'
-
+            for each (var name:String in getNames(prefix, sNames)) result[result.length] = getTexture(name); 
             sNames.length = 0;
             return result;
         }
@@ -202,7 +202,9 @@ package starling.textures
         public function addRegion(name:String, region:Rectangle, frame:Rectangle=null,
                                   rotated:Boolean=false):void
         {
-            mSubTextures[name] = new SubTexture(mAtlasTexture, region, false, frame, rotated);
+			if (textureHash[name]) throw new Error("duplicated texture name:" + name);
+			
+            textureHash[name] = mSubTextures[name] = new SubTexture(mAtlasTexture, region, false, frame, rotated);
             mSubTextureNames = null;
         }
         
@@ -212,6 +214,7 @@ package starling.textures
             var subTexture:SubTexture = mSubTextures[name];
             if (subTexture) subTexture.dispose();
             delete mSubTextures[name];
+			textureHash[name] = null;
             mSubTextureNames = null;
         }
         

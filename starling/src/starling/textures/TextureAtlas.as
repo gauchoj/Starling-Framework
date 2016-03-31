@@ -142,12 +142,17 @@ package starling.textures
 			return mSubTextures[name];
         }
         
+		private var txt: Texture;
         /** Returns all textures that start with a certain string, sorted alphabetically
          *  (especially useful for "MovieClip"). */
         public function getTextures(prefix:String="", result:Vector.<Texture>=null):Vector.<Texture>
         {
             if (result == null) result = new <Texture>[];
-            for each (var name:String in getNames(prefix, sNames)) result[result.length] = getTexture(name); 
+            for each (var name:String in getNames(prefix, sNames))
+			{
+				txt = result[result.length] = getTexture(name);
+				txt.name = name; 
+			}
             sNames.length = 0;
             return result;
         }

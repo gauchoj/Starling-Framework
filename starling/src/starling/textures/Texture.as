@@ -10,29 +10,27 @@
 
 package starling.textures
 {
+	import starling.core.Starling;
+	import starling.errors.AbstractClassError;
+	import starling.errors.MissingContextError;
+	import starling.errors.NotSupportedError;
+	import starling.utils.Color;
+	import starling.utils.SystemUtil;
+	import starling.utils.VertexData;
+	import starling.utils.execute;
+	import starling.utils.getNextPowerOfTwo;
 
-    import flash.display.Bitmap;
-    import flash.display.BitmapData;
-    import flash.display3D.Context3D;
-    import flash.display3D.Context3DTextureFormat;
-    import flash.display3D.textures.TextureBase;	
-    import flash.geom.Rectangle;
-	
-    import flash.media.Camera;
-    import flash.net.NetStream;
-    import flash.system.Capabilities;
-    import flash.utils.ByteArray;
-    import flash.utils.getQualifiedClassName;
-
-    import starling.core.Starling;
-    import starling.errors.AbstractClassError;
-    import starling.errors.MissingContextError;
-    import starling.errors.NotSupportedError;
-    import starling.utils.Color;
-    import starling.utils.SystemUtil;
-    import starling.utils.VertexData;
-    import starling.utils.execute;
-    import starling.utils.getNextPowerOfTwo;
+	import flash.display.Bitmap;
+	import flash.display.BitmapData;
+	import flash.display3D.Context3D;
+	import flash.display3D.Context3DTextureFormat;
+	import flash.display3D.textures.TextureBase;
+	import flash.geom.Rectangle;
+	import flash.media.Camera;
+	import flash.net.NetStream;
+	import flash.system.Capabilities;
+	import flash.utils.ByteArray;
+	import flash.utils.getQualifiedClassName;
 
     /** <p>A texture stores the information that represents an image. It cannot be added to the
      *  display list directly; instead it has to be mapped onto a display object. In Starling,
@@ -126,10 +124,10 @@ package starling.textures
         }
 		
 		
+		public var name:String;
 		
 		CONFIG::DEBUG
 		{
-			public var name:String;
 			public function toString():String
 			{
 				return "Texture[" + name + "]";

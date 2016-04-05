@@ -256,10 +256,10 @@ package starling.animation
 
             switch (getPropertyHint(property))
             {
-                case null:  return updateStandard; break;
-                case "rgb": return updateRgb; break;
-                case "rad": return updateRad; break;
-                case "deg": return updateDeg; break;
+                case null:  return updateStandard;
+                case "rgb": return updateRgb;
+                case "rad": return updateRad;
+                case "deg": return updateDeg;
                 default:
                     trace("[Starling] Ignoring unknown property hint:", getPropertyHint(property));
 //                    return updateStandard;

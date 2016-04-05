@@ -12,6 +12,9 @@ package starling.textures
 {
 	import starling.utils.cleanMasterString;
 
+	import com.assukar.airong.error.AssukarError;
+	import com.assukar.airong.utils.Utils;
+
 	import flash.geom.Rectangle;
 	import flash.utils.Dictionary;
 
@@ -120,11 +123,8 @@ package starling.textures
 
                 region.setTo(x, y, width, height);
                 frame.setTo(frameX, frameY, frameWidth, frameHeight);
-
-                if (frameWidth > 0 && frameHeight > 0)
-                    addRegion(name, region, frame, rotated);
-                else
-                    addRegion(name, region, null,  rotated);
+                if (frameWidth > 0 && frameHeight > 0) addRegion(name, region, frame, rotated);
+                else addRegion(name, region, null,  rotated);
             }
         }
         
@@ -207,7 +207,7 @@ package starling.textures
         public function addRegion(name:String, region:Rectangle, frame:Rectangle=null,
                                   rotated:Boolean=false):void
         {
-			if (textureHash[name]) throw new Error("duplicated texture name:" + name);
+			if (textureHash[name]) Utils.logError(new AssukarError("duplicated texture:" + name), false);
 			
             textureHash[name] = mSubTextures[name] = new SubTexture(mAtlasTexture, region, false, frame, rotated);
             mSubTextureNames = null;

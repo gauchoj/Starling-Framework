@@ -698,7 +698,7 @@ package starling.utils
 
                     if (texture)
                     {
-                        addTextureAtlas(name, new TextureAtlas(texture, xml));
+                        addTextureAtlas(name, new TextureAtlas(texture, xml, null));
                         removeTexture(name, false);
 
                         if (mKeepAtlasXmls) addXml(name, xml);

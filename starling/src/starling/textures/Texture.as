@@ -126,15 +126,10 @@ package starling.textures
 		
 		public var name:String;
 		
-		CONFIG::DEBUG
+		public function toString():String
 		{
-			public function toString():String
-			{
-				return "Texture[" + name + "]";
-			}
+			return name;
 		}
-		
-		
 
         /** Disposes the underlying texture data. Note that not all textures need to be disposed:
          *  SubTextures (created with 'Texture.fromTexture') just reference other textures and

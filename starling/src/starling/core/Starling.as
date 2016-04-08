@@ -15,6 +15,7 @@ package starling.core
 	import com.assukar.airong.error.AssukarError;
 	import com.assukar.airong.utils.Utils;
 
+	import flash.display.InteractiveObject;
 	import flash.display.Shape;
 	import flash.display.Sprite;
 	import flash.display.Stage3D;
@@ -320,6 +321,18 @@ package starling.core
                 requestContext3D(stage3D, renderMode, profile);
             }
         }
+		
+		static public const CANCEL_NATIVE_FOCUS: Boolean = false;
+		public function set nativeFocus(newFocus: InteractiveObject): void
+		{
+			if (CANCEL_NATIVE_FOCUS)
+			{
+				Utils.print("CANCEL NATIVE FOCUS::" + newFocus);
+				return;
+			}
+			
+			nativeStage.focus = newFocus;
+		}
         
         /** Disposes all children of the stage and the render context; removes all registered
          *  event listeners. */

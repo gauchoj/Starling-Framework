@@ -322,14 +322,14 @@ package starling.core
             }
         }
 		
-		static public const CANCEL_NATIVE_FOCUS: Boolean = false;
+//		static public const CANCEL_NATIVE_FOCUS: Boolean = false;
 		public function set nativeFocus(newFocus: InteractiveObject): void
 		{
-			if (CANCEL_NATIVE_FOCUS)
-			{
-				Utils.print("CANCEL NATIVE FOCUS::" + newFocus);
-				return;
-			}
+//			if (CANCEL_NATIVE_FOCUS)
+//			{
+//				Utils.print("CANCEL NATIVE FOCUS::" + newFocus);
+//				return;
+//			}
 			
 			nativeStage.focus = newFocus;
 		}

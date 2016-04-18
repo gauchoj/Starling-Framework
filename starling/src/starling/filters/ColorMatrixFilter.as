@@ -9,7 +9,7 @@
 // =================================================================================================
 
 // Most of the color transformation math was taken from the excellent ColorMatrix class by
-// Mario Klingemann: http://www.quasimondo.com/archives/000565.php -- THANKS!!!
+// Mario Klingemann: http://www.quasimondo.com/archives/000565.php -- THANKS
 
 package starling.filters
 {

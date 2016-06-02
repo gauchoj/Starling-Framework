@@ -322,15 +322,8 @@ package starling.core
             }
         }
 		
-//		static public const CANCEL_NATIVE_FOCUS: Boolean = false;
 		public function set nativeFocus(newFocus: InteractiveObject): void
 		{
-//			if (CANCEL_NATIVE_FOCUS)
-//			{
-//				Utils.print("CANCEL NATIVE FOCUS::" + newFocus);
-//				return;
-//			}
-			
 			nativeStage.focus = newFocus;
 		}
         
@@ -664,12 +657,10 @@ package starling.core
          *  furthermore, the method <code>nextFrame</code> will be called once per Flash Player
          *  frame. (Except when <code>shareContext</code> is enabled: in that case, you have to
          *  call that method manually.) */
-//		public var firstFrameAfterActivation: Boolean = true;
         public function start():void 
         { 
             mStarted = mRendering = true;
             mLastFrameTimestamp = getTimer() / 1000.0;
-//			firstFrameAfterActivation = true;
         }
         
         /** Stops all logic and input processing, effectively freezing the app in its current state.
@@ -685,7 +676,6 @@ package starling.core
         { 
             mStarted = false;
             mRendering = !suspendRendering;
-//			Utils.printStackTrace("mRendering:" + mRendering);
         }
         
         // event handlers
@@ -719,7 +709,15 @@ package starling.core
 		private var enterFrameDate: Date;
 		public var frameLength: Number = 0;
 		public var frameCount: uint = 0;
-        
+		//used to space out asset pushs between frames
+		private var frameCallbacks: Vector.<Function> = new <Function>[];
+		private var acallback: Function;
+		public function pushFrameCallback(callback: Function): void
+		{
+			if (!frameCallbacks) frameCallbacks = new <Function>[];
+			frameCallbacks.push(callback);
+		}
+		
         private function onEnterFrame(event:Event):void
         {
 			frameCount++;
@@ -730,18 +728,29 @@ package starling.core
             if (!mShareContext)
             {
 				enterFrameDate = new Date();
-				
                 if (mStarted) nextFrame();
                 else if (mRendering) render();
-				
 				frameLength = new Date().getTime() - enterFrameDate.getTime();
             }
 			
-//            updateNativeOverlay();
             mNativeOverlay.x = mViewPort.x;
             mNativeOverlay.y = mViewPort.y;
             mNativeOverlay.scaleX = mViewPort.width / mStage.stageWidth;
             mNativeOverlay.scaleY = mViewPort.height / mStage.stageHeight;
+			
+			if (frameCallbacks)
+			{
+				if (frameCallbacks.length > 0)
+				{
+					acallback = frameCallbacks.shift() as Function;
+//					Utils.print(callback);
+					acallback();
+				}
+				else
+				{
+					frameCallbacks = null;
+				}
+			}
         }
         
         private function onKey(event:KeyboardEvent):void
@@ -1185,9 +1194,7 @@ package starling.core
         {
             if (sCurrent) throw new IllegalOperationError(
                 "'multitouchEnabled' must be set before Starling instance is created");
-            else 
-                Multitouch.inputMode = value ? MultitouchInputMode.TOUCH_POINT :
-                                               MultitouchInputMode.NONE;
+            else Multitouch.inputMode = value ? MultitouchInputMode.TOUCH_POINT : MultitouchInputMode.NONE;
         }
         
         /** Indicates if Starling should automatically recover from a lost device context.

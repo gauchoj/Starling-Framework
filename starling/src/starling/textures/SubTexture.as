@@ -10,15 +10,14 @@
 
 package starling.textures
 {
-	import com.assukar.airong.utils.Utils;
-    import flash.display3D.textures.TextureBase;
-    import flash.geom.Matrix;
-    import flash.geom.Point;
-    import flash.geom.Rectangle;
-    
-    import starling.utils.MatrixUtil;
-    import starling.utils.RectangleUtil;
-    import starling.utils.VertexData;
+	import starling.utils.MatrixUtil;
+	import starling.utils.RectangleUtil;
+	import starling.utils.VertexData;
+
+	import flash.display3D.textures.TextureBase;
+	import flash.geom.Matrix;
+	import flash.geom.Point;
+	import flash.geom.Rectangle;
 
     /** A SubTexture represents a section of another texture. This is achieved solely by 
      *  manipulation of texture coordinates, making the class very efficient. 
@@ -52,13 +51,16 @@ package starling.textures
          *  @param rotated    If true, the SubTexture will show the parent region rotated by
          *                    90 degrees (CCW).
          */
-        public function SubTexture(parent:Texture, region:Rectangle=null,
+        function SubTexture(parent:Texture, region:Rectangle=null,
                                    ownsParent:Boolean=false, frame:Rectangle=null,
                                    rotated:Boolean=false)
         {
             // TODO: in a future version, the order of arguments of this constructor should
             //       be fixed ('ownsParent' at the very end).
             
+			if (parent) name = parent.name;
+			else name = "SubTexture:no:parent";
+			
             mParent = parent;
             mRegion = region ? region.clone() : new Rectangle(0, 0, parent.width, parent.height);
             mFrame = frame ? frame.clone() : null;
@@ -73,14 +75,6 @@ package starling.textures
                 mTransformationMatrix.translate(0, -1);
                 mTransformationMatrix.rotate(Math.PI / 2.0);
             }
-			
-			 
-			//if (mFrame && (mFrame.x > 0 || mFrame.y > 0 || mFrame.right < mRegion.width || mFrame.bottom < mRegion.height)) 
-			//if (mFrame && (mFrame.x > 0 || mFrame.y > 0 || mFrame.right < mWidth || mFrame.bottom < mHeight))
-			//{
-                //trace("[Starling] Warning: frames inside the texture's region are unsupported.");
-            //}
-			
 
             mTransformationMatrix.scale(mRegion.width  / mParent.width,
                                         mRegion.height / mParent.height);

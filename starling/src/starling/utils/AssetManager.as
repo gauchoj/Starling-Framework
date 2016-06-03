@@ -809,7 +809,7 @@ package starling.utils
                 }
                 else if (asset is Bitmap)
                 {
-                    texture = Texture.fromData(asset, options);
+                    texture = Texture.fromData("starling.AssertManager", asset, options);
                     texture.root.onRestore = function():void
                     {
                         mNumLostTextures++;
@@ -849,7 +849,7 @@ package starling.utils
                             onComplete();
                         });
 
-                        texture = Texture.fromData(bytes, options);
+                        texture = Texture.fromData("starling.AssertManager", bytes, options);
                         texture.root.onRestore = function():void
                         {
                             mNumLostTextures++;

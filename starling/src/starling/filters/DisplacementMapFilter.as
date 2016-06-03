@@ -59,7 +59,7 @@ package starling.filters
             new <Number>[0, 0, 0, 0,  0, 0, 0, 0,  0, 0, 0, 0,  0, 0, 0, 0];
         
         /** Creates a new displacement map filter that uses the provided map texture. */
-        public function DisplacementMapFilter(mapTexture:Texture, mapPoint:Point=null, 
+        function DisplacementMapFilter(name: String, mapTexture:Texture, mapPoint:Point=null, 
                                               componentX:uint=0, componentY:uint=0, 
                                               scaleX:Number=0.0, scaleY:Number=0.0,
                                               repeat:Boolean=false)
@@ -72,8 +72,7 @@ package starling.filters
             mScaleY = scaleY;
             mRepeat = repeat;
             this.mapPoint = mapPoint;
-            
-            super();
+            super(name);
         }
         
         /** @inheritDoc */

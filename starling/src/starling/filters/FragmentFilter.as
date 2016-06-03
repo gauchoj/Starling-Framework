@@ -118,11 +118,15 @@ package starling.filters
         private var mHelperMatrix3D:Matrix3D = new Matrix3D();
         private var mHelperRect:Rectangle    = new Rectangle();
         private var mHelperRect2:Rectangle   = new Rectangle();
+		
+		public var name: String;
 
         /** Creates a new Fragment filter with the specified number of passes and resolution.
          *  This constructor may only be called by the constructor of a subclass. */
-        public function FragmentFilter(numPasses:int=1, resolution:Number=1.0)
+        public function FragmentFilter(name: String, numPasses:int=1, resolution:Number=1.0)
         {
+			this.name = name;
+			
             if (Capabilities.isDebugger && 
                 getQualifiedClassName(this) == "starling.filters::FragmentFilter")
             {
@@ -231,7 +235,7 @@ package starling.filters
             
 			updateBuffers(context, boundsPot);
 			
-            updatePassTextures(boundsPot.width, boundsPot.height, mResolution * scale);
+            updatePassTextures(name, boundsPot.width, boundsPot.height, mResolution * scale);
             
             support.finishQuadBatch();
             support.raiseDrawCount(mNumPasses);
@@ -249,7 +253,7 @@ package starling.filters
                 throw new IllegalOperationError("To nest filters, you need at least Flash Player / AIR version 15.");
             
             if (intoCache)
-                cacheTexture = Texture.empty(boundsPot.width, boundsPot.height, PMA, false, true,
+                cacheTexture = Texture.empty("FragmentFilter:" + name, boundsPot.width, boundsPot.height, PMA, false, true,
                                              mResolution * scale);
 
             // draw the original object into a texture
@@ -381,7 +385,7 @@ package starling.filters
 			}
         }
         
-        private function updatePassTextures(width:Number, height:Number, scale:Number):void
+        private function updatePassTextures(name: String, width:Number, height:Number, scale:Number):void
         {
             var numPassTextures:int = mNumPasses > 1 ? 2 : 1;
             var needsUpdate:Boolean =
@@ -392,9 +396,7 @@ package starling.filters
             if (needsUpdate)
             {
                 disposePassTextures();
-
-                for (var i:int=0; i<numPassTextures; ++i)
-                    mPassTextures[i] = Texture.empty(width, height, PMA, false, true, scale);
+                for (var i:int=0; i<numPassTextures; ++i) mPassTextures[i] = Texture.empty(name + ":" + i, width, height, PMA, false, true, scale);
             }
         }
         

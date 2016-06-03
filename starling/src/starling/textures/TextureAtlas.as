@@ -131,14 +131,6 @@ package starling.textures
         /** Retrieves a SubTexture by name. Returns <code>null</code> if it is not found. */
         public function getTexture(name:String):Texture
         {
-			// recently commented
-//			CONFIG::DEBUG
-//			{
-//				var texture:Texture =  mSubTextures[name];
-//				if(texture) texture.name = name;
-//				return texture; 
-//			}
-			
 			return mSubTextures[name];
         }
         

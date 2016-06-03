@@ -114,7 +114,7 @@ package starling.textures
     public class Texture
     {
         /** @private */
-        public function Texture()
+        function Texture()
         {
             if (Capabilities.isDebugger &&
                 getQualifiedClassName(this) == "starling.textures::Texture")
@@ -171,8 +171,7 @@ package starling.textures
                 texture = fromAtfData(name, data as ByteArray,
                     options.scale, options.mipMapping, options.onReady, options.repeat);
             }
-            else
-                throw new ArgumentError("Unsupported 'data' type: " + getQualifiedClassName(data));
+            else throw new ArgumentError("Unsupported 'data' type: " + getQualifiedClassName(data));
 
             return texture;
         }
@@ -269,7 +268,7 @@ package starling.textures
                                               repeat:Boolean=false):Texture
         {
 			
-            var texture:Texture = Texture.empty(data.width / scale, data.height / scale, true,
+            var texture:Texture = Texture.empty(name, data.width / scale, data.height / scale, true,
                                                 generateMipMaps, optimizeForRenderToTexture, scale,
                                                 format, repeat);
 
@@ -286,6 +285,7 @@ package starling.textures
         }
 
 		static public function fromByteArray(
+			name: String,
 			data:ByteArray,
 			rect:Rectangle,
             optimizeForRenderToTexture:Boolean=false,
@@ -294,6 +294,7 @@ package starling.textures
 		):Texture {
 			
             var texture:Texture = Texture.empty(
+				name,
 				rect.width / scale, 
 				rect.height / scale,
 				true, 
@@ -303,6 +304,9 @@ package starling.textures
 				Context3DTextureFormat.BGRA,
 				repeat
 			);            
+			
+			texture.name = name;
+			texture.root.name = name;
 			
 			texture.root.uploadByteArray(data);
 			texture.root.onRestore = function():void {
@@ -375,14 +379,14 @@ package starling.textures
          *  @param onComplete will be executed when the texture is ready. May contain a parameter
          *                 of type 'Texture'.
          */
-        public static function fromNetStream(stream:NetStream, scale:Number=1,
+        public static function fromNetStream(name: String, stream:NetStream, scale:Number=1,
                                              onComplete:Function=null):Texture
         {
             // workaround for bug in NetStream class:
             if (stream.client == stream && !("onMetaData" in stream))
                 stream.client = { onMetaData: function(md:Object):void {} };
 
-            return fromVideoAttachment("NetStream", stream, scale, onComplete);
+            return fromVideoAttachment(name, "NetStream", stream, scale, onComplete);
         }
 
         /** Creates a video texture from a camera. Beware that the texture must not be used
@@ -404,13 +408,13 @@ package starling.textures
          *  @param onComplete will be executed when the texture is ready. May contain a parameter
          *                 of type 'Texture'.
          */
-        public static function fromCamera(camera:Camera, scale:Number=1,
+        public static function fromCamera(name: String, camera:Camera, scale:Number=1,
                                           onComplete:Function=null):Texture
         {
-            return fromVideoAttachment("Camera", camera, scale, onComplete);
+            return fromVideoAttachment(name, "Camera", camera, scale, onComplete);
         }
 
-        private static function fromVideoAttachment(type:String, attachment:Object,
+        private static function fromVideoAttachment(name: String, type:String, attachment:Object,
                                                     scale:Number, onComplete:Function):Texture
         {
             const TEXTURE_READY:String = "textureReady"; // for backwards compatibility
@@ -430,6 +434,8 @@ package starling.textures
             });
 
             var texture:ConcreteVideoTexture = new ConcreteVideoTexture(base, scale);
+			texture.name = name;
+			texture.root.name = name;
             texture.onRestore = function():void
             {
                 texture.root.attachVideo(type, attachment);
@@ -448,12 +454,16 @@ package starling.textures
          *  @param format  the context3D texture format to use. Pass one of the packed or
          *                 compressed formats to save memory.
          */
-        public static function fromColor(width:Number, height:Number, color:uint=0xffffffff,
+        public static function fromColor(name: String, width:Number, height:Number, color:uint=0xffffffff,
                                          optimizeForRenderToTexture:Boolean=false,
                                          scale:Number=-1, format:String="bgra"):Texture
         {
-            var texture:Texture = Texture.empty(width, height, true, false,
+            var texture:Texture = Texture.empty(name, width, height, true, false,
                                                 optimizeForRenderToTexture, scale, format);
+												
+			texture.name = name;
+			texture.root.name = name;
+			
             texture.root.clear(color, Color.getAlpha(color) / 255.0);
             texture.root.onRestore = function():void
             {
@@ -480,11 +490,10 @@ package starling.textures
          *                 compressed formats to save memory (at the price of reduced image quality).
          *  @param repeat  the repeat mode of the texture. Only useful for power-of-two textures.
          */
-        public static function empty(width:Number, height:Number, premultipliedAlpha:Boolean=true,
+        public static function empty(name: String, width:Number, height:Number, premultipliedAlpha:Boolean=true,
                                      mipMapping:Boolean=false, optimizeForRenderToTexture:Boolean=false,
                                      scale:Number=-1, format:String="bgra", repeat:Boolean=false):Texture
         {
-			
             if (scale <= 0) scale = Starling.contentScaleFactor;
 
             var actualWidth:int, actualHeight:int;
@@ -513,7 +522,6 @@ package starling.textures
             {
                 actualWidth  = getNextPowerOfTwo(origWidth);
                 actualHeight = getNextPowerOfTwo(origHeight);
-
                 nativeTexture = context.createTexture(actualWidth, actualHeight, format,
                                                       optimizeForRenderToTexture);
             }
@@ -531,6 +539,7 @@ package starling.textures
 			);
 
             concreteTexture.onRestore = concreteTexture.clear;
+			concreteTexture.name = name;
 
             if (actualWidth - origWidth < 0.001 && actualHeight - origHeight < 0.001)
                 return concreteTexture;

@@ -57,20 +57,20 @@ package starling.filters
          *  A lower resolution will result in a blurrier image, while reducing the rendering
          *  cost.</p>
          */
-        public function BlurFilter(blurX:Number=1, blurY:Number=1, resolution:Number=1)
+        function BlurFilter(name: String, blurX:Number=1, blurY:Number=1, resolution:Number=1)
         {
-            super(1, resolution);
+            super(name, 1, resolution);
             mBlurX = blurX;
             mBlurY = blurY;
             updateMarginsAndPasses();
         }
         
         /** Creates a blur filter that is set up for a drop shadow effect. */
-        public static function createDropShadow(distance:Number=4.0, angle:Number=0.785, 
+        public static function createDropShadow(name: String, distance:Number=4.0, angle:Number=0.785, 
                                                 color:uint=0x0, alpha:Number=0.5, blur:Number=1.0, 
                                                 resolution:Number=0.5):BlurFilter
         {
-            var dropShadow:BlurFilter = new BlurFilter(blur, blur, resolution);
+            var dropShadow:BlurFilter = new BlurFilter(name, blur, blur, resolution);
             dropShadow.offsetX = Math.cos(angle) * distance;
             dropShadow.offsetY = Math.sin(angle) * distance;
             dropShadow.mode = FragmentFilterMode.BELOW;
@@ -79,10 +79,10 @@ package starling.filters
         }
         
         /** Creates a blur filter that is set up for a glow effect. */
-        public static function createGlow(color:uint=0xffff00, alpha:Number=1.0, blur:Number=1.0,
+        public static function createGlow(name: String, color:uint=0xffff00, alpha:Number=1.0, blur:Number=1.0,
                                           resolution:Number=0.5):BlurFilter
         {
-            var glow:BlurFilter = new BlurFilter(blur, blur, resolution);
+            var glow:BlurFilter = new BlurFilter(name, blur, blur, resolution);
             glow.mode = FragmentFilterMode.BELOW;
             glow.setUniformColor(true, color, alpha);
             return glow;

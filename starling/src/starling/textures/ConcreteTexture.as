@@ -62,7 +62,7 @@ package starling.textures
         
         /** Creates a ConcreteTexture object from a TextureBase, storing information about size,
          *  mip-mapping, and if the channels contain premultiplied alpha values. */
-        public function ConcreteTexture(base:TextureBase, format:String, width:int, height:int, 
+        function ConcreteTexture(base:TextureBase, format:String, width:int, height:int, 
                                         mipMapping:Boolean, premultipliedAlpha:Boolean,
                                         optimizedForRenderTexture:Boolean=false,
                                         scale:Number=1, repeat:Boolean=false)
@@ -231,8 +231,6 @@ package starling.textures
         }
 		
 		
-		
-		//TODO:Starling: byteArray test
 		public function uploadByteArray(data:ByteArray):void {
 			
 			var bytesOut:ByteArray = new ByteArray();

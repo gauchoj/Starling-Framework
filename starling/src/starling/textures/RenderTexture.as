@@ -106,28 +106,31 @@ package starling.textures
          *  <p>Beware that persistence requires an additional texture buffer (i.e. the required
          *  memory is doubled). You can avoid that via 'optimizePersistentBuffers', though.</p>
          */
-        public function RenderTexture(width:int, height:int, persistent:Boolean=true,
+        public function RenderTexture(name: String, width:int, height:int, persistent:Boolean=true,
                                       scale:Number=-1, format:String="bgra", repeat:Boolean=false)
         {
+            var legalWidth:Number  = width;
+            var legalHeight:Number = height;
+
             // TODO: when Adobe has fixed this bug on the iPad 1 (see 'supportsNonPotDimensions'),
             //       we can remove 'legalWidth/Height' and just pass on the original values.
             //
             // [Workaround]
 
-            if (scale <= 0) scale = Starling.contentScaleFactor;
-
-            var legalWidth:Number  = width;
-            var legalHeight:Number = height;
-
-            if (!supportsNonPotDimensions)
-            {
-                legalWidth  = getNextPowerOfTwo(width  * scale) / scale;
-                legalHeight = getNextPowerOfTwo(height * scale) / scale;
-            }
+//            if (scale <= 0) scale = Starling.contentScaleFactor;
+//
+//
+//            if (!supportsNonPotDimensions)
+//            {
+//                legalWidth  = getNextPowerOfTwo(width  * scale) / scale;
+//                legalHeight = getNextPowerOfTwo(height * scale) / scale;
+//            }
 
             // [/Workaround]
+            
+			this.name = name;
 
-            mActiveTexture = Texture.empty(legalWidth, legalHeight, PMA, false, true, scale, format, repeat);
+            mActiveTexture = Texture.empty("render.mActiveTexture", legalWidth, legalHeight, PMA, false, true, scale, format, repeat);
             mActiveTexture.root.onRestore = mActiveTexture.root.clear;
             
             super(mActiveTexture, new Rectangle(0, 0, width, height), true, null, false);
@@ -141,7 +144,7 @@ package starling.textures
             
             if (persistent && (!optimizePersistentBuffers || !SystemUtil.supportsRelaxedTargetClearRequirement))
             {
-                mBufferTexture = Texture.empty(legalWidth, legalHeight, PMA, false, true, scale, format, repeat);
+                mBufferTexture = Texture.empty("render.mBufferTexture", legalWidth, legalHeight, PMA, false, true, scale, format, repeat);
                 mBufferTexture.root.onRestore = mBufferTexture.root.clear;
                 mHelperImage = new Image(mBufferTexture);
                 mHelperImage.smoothing = TextureSmoothing.NONE; // solves some antialias-issues

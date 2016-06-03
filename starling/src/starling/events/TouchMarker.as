@@ -89,7 +89,7 @@ package starling.events
             var bmpData:BitmapData = new BitmapData(width, height, true, 0x0);
             bmpData.draw(shape);
             
-            return Texture.fromBitmapData(bmpData, false, false, scale);
+            return Texture.fromBitmapData("TouchMarker", bmpData, false, false, scale);
         }
         
         private function get realMarker():Image { return getChildAt(0) as Image; }

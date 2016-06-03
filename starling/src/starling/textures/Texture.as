@@ -147,7 +147,7 @@ package starling.textures
          *                  with ATF data.
          *  @param options  Specifies options about the texture settings, e.g. scale factor.
          */
-        public static function fromData(data:Object, options:TextureOptions=null):Texture
+        public static function fromData(name: String, data:Object, options:TextureOptions=null):Texture
         {
             var texture:Texture = null;
 
@@ -156,19 +156,19 @@ package starling.textures
 
             if (data is Class)
             {
-                texture = fromEmbeddedAsset(data as Class,
+                texture = fromEmbeddedAsset(name, data as Class,
                     options.mipMapping, options.optimizeForRenderToTexture, options.scale,
                     options.format, options.repeat);
             }
             else if (data is BitmapData)
             {
-                texture = fromBitmapData(data as BitmapData,
+                texture = fromBitmapData(name, data as BitmapData,
                     options.mipMapping, options.optimizeForRenderToTexture, options.scale,
                     options.format, options.repeat);
             }
             else if (data is ByteArray)
             {
-                texture = fromAtfData(data as ByteArray,
+                texture = fromAtfData(name, data as ByteArray,
                     options.scale, options.mipMapping, options.onReady, options.repeat);
             }
             else
@@ -190,7 +190,7 @@ package starling.textures
          *  @param format   the context3D texture format to use. Ignored for ATF data.
          *  @param repeat   the repeat value of the texture. Only useful for power-of-two textures.
          */
-        public static function fromEmbeddedAsset(assetClass:Class, mipMapping:Boolean=false,
+        public static function fromEmbeddedAsset(name: String, assetClass:Class, mipMapping:Boolean=false,
                                                  optimizeForRenderToTexture:Boolean=false,
                                                  scale:Number=1, format:String="bgra",
                                                  repeat:Boolean=false):Texture
@@ -200,7 +200,7 @@ package starling.textures
 
             if (asset is Bitmap)
             {
-                texture = Texture.fromBitmap(asset as Bitmap, mipMapping,
+                texture = Texture.fromBitmap(name, asset as Bitmap, mipMapping,
                                              optimizeForRenderToTexture, scale, format, repeat);
                 texture.root.onRestore = function():void
                 {
@@ -209,7 +209,7 @@ package starling.textures
             }
             else if (asset is ByteArray)
             {
-                texture = Texture.fromAtfData(asset as ByteArray, scale, mipMapping, null, repeat);
+                texture = Texture.fromAtfData(name, asset as ByteArray, scale, mipMapping, null, repeat);
                 texture.root.onRestore = function():void
                 {
                     texture.root.uploadAtfData(new assetClass());
@@ -239,12 +239,12 @@ package starling.textures
          *                  quality).
          *  @param repeat   the repeat value of the texture. Only useful for power-of-two textures.
          */
-        public static function fromBitmap(bitmap:Bitmap, generateMipMaps:Boolean=false,
+        public static function fromBitmap(name: String, bitmap:Bitmap, generateMipMaps:Boolean=false,
                                           optimizeForRenderToTexture:Boolean=false,
                                           scale:Number=1, format:String="bgra",
                                           repeat:Boolean=false):Texture
         {
-            return fromBitmapData(bitmap.bitmapData, generateMipMaps, optimizeForRenderToTexture,
+            return fromBitmapData(name, bitmap.bitmapData, generateMipMaps, optimizeForRenderToTexture,
                                   scale, format, repeat);
         }
 
@@ -263,7 +263,7 @@ package starling.textures
          *                  quality).
          *  @param repeat   the repeat value of the texture. Only useful for power-of-two textures.
          */
-        public static function fromBitmapData(data:BitmapData, generateMipMaps:Boolean=false,
+        public static function fromBitmapData(name: String, data:BitmapData, generateMipMaps:Boolean=false,
                                               optimizeForRenderToTexture:Boolean=false,
                                               scale:Number=1, format:String="bgra",
                                               repeat:Boolean=false):Texture
@@ -273,18 +273,18 @@ package starling.textures
                                                 generateMipMaps, optimizeForRenderToTexture, scale,
                                                 format, repeat);
 
+			texture.name = name;
+			texture.root.name = name;
+			
             texture.root.uploadBitmapData(data);
             texture.root.onRestore = function():void
             {
-                texture.root.uploadBitmapData(data);
+				texture.root.uploadBitmapData(data);
             };
 
             return texture;
         }
-		
-		
-		
-		//TODO:Starling: byteArray test
+
 		static public function fromByteArray(
 			data:ByteArray,
 			rect:Rectangle,
@@ -322,7 +322,7 @@ package starling.textures
          *  asynchronously. It can only be used when the callback has been executed. This is the
          *  expected function definition: <code>function(texture:Texture):void;</code></p> */
 
-        public static function fromAtfData(data:ByteArray, scale:Number=1, useMipMaps:Boolean=false, 
+        public static function fromAtfData(name: String, data:ByteArray, scale:Number=1, useMipMaps:Boolean=false, 
                                            async:Function=null, repeat:Boolean=false):Texture
         {
             var context:Context3D = Starling.context;
@@ -336,8 +336,9 @@ package starling.textures
                 atfData.width, atfData.height, useMipMaps && atfData.numTextures > 1,
                 false, false, scale, repeat);
 
+			concreteTexture.name = name;
+			
             concreteTexture.uploadAtfData(data, 0, async);
-
             concreteTexture.onRestore = function():void
             {
                 concreteTexture.uploadAtfData(data, 0);

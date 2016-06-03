@@ -12,28 +12,28 @@ package starling.textures
 {
 
 
-    import flash.display.Bitmap;
-    import flash.display.BitmapData;
-    import flash.display3D.Context3D;
-    import flash.display3D.textures.TextureBase;
-    import flash.geom.Matrix;
-    import flash.geom.Point;
-    import flash.geom.Rectangle;
-	
-    import flash.media.Camera;
-    import flash.net.NetStream;
-    import flash.utils.ByteArray;
-    import flash.utils.getQualifiedClassName;
+	import starling.core.RenderSupport;
+	import starling.core.Starling;
+	import starling.core.starling_internal;
+	import starling.errors.MissingContextError;
+	import starling.errors.NotSupportedError;
+	import starling.events.Event;
+	import starling.utils.Color;
+	import starling.utils.execute;
 
-    import starling.core.RenderSupport;
-    import starling.core.Starling;
-    import starling.core.starling_internal;
-    import starling.errors.MissingContextError;
-    import starling.errors.NotSupportedError;
-    import starling.events.Event;
-    import starling.utils.Color;
-	
-    import starling.utils.execute;
+	import com.assukar.airong.utils.Utils;
+
+	import flash.display.Bitmap;
+	import flash.display.BitmapData;
+	import flash.display3D.Context3D;
+	import flash.display3D.textures.TextureBase;
+	import flash.geom.Matrix;
+	import flash.geom.Point;
+	import flash.geom.Rectangle;
+	import flash.media.Camera;
+	import flash.net.NetStream;
+	import flash.utils.ByteArray;
+	import flash.utils.getQualifiedClassName;
 
     use namespace starling_internal;
 
@@ -110,7 +110,17 @@ package starling.textures
         public function uploadBitmapData(data:BitmapData):void
         {
             var potData:BitmapData;
-            
+			
+			try
+			{
+				data.width;
+			}
+			catch (e: Error)
+			{
+				Utils.log("name=" + name + " mWidth=" + mWidth + " mHeight=" + mHeight);
+				throw e;
+			}
+			
             if (data.width != mWidth || data.height != mHeight)
             {
                 potData = new BitmapData(mWidth, mHeight, true, 0);

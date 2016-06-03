@@ -214,7 +214,7 @@ package starling.text
             mHitArea.width  = bitmapData.width  / scale;
             mHitArea.height = bitmapData.height / scale;
             
-            texture = Texture.fromBitmapData(bitmapData, false, false, scale, format);
+            texture = Texture.fromBitmapData("tf:" + text, bitmapData, false, false, scale, format);
             texture.root.onRestore = function():void
             {
                 if (mTextBounds == null)

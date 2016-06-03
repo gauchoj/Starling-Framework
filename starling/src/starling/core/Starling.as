@@ -710,7 +710,7 @@ package starling.core
 		public var frameLength: Number = 0;
 		public var frameCount: uint = 0;
 		//used to space out asset pushs between frames
-		private var frameCallbacks: Vector.<Function> = new <Function>[];
+		private var frameCallbacks: Vector.<Function>;
 		private var acallback: Function;
 		public function pushFrameCallback(callback: Function): void
 		{
@@ -738,12 +738,13 @@ package starling.core
             mNativeOverlay.scaleX = mViewPort.width / mStage.stageWidth;
             mNativeOverlay.scaleY = mViewPort.height / mStage.stageHeight;
 			
+//			Utils.print("STARLING " + frameCount + " " + mStarted + " " + mRendering);
+			
 			if (frameCallbacks)
 			{
 				if (frameCallbacks.length > 0)
 				{
 					acallback = frameCallbacks.shift() as Function;
-//					Utils.print(callback);
 					acallback();
 				}
 				else

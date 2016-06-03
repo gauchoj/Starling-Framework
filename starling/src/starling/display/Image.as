@@ -81,10 +81,10 @@ package starling.display
         
         /** Creates an Image with a texture that is created from a bitmap object. */
         //public static function fromBitmap(bitmap:Bitmap, generateMipMaps:Boolean=true, 
-        public static function fromBitmap(bitmap:Bitmap, generateMipMaps:Boolean=false, 
+        public static function fromBitmap(name: String, bitmap:Bitmap, generateMipMaps:Boolean=false, 
                                           scale:Number=1):Image
         {
-            return new Image(Texture.fromBitmap(bitmap, generateMipMaps, false, scale));
+            return new Image(Texture.fromBitmap(name, bitmap, generateMipMaps, false, scale));
         }
         
         /** @inheritDoc */

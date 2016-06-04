@@ -130,7 +130,8 @@ package starling.textures
             
 			this.name = name;
 
-            mActiveTexture = Texture.empty("render.mActiveTexture", legalWidth, legalHeight, PMA, false, true, scale, format, repeat);
+            mActiveTexture = Texture.empty("render.mActiveTexture", legalWidth, legalHeight, PMA, //false, 
+				true, scale, format, repeat);
             mActiveTexture.root.onRestore = mActiveTexture.root.clear;
             
             super(mActiveTexture, new Rectangle(0, 0, width, height), true, null, false);
@@ -144,7 +145,8 @@ package starling.textures
             
             if (persistent && (!optimizePersistentBuffers || !SystemUtil.supportsRelaxedTargetClearRequirement))
             {
-                mBufferTexture = Texture.empty("render.mBufferTexture", legalWidth, legalHeight, PMA, false, true, scale, format, repeat);
+                mBufferTexture = Texture.empty("render.mBufferTexture", legalWidth, legalHeight, PMA, //false, 
+					true, scale, format, repeat);
                 mBufferTexture.root.onRestore = mBufferTexture.root.clear;
                 mHelperImage = new Image(mBufferTexture);
                 mHelperImage.smoothing = TextureSmoothing.NONE; // solves some antialias-issues

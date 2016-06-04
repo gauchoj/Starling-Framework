@@ -96,15 +96,6 @@ package starling.display
 		private static var sRenderAlpha:Vector.<Number> = new <Number>[1.0, 1.0, 1.0, 1.0];
 		private static var sProgramNameCache:Dictionary = new Dictionary();
 		
-		// ignore filter ADDED BY ASSUKAR
-		//		private static var IGNORE_ALL_FILTERS : Boolean = false;
-//		private var mIgnoreFilters:Boolean;
-//		public function get ignoreFilters():Boolean
-//		{
-//			return mIgnoreFilters;
-//		}
-		// 
-		
 		/** Creates a new QuadBatch instance with empty batch data. */
 		public function QuadBatch()
 		{
@@ -114,8 +105,6 @@ package starling.display
 			mTinted = false;
 			mSyncRequired = false;
 			mBatchable = false;
-			
-//			mIgnoreFilters = false;
 			
 			mForceTinted = false;
 			mOwnsTexture = false;
@@ -210,9 +199,6 @@ package starling.display
 				mVertexBuffer = null;
 				Utils.log("QuadBatch.createBuffers PROBLEM RENDERING numVertices=" + numVertices + " error=" + e.errorID + " frameCount=" + Starling.current.frameCount);// + "/" + Starling.current.frameProblemCount + "/" + Starling.current.problemVirginFrame);
 				if (e.errorID != 3672) throw e;
-//				Starling.current.frameProblemCount++;
-//				Starling.current.frameProblemProduces++;
-//				if (Starling.current.problemVirginFrame) Starling.current.frameProblemProduces++;
 				return false;
 			}
 			
@@ -302,14 +288,11 @@ package starling.display
 		 *  can be reused quickly. */
 		public function reset():void
 		{
-			if (mTexture && mOwnsTexture)
-				mTexture.dispose();
-			
+			if (mTexture && mOwnsTexture) mTexture.dispose();
 			mNumQuads = 0;
 			mTexture = null;
 			mSmoothing = null;
 			mSyncRequired = true;
-//			mIgnoreFilters = false;
 		}
 		
 		/** Adds an image to the batch. This method internally calls 'addQuad' with the correct
@@ -756,8 +739,8 @@ package starling.display
 			var target:Starling = Starling.current;
 			var programName:String = QUAD_PROGRAM_NAME;
 			
-			if (mTexture)
-				programName = getImageProgramName(tinted, mTexture.mipMapping, mTexture.repeat, mTexture.format, mSmoothing);
+//			if (mTexture) programName = getImageProgramName(tinted, mTexture.mipMapping, mTexture.repeat, mTexture.format, mSmoothing);
+			if (mTexture) programName = getImageProgramName(tinted, mTexture.repeat, mTexture.format, mSmoothing);
 			
 			var program:Program3D = target.getProgram(programName);
 			
@@ -794,7 +777,8 @@ package starling.display
 					"mul  oc, ft1,  v0       \n"   // multiply color with texel color
 					: "tex  oc,  v1, fs0 <???> \n";  // sample texture 0
 					
-					fragmentShader = fragmentShader.replace("<???>", RenderSupport.getTextureLookupFlags(mTexture.format, mTexture.mipMapping, mTexture.repeat, smoothing));
+//					fragmentShader = fragmentShader.replace("<???>", RenderSupport.getTextureLookupFlags(mTexture.format, mTexture.mipMapping, mTexture.repeat, smoothing));
+					fragmentShader = fragmentShader.replace("<???>", RenderSupport.getTextureLookupFlags(mTexture.format, mTexture.repeat, smoothing));
 				}
 				
 				program = target.registerProgramFromSource(programName, vertexShader, fragmentShader);
@@ -803,12 +787,13 @@ package starling.display
 			return program;
 		}
 		
-		private static function getImageProgramName(tinted:Boolean, mipMap:Boolean = false, repeat:Boolean = false, format:String = "bgra", smoothing:String = "bilinear"):String
+//		private static function getImageProgramName(tinted:Boolean, mipMap:Boolean = false, repeat:Boolean = false, format:String = "bgra", smoothing:String = "bilinear"):String
+		private static function getImageProgramName(tinted:Boolean, repeat:Boolean = false, format:String = "bgra", smoothing:String = "bilinear"):String
 		{
 			var bitField:uint = 0;
 			
 			if (tinted) bitField |= 1;
-			if (mipMap) bitField |= 1 << 1;
+//			if (mipMap) bitField |= 1 << 1;
 			if (repeat) bitField |= 1 << 2;
 			
 			if (smoothing == TextureSmoothing.NONE)

@@ -18,24 +18,25 @@ package starling.textures
     {
         private var mScale:Number;
         private var mFormat:String;
-        private var mMipMapping:Boolean;
+//        private var mMipMapping:Boolean;
         private var mOptimizeForRenderToTexture:Boolean = false;
         private var mOnReady:Function = null;
         private var mRepeat:Boolean = false;
         
-        public function TextureOptions(scale:Number=1.0, mipMapping:Boolean=false, 
-                                       format:String="bgra", repeat:Boolean=false)
+//        public function TextureOptions(scale:Number=1.0, mipMapping:Boolean=false, format:String="bgra", repeat:Boolean=false)
+		public function TextureOptions(scale:Number=1.0, format:String="bgra", repeat:Boolean=false)
         {
             mScale = scale;
             mFormat = format;
-            mMipMapping = mipMapping;
+//            mMipMapping = mipMapping;
             mRepeat = repeat;
         }
         
         /** Creates a clone of the TextureOptions object with the exact same properties. */
         public function clone():TextureOptions
         {
-            var clone:TextureOptions = new TextureOptions(mScale, mMipMapping, mFormat, mRepeat);
+//            var clone:TextureOptions = new TextureOptions(mScale, mMipMapping, mFormat, mRepeat);
+			var clone:TextureOptions = new TextureOptions(mScale, mFormat, mRepeat);
             clone.mOptimizeForRenderToTexture = mOptimizeForRenderToTexture;
             clone.mOnReady = mOnReady;
             return clone;
@@ -56,8 +57,8 @@ package starling.textures
         public function set format(value:String):void { mFormat = value; }
         
         /** Indicates if the texture contains mip maps. */ 
-        public function get mipMapping():Boolean { return mMipMapping; }
-        public function set mipMapping(value:Boolean):void { mMipMapping = value; }
+//        public function get mipMapping():Boolean { return mMipMapping; }
+//        public function set mipMapping(value:Boolean):void { mMipMapping = value; }
         
         /** Indicates if the texture will be used as render target. */
         public function get optimizeForRenderToTexture():Boolean { return mOptimizeForRenderToTexture; }

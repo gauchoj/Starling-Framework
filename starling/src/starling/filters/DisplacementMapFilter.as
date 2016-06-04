@@ -90,10 +90,12 @@ package starling.filters
             mMapTexCoordBuffer = Starling.context.createVertexBuffer(4, 2);
             
             var target:Starling = Starling.current;
-            var mapFlags:String = RenderSupport.getTextureLookupFlags(
-                                      mapTexture.format, mapTexture.mipMapping, mapTexture.repeat);
-            var inputFlags:String = RenderSupport.getTextureLookupFlags(
-                                        Context3DTextureFormat.BGRA, false, mRepeat);
+			
+//            var mapFlags:String = RenderSupport.getTextureLookupFlags(mapTexture.format, mapTexture.mipMapping, mapTexture.repeat);
+//            var inputFlags:String = RenderSupport.getTextureLookupFlags(Context3DTextureFormat.BGRA, false, mRepeat);
+            var mapFlags:String = RenderSupport.getTextureLookupFlags(mapTexture.format, mapTexture.repeat);
+            var inputFlags:String = RenderSupport.getTextureLookupFlags(Context3DTextureFormat.BGRA, mRepeat);
+			
             var programName:String = formatString("DMF_m{0}_i{1}", mapFlags, inputFlags);
             
             if (target.hasProgram(programName))

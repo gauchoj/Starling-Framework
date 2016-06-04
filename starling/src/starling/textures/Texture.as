@@ -156,20 +156,18 @@ package starling.textures
 
             if (data is Class)
             {
-                texture = fromEmbeddedAsset(name, data as Class,
-                    options.mipMapping, options.optimizeForRenderToTexture, options.scale,
-                    options.format, options.repeat);
+//                texture = fromEmbeddedAsset(name, data as Class, options.mipMapping, options.optimizeForRenderToTexture, options.scale, options.format, options.repeat);
+                texture = fromEmbeddedAsset(name, data as Class, options.optimizeForRenderToTexture, options.scale, options.format, options.repeat);
             }
             else if (data is BitmapData)
             {
-                texture = fromBitmapData(name, data as BitmapData,
-                    options.mipMapping, options.optimizeForRenderToTexture, options.scale,
-                    options.format, options.repeat);
+//                texture = fromBitmapData(name, data as BitmapData, options.mipMapping, options.optimizeForRenderToTexture, options.scale, options.format, options.repeat);
+                texture = fromBitmapData(name, data as BitmapData, options.optimizeForRenderToTexture, options.scale, options.format, options.repeat);
             }
             else if (data is ByteArray)
             {
-                texture = fromAtfData(name, data as ByteArray,
-                    options.scale, options.mipMapping, options.onReady, options.repeat);
+//                texture = fromAtfData(name, data as ByteArray, options.scale, options.mipMapping, options.onReady, options.repeat);
+                texture = fromAtfData(name, data as ByteArray, options.scale, options.onReady, options.repeat);
             }
             else throw new ArgumentError("Unsupported 'data' type: " + getQualifiedClassName(data));
 
@@ -189,7 +187,7 @@ package starling.textures
          *  @param format   the context3D texture format to use. Ignored for ATF data.
          *  @param repeat   the repeat value of the texture. Only useful for power-of-two textures.
          */
-        public static function fromEmbeddedAsset(name: String, assetClass:Class, mipMapping:Boolean=false,
+        public static function fromEmbeddedAsset(name: String, assetClass:Class, //mipMapping:Boolean=false,
                                                  optimizeForRenderToTexture:Boolean=false,
                                                  scale:Number=1, format:String="bgra",
                                                  repeat:Boolean=false):Texture
@@ -199,7 +197,7 @@ package starling.textures
 
             if (asset is Bitmap)
             {
-                texture = Texture.fromBitmap(name, asset as Bitmap, mipMapping,
+                texture = Texture.fromBitmap(name, asset as Bitmap, //mipMapping,
                                              optimizeForRenderToTexture, scale, format, repeat);
                 texture.root.onRestore = function():void
                 {
@@ -208,7 +206,8 @@ package starling.textures
             }
             else if (asset is ByteArray)
             {
-                texture = Texture.fromAtfData(name, asset as ByteArray, scale, mipMapping, null, repeat);
+                texture = Texture.fromAtfData(name, asset as ByteArray, scale, //mipMapping, 
+					null, repeat);
                 texture.root.onRestore = function():void
                 {
                     texture.root.uploadAtfData(new assetClass());
@@ -238,13 +237,13 @@ package starling.textures
          *                  quality).
          *  @param repeat   the repeat value of the texture. Only useful for power-of-two textures.
          */
-        public static function fromBitmap(name: String, bitmap:Bitmap, generateMipMaps:Boolean=false,
+        public static function fromBitmap(name: String, bitmap:Bitmap, //generateMipMaps:Boolean=false,
                                           optimizeForRenderToTexture:Boolean=false,
                                           scale:Number=1, format:String="bgra",
                                           repeat:Boolean=false):Texture
         {
-            return fromBitmapData(name, bitmap.bitmapData, generateMipMaps, optimizeForRenderToTexture,
-                                  scale, format, repeat);
+            return fromBitmapData(name, bitmap.bitmapData, //generateMipMaps, 
+				optimizeForRenderToTexture, scale, format, repeat);
         }
 
         /** Creates a texture object from bitmap data.
@@ -262,15 +261,14 @@ package starling.textures
          *                  quality).
          *  @param repeat   the repeat value of the texture. Only useful for power-of-two textures.
          */
-        public static function fromBitmapData(name: String, data:BitmapData, generateMipMaps:Boolean=false,
+        public static function fromBitmapData(name: String, data:BitmapData, //generateMipMaps:Boolean=false,
                                               optimizeForRenderToTexture:Boolean=false,
                                               scale:Number=1, format:String="bgra",
                                               repeat:Boolean=false):Texture
         {
 			
-            var texture:Texture = Texture.empty(name, data.width / scale, data.height / scale, true,
-                                                generateMipMaps, optimizeForRenderToTexture, scale,
-                                                format, repeat);
+            var texture:Texture = Texture.empty(name, data.width / scale, data.height / scale, true, //generateMipMaps, 
+				optimizeForRenderToTexture, scale, format, repeat);
 
 			texture.name = name;
 			texture.root.name = name;
@@ -298,7 +296,7 @@ package starling.textures
 				rect.width / scale, 
 				rect.height / scale,
 				true, 
-				false,
+//				false,
 				optimizeForRenderToTexture,
 				scale,
 				Context3DTextureFormat.BGRA,
@@ -326,13 +324,13 @@ package starling.textures
          *  asynchronously. It can only be used when the callback has been executed. This is the
          *  expected function definition: <code>function(texture:Texture):void;</code></p> */
 
-        public static function fromAtfData(name: String, data:ByteArray, scale:Number=1, useMipMaps:Boolean=false, 
+        public static function fromAtfData(name: String, data:ByteArray, scale:Number=1, //useMipMaps:Boolean=false, 
                                            async:Function=null, repeat:Boolean=false):Texture
         {
-			CONFIG::DEBUG
-			{
-				if (useMipMaps) throw new Error("useMipMaps=" + true);
-			}
+//			CONFIG::DEBUG
+//			{
+//				if (useMipMaps) throw new Error("useMipMaps=" + true);
+//			}
 			
             var context:Context3D = Starling.context;
             if (context == null) throw new MissingContextError();
@@ -342,7 +340,7 @@ package starling.textures
             var nativeTexture:flash.display3D.textures.Texture = context.createTexture(atfData.width, atfData.height, atfData.format, false);
 			
             var concreteTexture:ConcreteTexture = new ConcreteTexture(nativeTexture, atfData.format,
-                atfData.width, atfData.height, useMipMaps && atfData.numTextures > 1,
+                atfData.width, atfData.height, //useMipMaps && atfData.numTextures > 1,
                 false, false, scale, repeat);
 
 			concreteTexture.name = name;
@@ -463,7 +461,7 @@ package starling.textures
                                          optimizeForRenderToTexture:Boolean=false,
                                          scale:Number=-1, format:String="bgra"):Texture
         {
-            var texture:Texture = Texture.empty(name, width, height, true, false,
+            var texture:Texture = Texture.empty(name, width, height, true, //false,
                                                 optimizeForRenderToTexture, scale, format);
 												
 			texture.name = name;
@@ -495,14 +493,13 @@ package starling.textures
          *                 compressed formats to save memory (at the price of reduced image quality).
          *  @param repeat  the repeat mode of the texture. Only useful for power-of-two textures.
          */
-        public static function empty(name: String, width:Number, height:Number, premultipliedAlpha:Boolean=true,
-                                     mipMapping:Boolean=false, optimizeForRenderToTexture:Boolean=false,
-                                     scale:Number=-1, format:String="bgra", repeat:Boolean=false):Texture
+        public static function empty(name: String, width:Number, height:Number, premultipliedAlpha:Boolean=true, //mipMapping:Boolean=false, 
+        	optimizeForRenderToTexture:Boolean=false, scale:Number=-1, format:String="bgra", repeat:Boolean=false):Texture
         {
-			CONFIG::DEBUG
-			{
-				if (mipMapping) throw new Error("mipMapping="+ true);
-			}	
+//			CONFIG::DEBUG
+//			{
+//				if (mipMapping) throw new Error("mipMapping="+ true);
+//			}	
 			
             if (scale <= 0) scale = Starling.contentScaleFactor;
 
@@ -514,7 +511,11 @@ package starling.textures
 
             var origWidth:Number  = width  * scale;
             var origHeight:Number = height * scale;
-            var useRectTexture:Boolean = !mipMapping && !repeat &&
+			
+//            var useRectTexture:Boolean = !mipMapping && !repeat &&
+//                Starling.current.profile != "baselineConstrained" &&
+//                "createRectangleTexture" in context && format.indexOf("compressed") == -1;
+            var useRectTexture:Boolean = !repeat &&
                 Starling.current.profile != "baselineConstrained" &&
                 "createRectangleTexture" in context && format.indexOf("compressed") == -1;
 
@@ -541,7 +542,7 @@ package starling.textures
 				format,
                 actualWidth,
 				actualHeight,
-				mipMapping,
+//				mipMapping,
 				premultipliedAlpha,
                 optimizeForRenderToTexture, 
 				scale,
@@ -644,7 +645,7 @@ package starling.textures
         public function get format():String { return Context3DTextureFormat.BGRA; }
 
         /** Indicates if the texture contains mip maps. */
-        public function get mipMapping():Boolean { return false; }
+//        public function get mipMapping():Boolean { return false; }
 
         /** Indicates if the alpha values are premultiplied into the RGB values. */
         public function get premultipliedAlpha():Boolean { return false; }

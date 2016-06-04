@@ -722,7 +722,7 @@ package starling.core
         
         /** Returns the flags that are required for AGAL texture lookup, 
          *  including the '&lt;' and '&gt;' delimiters. */
-        public static function getTextureLookupFlags(format:String, mipMapping:Boolean=false,
+        public static function getTextureLookupFlags(format:String, //mipMapping:Boolean=false,
                                                      repeat:Boolean=false,
                                                      smoothing:String="bilinear"):String
         {
@@ -733,12 +733,12 @@ package starling.core
             else if (format == "compressedAlpha")
                 options.push("dxt5");
             
-            if (smoothing == TextureSmoothing.NONE)
-                options.push("nearest", mipMapping ? "mipnearest" : "mipnone");
-            else if (smoothing == TextureSmoothing.BILINEAR)
-                options.push("linear", mipMapping ? "mipnearest" : "mipnone");
-            else
-                options.push("linear", mipMapping ? "miplinear" : "mipnone");
+//            if (smoothing == TextureSmoothing.NONE) options.push("nearest", mipMapping ? "mipnearest" : "mipnone");
+//            else if (smoothing == TextureSmoothing.BILINEAR) options.push("linear", mipMapping ? "mipnearest" : "mipnone");
+//            else options.push("linear", mipMapping ? "miplinear" : "mipnone");
+            if (smoothing == TextureSmoothing.NONE) options.push("nearest", "mipnone");
+            else if (smoothing == TextureSmoothing.BILINEAR) options.push("linear", "mipnone");
+            else options.push("linear", "mipnone");
             
             return "<" + options.join() + ">";
         }

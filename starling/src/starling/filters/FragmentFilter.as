@@ -255,8 +255,8 @@ package starling.filters
                 throw new IllegalOperationError("To nest filters, you need at least Flash Player / AIR version 15.");
             
             if (intoCache)
-                cacheTexture = Texture.empty("FragmentFilter:" + name, boundsPot.width, boundsPot.height, PMA, false, true,
-                                             mResolution * scale);
+                cacheTexture = Texture.empty("FragmentFilter:" + name, boundsPot.width, boundsPot.height, PMA, //false, 
+					true, mResolution * scale);
 
             // draw the original object into a texture
             support.renderTarget = mPassTextures[0];
@@ -398,7 +398,8 @@ package starling.filters
             if (needsUpdate)
             {
                 disposePassTextures();
-                for (var i:int=0; i<numPassTextures; ++i) mPassTextures[i] = Texture.empty(name + ":" + i, width, height, PMA, false, true, scale);
+                for (var i:int=0; i<numPassTextures; ++i) mPassTextures[i] = Texture.empty(name + ":" + i, width, height, PMA, //false, 
+					true, scale);
             }
         }
         

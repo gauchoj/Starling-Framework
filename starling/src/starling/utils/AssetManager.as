@@ -10,38 +10,40 @@
 
 package starling.utils
 {
-    import flash.display.Bitmap;
-    import flash.display.Loader;
-    import flash.display.LoaderInfo;
-    import flash.events.HTTPStatusEvent;
-    import flash.events.IOErrorEvent;
-    import flash.events.ProgressEvent;
-    import flash.events.SecurityErrorEvent;
-    import flash.media.Sound;
-    import flash.media.SoundChannel;
-    import flash.media.SoundTransform;
-    import flash.net.FileReference;
-    import flash.net.URLLoader;
-    import flash.net.URLLoaderDataFormat;
-    import flash.net.URLRequest;
-    import flash.system.ImageDecodingPolicy;
-    import flash.system.LoaderContext;
-    import flash.system.System;
-    import flash.utils.ByteArray;
-    import flash.utils.Dictionary;
-    import flash.utils.describeType;
-    import flash.utils.getQualifiedClassName;
-    import flash.utils.setTimeout;
-    
-    import starling.core.Starling;
-    import starling.events.Event;
-    import starling.events.EventDispatcher;
-    import starling.text.BitmapFont;
-    import starling.text.TextField;
-    import starling.textures.AtfData;
-    import starling.textures.Texture;
-    import starling.textures.TextureAtlas;
-    import starling.textures.TextureOptions;
+	import starling.core.Starling;
+	import starling.events.Event;
+	import starling.events.EventDispatcher;
+	import starling.text.BitmapFont;
+	import starling.text.TextField;
+	import starling.textures.AtfData;
+	import starling.textures.Texture;
+	import starling.textures.TextureAtlas;
+	import starling.textures.TextureOptions;
+
+	import com.assukar.airong.utils.Utils;
+
+	import flash.display.Bitmap;
+	import flash.display.Loader;
+	import flash.display.LoaderInfo;
+	import flash.events.HTTPStatusEvent;
+	import flash.events.IOErrorEvent;
+	import flash.events.ProgressEvent;
+	import flash.events.SecurityErrorEvent;
+	import flash.media.Sound;
+	import flash.media.SoundChannel;
+	import flash.media.SoundTransform;
+	import flash.net.FileReference;
+	import flash.net.URLLoader;
+	import flash.net.URLLoaderDataFormat;
+	import flash.net.URLRequest;
+	import flash.system.ImageDecodingPolicy;
+	import flash.system.LoaderContext;
+	import flash.system.System;
+	import flash.utils.ByteArray;
+	import flash.utils.Dictionary;
+	import flash.utils.describeType;
+	import flash.utils.getQualifiedClassName;
+	import flash.utils.setTimeout;
     
     /** Dispatched when all textures have been restored after a context loss. */
     [Event(name="texturesRestored", type="starling.events.Event")]
@@ -147,9 +149,11 @@ package starling.utils
 
         /** Create a new AssetManager. The 'scaleFactor' and 'useMipmaps' parameters define
          *  how enqueued bitmaps will be converted to textures. */
-        public function AssetManager(scaleFactor:Number=1, useMipmaps:Boolean=false)
+//        public function AssetManager(scaleFactor:Number=1, useMipmaps:Boolean=false)
+		public function AssetManager(scaleFactor:Number=1)
         {
-            mDefaultTextureOptions = new TextureOptions(scaleFactor, useMipmaps);
+//            mDefaultTextureOptions = new TextureOptions(scaleFactor, useMipmaps);
+			mDefaultTextureOptions = new TextureOptions(scaleFactor);
             mTextures = new Dictionary();
             mAtlases = new Dictionary();
             mSounds = new Dictionary();
@@ -1241,8 +1245,8 @@ package starling.utils
         /** For bitmap textures, this flag indicates if mip maps should be generated when they 
          *  are loaded; for ATF textures, it indicates if mip maps are valid and should be
          *  used. @default false */
-        public function get useMipMaps():Boolean { return mDefaultTextureOptions.mipMapping; }
-        public function set useMipMaps(value:Boolean):void { mDefaultTextureOptions.mipMapping = value; }
+//        public function get useMipMaps():Boolean { return mDefaultTextureOptions.mipMapping; }
+//        public function set useMipMaps(value:Boolean):void { mDefaultTextureOptions.mipMapping = value; }
         
         /** Textures that are created from Bitmaps or ATF files will have the repeat setting
          *  assigned here. @default false */

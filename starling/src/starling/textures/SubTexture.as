@@ -202,7 +202,7 @@ package starling.textures
         public override function get nativeHeight():Number { return mHeight * scale; }
         
         /** @inheritDoc */
-        public override function get mipMapping():Boolean { return mParent.mipMapping; }
+//        public override function get mipMapping():Boolean { return mParent.mipMapping; }
         
         /** @inheritDoc */
         public override function get premultipliedAlpha():Boolean { return mParent.premultipliedAlpha; }

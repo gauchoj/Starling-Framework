@@ -10,7 +10,6 @@
 
 package starling.animation
 {
-	import starling.core.starling_internal;
 	import starling.events.Event;
 	import starling.events.EventDispatcher;
 
@@ -27,7 +26,7 @@ package starling.animation
     public class DelayedCall 
 	extends EventDispatcher implements IAnimatable
     {
-        private var mCurrentTime:Number;
+        private var mCurrentTime:Number = 0;
         private var mTotalTime:Number;
         private var mCall:Function;
         private var mArgs:Array;
@@ -36,25 +35,33 @@ package starling.animation
         /** Creates a delayed call. */
         public function DelayedCall(call:Function, delay:Number, args:Array=null)
         {
-            reset(call, delay, args);
-        }
-        
-        /** Resets the delayed call to its default values, which is useful for pooling. */
-        public function reset(call:Function, delay:Number, args:Array=null):DelayedCall
-        {
             mCurrentTime = 0;
             mTotalTime = Math.max(delay, 0.0001);
             mCall = call;
             mArgs = args;
             mRepeatCount = 1;
-            
-            return this;
+			
+//            reset(call, delay, args);
         }
         
+        /** Resets the delayed call to its default values, which is useful for pooling. */
+//        public function reset(call:Function, delay:Number, args:Array=null):DelayedCall
+//        {
+//            mCurrentTime = 0;
+//            mTotalTime = Math.max(delay, 0.0001);
+//            mCall = call;
+//            mArgs = args;
+//            mRepeatCount = 1;
+//            
+//            return this;
+//        }
+        
+		private var previousTime:Number;
+		
         /** @inheritDoc */
         public function advanceTime(time:Number):void
         {
-            var previousTime:Number = mCurrentTime;
+            previousTime = mCurrentTime;
             mCurrentTime += time;
 
             if (mCurrentTime > mTotalTime)
@@ -64,23 +71,11 @@ package starling.animation
             {                
                 if (mRepeatCount == 0 || mRepeatCount > 1)
                 {
-					// TODO watch
-                    if (mCall!=null)
-					{
-						mCall.apply(null, mArgs);
-					}
-                    
+                    if (mCall!=null) mCall.apply(null, mArgs);
                     if (mRepeatCount > 0) mRepeatCount -= 1;
                     mCurrentTime = 0;
 					
 					advanceTime((previousTime + time) - mTotalTime);
-					
-//					// TODO watch
-//					if (!pooled)
-//					// 
-//					{
-//	                    advanceTime((previousTime + time) - mTotalTime);
-//					}
                 }
                 else
                 {
@@ -91,6 +86,11 @@ package starling.animation
                     // in the callback, people might want to call "reset" and re-add it to the
                     // juggler; so this event has to be dispatched *before* executing 'call'.
                     dispatchEventWith(Event.REMOVE_FROM_JUGGLER);
+					
+		            mCall = null;
+		            mArgs = null;
+		            removeEventListeners();			
+					
                     call.apply(null, args);
                 }
             }
@@ -121,65 +121,19 @@ package starling.animation
         public function get repeatCount():int { return mRepeatCount; }
         public function set repeatCount(value:int):void { mRepeatCount = value; }
         
-        // delayed call pooling
-        
-//		static private const POOLING: Boolean = false; 
-//		private static var sPool:LinkedList = new LinkedList();
-//		private static var hits: int = 0;
-//		private static var misses: int = 0;
-//		static private const POOL_SIZE: int = 200;
-		
         /** @private */
-        starling_internal static function fromPool(call:Function, delay:Number, args:Array=null):DelayedCall
-        {
-//			if (POOLING)
-//			{
-//	            if (sPool.size>=POOL_SIZE)
-//				{
-//					var delayedCall:DelayedCall = DelayedCall(sPool.poll());
-//					if (!delayedCall.pooled) throw new AssukarError();
-//					hits++;
-//					delayedCall.pooled = false;
-//					delayedCall._jugglerIndex = -1;
-//					return delayedCall.reset(call, delay, args);
-//				}
-//	            else 
-//				{
-//					misses++;
-//					if (misses%10==0) log("Tween pool:" + sPool.size + " hits:" + hits + " misses:" + misses + " ratio:" + (hits/(hits+misses)).toFixed(3));
-//					return new DelayedCall(call, delay, args);
-//				}
-//			}
-//			else
-//			{
-				return new DelayedCall(call, delay, args);
-//			}
-        }
-        
-        /** @private */
-        starling_internal static function toPool(delayedCall:DelayedCall):void
-        {
-//			if (POOLING)
-//			{
-//				if (delayedCall.pooled) return;
-//				delayedCall.pooled = true;
-//				
-//	            // reset any object-references, to make sure we don't prevent any garbage collection
-//	            delayedCall.mCall = null;
-//	            delayedCall.mArgs = null;
-//	            delayedCall.removeEventListeners();
-//				// in case it changed in the event listener
-//				delayedCall.pooled = true;
-//				//
-//	            sPool.push(delayedCall);
-//			}
-//			else
-//			{
-	            delayedCall.mCall = null;
-	            delayedCall.mArgs = null;
-	            delayedCall.removeEventListeners();
-//			}
-        }
+//        starling_internal static function fromPool(call:Function, delay:Number, args:Array=null):DelayedCall
+//        {
+//			return new DelayedCall(call, delay, args);
+//        }
+//        
+//        /** @private */
+//        starling_internal static function toPool(delayedCall:DelayedCall):void
+//        {
+//            delayedCall.mCall = null;
+//            delayedCall.mArgs = null;
+//            delayedCall.removeEventListeners();
+//        }
 		
 		/* INTERFACE starling.animation.IAnimatable */
 		private var _jugglerIndex : int = -1;
@@ -191,12 +145,5 @@ package starling.animation
 		{
 			_jugglerIndex = value;
 		}
-		
-//		/* INTERFACE starling.animation.PooledIAnimatable */
-//		private var pooled: Boolean = false;
-//		public function pool(): void
-//		{
-//			DelayedCall.starling_internal::toPool(this);
-//		}				
     }
 }

@@ -102,8 +102,6 @@ package starling.animation
             mRepeatCount = 1;
             mCurrentCycle = -1;
             mNextTween = null;
-//			_jugglerIndex = -1;
-//			pooled = false;
             
             if (transition is String)
                 this.transition = transition as String;
@@ -177,18 +175,18 @@ package starling.animation
             animate("rotation#" + type, angle);
         }
         
+        private var previousTime:Number,
+            restTime:Number,
+            carryOverTime:Number;
+			
         /** @inheritDoc */
         public function advanceTime(time:Number):void
         {
-			// TODO watch
-//			if (pooled) return;
-			
             if (time == 0 || (mRepeatCount == 1 && mCurrentTime == mTotalTime)) return;
             
-//            var i:int;
-            var previousTime:Number = mCurrentTime;
-            var restTime:Number = mTotalTime - mCurrentTime;
-            var carryOverTime:Number = time > restTime ? time - restTime : 0.0;
+            previousTime = mCurrentTime;
+            restTime = mTotalTime - mCurrentTime;
+            carryOverTime = time > restTime ? time - restTime : 0.0;
             
             mCurrentTime += time;
             
@@ -239,6 +237,13 @@ package starling.animation
                     // add it to another juggler; so this event has to be dispatched *before*
                     // executing 'onComplete'.
                     dispatchEventWith(Event.REMOVE_FROM_JUGGLER);
+					
+		            mOnStart = mOnUpdate = mOnRepeat = mOnComplete = null;
+		            mOnStartArgs = mOnUpdateArgs = mOnRepeatArgs = mOnCompleteArgs = null;
+		            mTarget = null;
+		            mTransitionFunc = null;
+		            removeEventListeners();
+					
                     if (onComplete != null) onComplete.apply(this, onCompleteArgs);
                 }
             }
@@ -450,79 +455,22 @@ package starling.animation
         public function get nextTween():Tween { return mNextTween; }
         public function set nextTween(value:Tween):void { mNextTween = value; }
         
-        // tween pooling
-        
-//		static private const POOLING: Boolean = true; // false;
-//		private static var sTweenPool:LinkedList = new LinkedList();
-//		private static var hits: int = 0;
-//		private static var misses: int = 0;
-//		static private const POOL_SIZE: int = 200; 
-        
-//		static private var tweenCount:int = 0;
         /** @private */
-        starling_internal static function fromPool(target:Object, time:Number, 
-                                                   transition:Object="linear"):Tween
-        {
-//			if (POOLING)
-//			{
-//	            if (sTweenPool.size>=POOL_SIZE)
-//				{
-//					var tween: Tween = Tween(sTweenPool.poll());
-//					if (!tween.pooled)
-//					{
-//						log("FAILED TO RETRIEVE TWEEN FROM POOL");
-//						return Tween.starling_internal::fromPool(target, time, transition);
-//					}
-//					else
-//					{
-//						hits++;
-//						tween.pooled = false;
-//						tween._jugglerIndex = -1;
-//						return tween.reset(target, time, transition);
-//					}
-//				}
-//	            else
-//				{ 
-//					misses++;
-//					if (misses%200==0) log("Tween pool:" + sTweenPool.size + " hits:" + hits + " misses:" + misses + " ratio:" + (hits/(hits+misses)).toFixed(3));
-//					return new Tween(target, time, transition);
-//				}
-//			}
-//			else
-//			{
-				return new Tween(target, time, transition);
-//			}
-        }
-        
-        /** @private */
-        starling_internal static function toPool(tween:Tween):void
-        {
-//			if (POOLING)
-//			{
-//				if (tween.pooled) return;
-//				// in case it changed in the event listener
-//				tween.pooled = true;
-//				//
-//	            // reset any object-references, to make sure we don't prevent any garbage collection
-//	            tween.mOnStart = tween.mOnUpdate = tween.mOnRepeat = tween.mOnComplete = null;
-//	            tween.mOnStartArgs = tween.mOnUpdateArgs = tween.mOnRepeatArgs = tween.mOnCompleteArgs = null;
-//	            tween.mTarget = null;
-//	            tween.mTransitionFunc = null;
-//	            tween.removeEventListeners();
-//				// in case it changed in the event listener
-//				tween.pooled = true;
-//				//
-//	            sTweenPool.push(tween);
-//			}
-//			else
-//			{
-	            tween.mOnStart = tween.mOnUpdate = tween.mOnRepeat = tween.mOnComplete = null;
-	            tween.mOnStartArgs = tween.mOnUpdateArgs = tween.mOnRepeatArgs = tween.mOnCompleteArgs = null;
-	            tween.mTarget = null;
-	            tween.mTransitionFunc = null;
-	            tween.removeEventListeners();
-//			}
-        }
+//        starling_internal static function fromPool(target:Object, time:Number, 
+//                                                   transition:Object="linear"):Tween
+//        {
+//			return new Tween(target, time, transition);
+//        }
+//        
+//        /** @private */
+//        starling_internal static function toPool(tween:Tween):void
+//        {
+//            tween.mOnStart = tween.mOnUpdate = tween.mOnRepeat = tween.mOnComplete = null;
+//            tween.mOnStartArgs = tween.mOnUpdateArgs = tween.mOnRepeatArgs = tween.mOnCompleteArgs = null;
+//            tween.mTarget = null;
+//            tween.mTransitionFunc = null;
+//            tween.removeEventListeners();
+//        }
 		
 		/* INTERFACE starling.animation.IAnimatable */
 		private var _jugglerIndex : int = -1;

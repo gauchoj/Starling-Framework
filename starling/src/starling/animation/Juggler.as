@@ -65,10 +65,6 @@ package starling.animation
 			if (object && object.jugglerIndex == -1)
 			{
 				object.jugglerIndex = mObjects.push(object) - 1;
-				
-				//				pooledAnimatable = object as IPooledAnimatable;
-				//				if (pooledAnimatable) pooledAnimatable.juggler = this;
-				
 				dispatcher = object as EventDispatcher;
 				if (dispatcher) dispatcher.addEventListener(Event.REMOVE_FROM_JUGGLER, onRemove);
 			}
@@ -90,18 +86,9 @@ package starling.animation
 		public function remove(object:IAnimatable):void
 		{
 			if (object == null) return;
-			
 			if (object.jugglerIndex > -1) mObjects[object.jugglerIndex] = null;
 			object.jugglerIndex = -1;
-			
-			// TODO watch
-//			if (object is IPooledAnimatable) IPooledAnimatable(object).pool();
-			//
-			
-			if (object is EventDispatcher)
-			{
-				EventDispatcher(object).removeEventListener(Event.REMOVE_FROM_JUGGLER, onRemove);
-			}
+			if (object is EventDispatcher) EventDispatcher(object).removeEventListener(Event.REMOVE_FROM_JUGGLER, onRemove);
 		}
 		
 		/** Removes all tweens with a certain target. */
@@ -109,17 +96,12 @@ package starling.animation
 		{
 			if (target == null) return;
 			
-			//			CONFIG::DEBUG{print("REMOVE TWEENS " + target);}
-			
 			var tween:Tween;
 			for (var i:int = mObjects.length - 1; i >= 0; --i)
 			{
 				tween = mObjects[i] as Tween;
 				if (tween && tween.target == target)
 				{
-					// TODO watch
-//					tween.pool();
-					// 
 					tween.removeEventListener(Event.REMOVE_FROM_JUGGLER, onRemove);
 					tween.jugglerIndex = -1;
 					mObjects[i] = null;
@@ -131,8 +113,6 @@ package starling.animation
 		public function containsTweens(target:Object):Boolean
 		{
 			if (target == null) return false;
-			
-			//			CONFIG::DEBUG{print("COINTAINS TWEENS");}
 			
 			var tween:Tween;
 			for (var i:int = mObjects.length - 1; i >= 0; --i)
@@ -152,15 +132,9 @@ package starling.animation
 			// vector is filled with 'null' values. They will be cleaned up on the next call
 			// to 'advanceTime'.
 			
-			//			CONFIG::DEBUG{print("PURGE");}
-			
 			var dispatcher:EventDispatcher;
 			for (var i:int = mObjects.length - 1; i >= 0; --i)
 			{
-				// TODO watch
-//				if (mObjects[i] is IPooledAnimatable) IPooledAnimatable(mObjects[i]).pool();
-				//
-				
 				dispatcher = mObjects[i] as EventDispatcher;
 				if (dispatcher)
 				{
@@ -180,10 +154,11 @@ package starling.animation
 		 *  reused.</p> */
 		public function delayCall(call:Function, delay:Number, ... args):DelayedCall
 		{
-			if (call == null) return null;
+			if (!call) throw new Error("null call");
 			
-			var delayedCall:DelayedCall = DelayedCall.starling_internal::fromPool(call, delay, args);
-			delayedCall.addEventListener(Event.REMOVE_FROM_JUGGLER, onPooledDelayedCallComplete);
+//			var delayedCall:DelayedCall = DelayedCall.starling_internal::fromPool(call, delay, args);
+			var delayedCall:DelayedCall = new DelayedCall(call, delay, args);
+//			delayedCall.addEventListener(Event.REMOVE_FROM_JUGGLER, onPooledDelayedCallComplete);
 			add(delayedCall);
 			return delayedCall;
 		}
@@ -196,20 +171,21 @@ package starling.animation
 		 *  reused.</p> */
 		public function repeatCall(call:Function, interval:Number, repeatCount:int = 0, ... args):IAnimatable
 		{
-			if (call == null) return null;
+			if (!call) throw new Error("null call");
 			
-			var delayedCall:DelayedCall = DelayedCall.starling_internal::fromPool(call, interval, args);
+//			var delayedCall:DelayedCall = DelayedCall.starling_internal::fromPool(call, interval, args);
+			var delayedCall:DelayedCall = new DelayedCall(call, interval, args);
 			delayedCall.repeatCount = repeatCount;
-			delayedCall.addEventListener(Event.REMOVE_FROM_JUGGLER, onPooledDelayedCallComplete);
+//			delayedCall.addEventListener(Event.REMOVE_FROM_JUGGLER, onPooledDelayedCallComplete);
 			add(delayedCall);
 			
 			return delayedCall;
 		}
 		
-		private function onPooledDelayedCallComplete(event:Event):void
-		{
-			DelayedCall.starling_internal::toPool(event.target as DelayedCall);
-		}
+//		private function onPooledDelayedCallComplete(event:Event):void
+//		{
+//			DelayedCall.starling_internal::toPool(event.target as DelayedCall);
+//		}
 		
 		/** Utilizes a tween to animate the target object over <code>time</code> seconds. Internally,
 		 *  this method uses a tween instance (taken from an object pool) that is added to the
@@ -247,7 +223,8 @@ package starling.animation
 		{
 			if (target == null) throw new ArgumentError("target must not be null");
 			
-			var tween:Tween = Tween.starling_internal::fromPool(target, time);
+//			var tween:Tween = Tween.starling_internal::fromPool(target, time);
+			var tween:Tween = new Tween(target, time);
 			
 			var value:Object;
 			for (var property:String in properties)
@@ -262,7 +239,7 @@ package starling.animation
 					throw new ArgumentError("Invalid property: " + property);
 			}
 			
-			tween.addEventListener(Event.REMOVE_FROM_JUGGLER, onPooledTweenComplete);
+//			tween.addEventListener(Event.REMOVE_FROM_JUGGLER, onPooledTweenComplete);
 			add(tween);
 			
 			return tween;
@@ -272,7 +249,8 @@ package starling.animation
 		{
 			var property:String;
 			var value:Object;
-			var tween:Tween = Tween.starling_internal::fromPool(target, time);
+//			var tween:Tween = Tween.starling_internal::fromPool(target, time);
+			var tween:Tween = new Tween(target, time);
 			
 			for (property in properties)
 			{
@@ -290,10 +268,10 @@ package starling.animation
 		
 		}
 		
-		private function onPooledTweenComplete(event:Event):void
-		{
-			Tween.starling_internal::toPool(event.target as Tween);
-		}
+//		private function onPooledTweenComplete(event:Event):void
+//		{
+//			Tween.starling_internal::toPool(event.target as Tween);
+//		}
 		
 		/** Advances all objects by a certain time (in seconds). */
 		public function advanceTime(time:Number):void
@@ -343,16 +321,13 @@ package starling.animation
 				
 				mObjects.length = currentIndex;
 			}
-		
-			//			if (numObjects%100==0) wrap(mObjects.length + "/" + currentIndex);
 		}
 		
 		protected function onRemove(event:Event):void
 		{
 			remove(event.target as IAnimatable);
-			
 			var tween:Tween = event.target as Tween;
-			if (tween && tween.isComplete) add(tween.nextTween);
+			if (tween && tween.isComplete && tween.nextTween) add(tween.nextTween);
 		}
 		
 		/** The total life time of the juggler (in seconds). */

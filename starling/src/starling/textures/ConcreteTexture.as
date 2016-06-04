@@ -10,8 +10,6 @@
 
 package starling.textures
 {
-
-
 	import starling.core.RenderSupport;
 	import starling.core.Starling;
 	import starling.core.starling_internal;

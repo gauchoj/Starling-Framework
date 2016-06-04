@@ -160,8 +160,7 @@ package starling.display
 		public function removeChild(child:DisplayObject, dispose:Boolean = false):DisplayObject
 		{
 			var childIndex:int = getChildIndex(child);
-			if (childIndex != -1)
-				removeChildAt(childIndex, dispose);
+			if (childIndex != -1) removeChildAt(childIndex, dispose);
 			return child;
 		}
 		

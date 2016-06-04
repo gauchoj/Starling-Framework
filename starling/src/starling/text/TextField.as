@@ -25,6 +25,8 @@ package starling.text
 	import starling.utils.VAlign;
 	import starling.utils.deg2rad;
 
+	import com.assukar.airong.utils.Utils;
+
 	import flash.display.BitmapData;
 	import flash.display.StageQuality;
 	import flash.display3D.Context3DTextureFormat;
@@ -171,8 +173,14 @@ package starling.text
         {
             if (mRequiresRedraw)
             {
-                if (getBitmapFont(mFontName)) createComposedContents();
-                else createRenderedContents();
+                if (getBitmapFont(mFontName))
+				{
+					createComposedContents();
+				}
+                else
+				{
+					createRenderedContents();
+				}
 
                 updateBorder();
                 mRequiresRedraw = false;
@@ -181,6 +189,13 @@ package starling.text
         
         // TrueType font rendering
         
+		private var texture:Texture,
+            scale:Number,
+            bitmapData:BitmapData,
+            format:String,
+            maxTextureSize:int,
+            shrinkHelper:Number;
+		
         private function createRenderedContents():void
         {
             if (mQuadBatch)
@@ -189,15 +204,19 @@ package starling.text
                 mQuadBatch = null; 
             }
             
-            if (mTextBounds == null) 
-                mTextBounds = new Rectangle();
+            if (!mTextBounds) mTextBounds = new Rectangle();
             
-            var texture:Texture;
-            var scale:Number = Starling.contentScaleFactor;
-            var bitmapData:BitmapData = renderText(scale, mTextBounds);
-            var format:String = sDefaultTextureFormat;
-            var maxTextureSize:int = Texture.maxSize;
-            var shrinkHelper:Number = 0;
+//            var texture:Texture;
+//            var scale:Number = Starling.contentScaleFactor;
+//            var bitmapData:BitmapData = renderText(scale, mTextBounds);
+//            var format:String = sDefaultTextureFormat;
+//            var maxTextureSize:int = Texture.maxSize;
+//            var shrinkHelper:Number = 0;
+            scale = Starling.contentScaleFactor;
+            bitmapData = renderText(scale, mTextBounds);
+            format = sDefaultTextureFormat;
+            maxTextureSize = Texture.maxSize;
+            shrinkHelper = 0;
             
             // re-render when size of rendered bitmap overflows 'maxTextureSize'
             while (bitmapData.width > maxTextureSize || bitmapData.height > maxTextureSize)
@@ -215,11 +234,10 @@ package starling.text
             mHitArea.height = bitmapData.height / scale;
             
             texture = Texture.fromBitmapData("tf:" + text, bitmapData, false, false, scale, format);
+			
             texture.root.onRestore = function():void
             {
-                if (mTextBounds == null)
-                    mTextBounds = new Rectangle();
-
+                if (mTextBounds == null) mTextBounds = new Rectangle();
                 bitmapData = renderText(scale, mTextBounds);
                 texture.root.uploadBitmapData(bitmapData);
                 bitmapData.dispose();
@@ -298,16 +316,13 @@ package starling.text
             
             formatText(sNativeTextField, textFormat);
             
-            if (mAutoScale)
-                autoScaleNativeTextField(sNativeTextField);
+            if (mAutoScale) autoScaleNativeTextField(sNativeTextField);
             
             var textWidth:Number  = sNativeTextField.textWidth;
             var textHeight:Number = sNativeTextField.textHeight;
 
-            if (isHorizontalAutoSize)
-                sNativeTextField.width = width = Math.ceil(textWidth + 5);
-            if (isVerticalAutoSize)
-                sNativeTextField.height = height = Math.ceil(textHeight + 4);
+            if (isHorizontalAutoSize) sNativeTextField.width = width = Math.ceil(textWidth + 5);
+            if (isVerticalAutoSize) sNativeTextField.height = height = Math.ceil(textHeight + 4);
             
             // avoid invalid texture size
             if (width  < 1) width  = 1.0;
@@ -337,9 +352,10 @@ package starling.text
             // wrong output oftentimes, we force "MEDIUM" if possible.
             
 			bitmapData.lock();
+			
             if (drawWithQualityFunc is Function)
                 drawWithQualityFunc.call(bitmapData, sNativeTextField, drawMatrix, 
-                                         null, null, null, false, StageQuality.MEDIUM);
+                                         null, null, null, false, StageQuality.HIGH);
             else
                 bitmapData.draw(sNativeTextField, drawMatrix);
             

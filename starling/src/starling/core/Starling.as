@@ -314,7 +314,7 @@ package starling.core
             else
             {
                 if (!SystemUtil.supportsDepthAndStencil)
-                    trace("[Starling] Mask support requires 'depthAndStencil' to be enabled" +
+                    Utils.log("[Starling] Mask support requires 'depthAndStencil' to be enabled" +
                           " in the application descriptor.");
 
                 mShareContext = false;
@@ -444,8 +444,8 @@ package starling.core
             mContext.enableErrorChecking = mEnableErrorChecking;
             contextData[PROGRAM_DATA_NAME] = new Dictionary();
             
-            trace("[Starling] Initialization complete.");
-            trace("[Starling] Display Driver:", mContext.driverInfo);
+            Utils.log("[Starling] Initialization complete.");
+            Utils.log("[Starling] Display Driver:", mContext.driverInfo);
 
             updateViewPort(true);
             dispatchEventWith(Event.CONTEXT3D_CREATE, false, mContext);
@@ -643,7 +643,7 @@ package starling.core
             nativeOverlay.addChild(textField);
             stop(true);
 
-            trace("[Starling]", message);
+            Utils.log("[Starling]", message);
             dispatchEventWith(starling.events.Event.FATAL_ERROR, false, message);
         }
         
@@ -698,7 +698,7 @@ package starling.core
             {
                 event.stopImmediatePropagation();
                 stopWithFatalError("The application lost the device context!");
-                trace("[Starling] Enable 'Starling.handleLostContext' to avoid this error.");
+                Utils.log("[Starling] Enable 'Starling.handleLostContext' to avoid this error.");
             }
             else
             {

@@ -21,7 +21,7 @@ package starling.utils
         if (!deprecationNotified)
         {
             deprecationNotified = true;
-            trace("[Starling] The method 'transformCoords' is deprecated. " + 
+            Utils.log("[Starling] The method 'transformCoords' is deprecated. " + 
                   "Please use 'MatrixUtil.transformCoords' instead.");
         }
         

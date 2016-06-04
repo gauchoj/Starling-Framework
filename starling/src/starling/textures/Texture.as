@@ -515,8 +515,8 @@ package starling.textures
 
                 // Rectangle Textures are supported beginning with AIR 3.8. By calling the new
                 // methods only through those lookups, we stay compatible with older SDKs.
-                nativeTexture = context["createRectangleTexture"](actualWidth, actualHeight, format, optimizeForRenderToTexture);
-				
+//                nativeTexture = context["createRectangleTexture"](actualWidth, actualHeight, format, optimizeForRenderToTexture);
+                nativeTexture = context.createRectangleTexture(actualWidth, actualHeight, format, optimizeForRenderToTexture);
             }
             else
             {
@@ -643,13 +643,9 @@ package starling.textures
          *  current Context3D profile. */
         public static function get maxSize():int
         {
-            var target:Starling = Starling.current;
-            var profile:String = target ? target.profile : "baseline";
-
-            if (profile == "baseline" || profile == "baselineConstrained")
-                return 2048;
-            else
-                return 4096;
+            var profile:String = Starling.current ? Starling.current.profile : "baseline";
+            if (profile == "baseline" || profile == "baselineConstrained") return 2048; 
+            else return 4096;
         }
     }
 }

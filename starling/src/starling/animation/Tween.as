@@ -15,7 +15,7 @@ package starling.animation
 	import starling.events.Event;
 	import starling.events.EventDispatcher;
 
-	import com.assukar.airong.ds.LinkedList;
+	import com.assukar.airong.utils.Utils;
 
     /** A Tween animates numeric properties of objects. It uses different transition functions
      *  to give the animations various styles.
@@ -261,7 +261,7 @@ package starling.animation
                 case "rad": return updateRad;
                 case "deg": return updateDeg;
                 default:
-                    trace("[Starling] Ignoring unknown property hint:", getPropertyHint(property));
+                    Utils.log("[Starling] Ignoring unknown property hint:", getPropertyHint(property));
 //                    return updateStandard;
             }
 			return updateStandard;

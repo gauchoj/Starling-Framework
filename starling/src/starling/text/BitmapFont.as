@@ -10,17 +10,19 @@
 
 package starling.text
 {
-    import flash.geom.Rectangle;
-    import flash.utils.Dictionary;
-    
-    import starling.display.Image;
-    import starling.display.QuadBatch;
-    import starling.display.Sprite;
-    import starling.textures.Texture;
-    import starling.textures.TextureSmoothing;
-    import starling.utils.HAlign;
-    import starling.utils.VAlign;
-    import starling.utils.cleanMasterString;
+	import starling.display.Image;
+	import starling.display.QuadBatch;
+	import starling.display.Sprite;
+	import starling.textures.Texture;
+	import starling.textures.TextureSmoothing;
+	import starling.utils.HAlign;
+	import starling.utils.VAlign;
+	import starling.utils.cleanMasterString;
+
+	import com.assukar.airong.utils.Utils;
+
+	import flash.geom.Rectangle;
+	import flash.utils.Dictionary;
 
     /** The BitmapFont class parses bitmap font files and arranges the glyphs 
      *  in the form of a text.
@@ -128,7 +130,7 @@ package starling.text
             
             if (mSize <= 0)
             {
-                trace("[Starling] Warning: invalid font size in '" + mName + "' font.");
+                Utils.log("[Starling] Warning: invalid font size in '" + mName + "' font.");
                 mSize = (mSize == 0.0 ? 16.0 : mSize * -1.0);
             }
             
@@ -302,7 +304,7 @@ package starling.text
                         }
                         else if (char == null)
                         {
-                            trace("[Starling] Missing character: " + charID);
+                            Utils.log("[Starling] Missing character: " + charID);
                         }
                         else
                         {

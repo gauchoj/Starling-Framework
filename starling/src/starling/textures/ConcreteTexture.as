@@ -41,10 +41,7 @@ package starling.textures
     public class ConcreteTexture extends Texture
     {
         private static const TEXTURE_READY:String = "textureReady"; // defined here for backwards compatibility
-        
         private var mBase:TextureBase;
-        //public var mBase:TextureBase;
-		
         private var mFormat:String;
         private var mWidth:int;
         private var mHeight:int;
@@ -160,7 +157,7 @@ package starling.textures
                 }
 				
             }
-            else // if (mBase is RectangleTexture)
+            else 
             {
                 mBase["uploadFromBitmapData"](data);
             }

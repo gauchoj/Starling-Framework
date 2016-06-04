@@ -167,20 +167,20 @@ package starling.display
         /** @private */ 
         public function DisplayObject()
         {
-            if (Capabilities.isDebugger && 
-                getQualifiedClassName(this) == "starling.display::DisplayObject")
-            {
-                throw new AbstractClassError();
-            }
-            
+			CONFIG::DEBUG
+			{			
+	            if (getQualifiedClassName(this) == "starling.display::DisplayObject")
+	            {
+	                throw new AbstractClassError();
+	            }
+			}		
+						
             mX = mY = mPivotX = mPivotY = mRotation = mSkewX = mSkewY = 0.0;
             mScaleX = mScaleY = mAlpha = 1.0;            
             mVisible = mTouchable = true;
             mBlendMode = BlendMode.AUTO;
             mTransformationMatrix = new Matrix();
             mOrientationChanged = mUseHandCursor = false;
-			
-			
         }
         
         /** Disposes all resources of the display object. 

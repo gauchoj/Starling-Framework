@@ -64,6 +64,11 @@ package starling.textures
                                         optimizedForRenderTexture:Boolean=false,
                                         scale:Number=1, repeat:Boolean=false)
         {
+			CONFIG::DEBUG
+			{
+				if (mipMapping) throw new Error("mipMapping="+ true);
+			}
+						
             mScale = scale <= 0 ? 1.0 : scale;
             mBase = base;
             mFormat = format;
@@ -87,7 +92,7 @@ package starling.textures
                 mBase.dispose();
             }
 
-            this.onRestore = null; // removes event listener
+            this.onRestore = null;
             super.dispose();
         }
         

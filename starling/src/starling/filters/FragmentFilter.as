@@ -127,11 +127,13 @@ package starling.filters
         {
 			this.name = name;
 			
-            if (Capabilities.isDebugger && 
-                getQualifiedClassName(this) == "starling.filters::FragmentFilter")
-            {
-                throw new AbstractClassError();
-            }
+			CONFIG::DEBUG
+			{			
+	            if (getQualifiedClassName(this) == "starling.filters::FragmentFilter")
+	            {
+	                throw new AbstractClassError();
+	            }
+			}			
             
             if (numPasses < 1) throw new ArgumentError("At least one pass is required.");
             

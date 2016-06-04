@@ -28,7 +28,6 @@ package starling.textures
 	import flash.geom.Rectangle;
 	import flash.media.Camera;
 	import flash.net.NetStream;
-	import flash.system.Capabilities;
 	import flash.utils.ByteArray;
 	import flash.utils.getQualifiedClassName;
 
@@ -116,13 +115,14 @@ package starling.textures
         /** @private */
         function Texture()
         {
-            if (Capabilities.isDebugger &&
-                getQualifiedClassName(this) == "starling.textures::Texture")
-            {
-                throw new AbstractClassError();
-            }
+			CONFIG::DEBUG
+			{
+	            if (getQualifiedClassName(this) == "starling.textures::Texture")
+	            {
+	                throw new AbstractClassError();
+	            }
+			}			
         }
-		
 		
 		public var name:String;
 		
@@ -329,6 +329,11 @@ package starling.textures
         public static function fromAtfData(name: String, data:ByteArray, scale:Number=1, useMipMaps:Boolean=false, 
                                            async:Function=null, repeat:Boolean=false):Texture
         {
+			CONFIG::DEBUG
+			{
+				if (useMipMaps) throw new Error("useMipMaps=" + true);
+			}
+			
             var context:Context3D = Starling.context;
             if (context == null) throw new MissingContextError();
 
@@ -494,6 +499,11 @@ package starling.textures
                                      mipMapping:Boolean=false, optimizeForRenderToTexture:Boolean=false,
                                      scale:Number=-1, format:String="bgra", repeat:Boolean=false):Texture
         {
+			CONFIG::DEBUG
+			{
+				if (mipMapping) throw new Error("mipMapping="+ true);
+			}	
+			
             if (scale <= 0) scale = Starling.contentScaleFactor;
 
             var actualWidth:int, actualHeight:int;

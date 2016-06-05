@@ -229,8 +229,7 @@ package starling.core
         /** Pushes the current modelview matrix to a stack from which it can be restored later. */
         public function pushMatrix():void
         {
-            if (mMatrixStack.length < mMatrixStackSize + 1)
-                mMatrixStack.push(new Matrix());
+            if (mMatrixStack.length < mMatrixStackSize + 1) mMatrixStack.push(new Matrix());
         
             mMatrixStack[int(mMatrixStackSize++)].copyFrom(mModelViewMatrix);
         }
@@ -342,7 +341,7 @@ package starling.core
         /** The blend mode to be used on rendering. To apply the factor, you have to manually call
          *  'applyBlendMode' (because the actual blend factors depend on the PMA mode). */
         final public function get blendMode():String { return mBlendMode; }
-        public function set blendMode(value:String):void
+        final public function set blendMode(value:String):void
         {
             if (value != BlendMode.AUTO) mBlendMode = value;
         }

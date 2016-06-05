@@ -54,19 +54,19 @@ package starling.display
     {
         private var mFlattenedContents:Vector.<QuadBatch>;
         private var mFlattenRequested:Boolean;
-        private var mFlattenOptimized:Boolean;
+//        private var mFlattenOptimized:Boolean;
         private var mClipRect:Rectangle;
         
         /** Helper objects. */
-        private static var sHelperMatrix:Matrix = new Matrix();
-        private static var sHelperPoint:Point = new Point();
-        private static var sHelperRect:Rectangle = new Rectangle();
+        private static const sHelperMatrix:Matrix = new Matrix();
+        private static const sHelperPoint:Point = new Point();
+        private static const sHelperRect:Rectangle = new Rectangle();
         
         /** Creates an empty sprite. */
-        public function Sprite()
-        {
-            super();
-        }
+//        public function Sprite()
+//        {
+//            super();
+//        }
         
         /** @inheritDoc */
         public override function dispose():void
@@ -109,10 +109,11 @@ package starling.display
          *  @param ignoreChildOrder If the child order is not important, you can further optimize
          *           the number of draw calls. Naturally, this is not an option for all use-cases.
          */
-        public function flatten(ignoreChildOrder:Boolean=false):void
+//        public function flatten(ignoreChildOrder:Boolean=false):void
+		public function flatten():void
         {					
             mFlattenRequested = true;
-            mFlattenOptimized = ignoreChildOrder;
+//            mFlattenOptimized = ignoreChildOrder;
             broadcastEventWith(Event.FLATTEN);
         }
 		
@@ -227,7 +228,7 @@ package starling.display
                 if (mFlattenRequested)
                 {
                     QuadBatch.compile(this, mFlattenedContents);
-                    if (mFlattenOptimized) QuadBatch.optimize(mFlattenedContents);
+//                    if (mFlattenOptimized) QuadBatch.optimize(mFlattenedContents);
                     support.applyClipRect(); // compiling filters might change scissor rect. :-
                     mFlattenRequested = false;
                 }

@@ -126,61 +126,62 @@ package starling.display
      *  @see Sprite
      *  @see Stage 
      */
-    public class DisplayObject extends EventDispatcher
+    public class DisplayObject 
+	extends EventDispatcher
     {
         // members
         
-        private var mX:Number;
-        private var mY:Number;
-        public var mPivotX:Number;
-        public var mPivotY:Number;
+        private var mX:Number = 0.0;
+        private var mY:Number = 0.0;
+        public var mPivotX:Number = 0.0;
+        public var mPivotY:Number = 0.0;
         public var mScaleX:Number;
         public var mScaleY:Number;
-        private var mSkewX:Number;
-        private var mSkewY:Number;
-        private var mRotation:Number;
+        private var mSkewX:Number = 0.0;
+        private var mSkewY:Number = 0.0;
+        private var mRotation:Number = 0.0;
         public var mAlpha:Number;
         private var mVisible:Boolean;
         public var mTouchable:Boolean;
         public var mBlendMode:String;
         private var mName:String;
-        private var mUseHandCursor:Boolean;
+        private var mUseHandCursor:Boolean = false;
         public var mParent:DisplayObjectContainer;  
         private var mTransformationMatrix:Matrix;
         private var mTransformationMatrix3D:Matrix3D;
-        private var mOrientationChanged:Boolean;
+        private var mOrientationChanged:Boolean = false;
         public var mFilter:FragmentFilter;
         private var mIs3D:Boolean;
         public var mMask:DisplayObject;
         private var mIsMask:Boolean;
         
         /** Helper objects. */
-        private static var sAncestors:Vector.<DisplayObject> = new <DisplayObject>[];
-        private static var sHelperPoint:Point = new Point();
-        private static var sHelperPoint3D:Vector3D = new Vector3D();
-        private static var sHelperRect:Rectangle = new Rectangle();
-        private static var sHelperMatrix:Matrix  = new Matrix();
-        private static var sHelperMatrixAlt:Matrix  = new Matrix();
-        private static var sHelperMatrix3D:Matrix3D  = new Matrix3D();
-        private static var sHelperMatrixAlt3D:Matrix3D  = new Matrix3D();
+        private static const sAncestors:Vector.<DisplayObject> = new <DisplayObject>[];
+        private static const sHelperPoint:Point = new Point();
+        private static const sHelperPoint3D:Vector3D = new Vector3D();
+        private static const sHelperRect:Rectangle = new Rectangle();
+        private static const sHelperMatrix:Matrix  = new Matrix();
+        private static const sHelperMatrixAlt:Matrix  = new Matrix();
+        private static const sHelperMatrix3D:Matrix3D  = new Matrix3D();
+        private static const sHelperMatrixAlt3D:Matrix3D  = new Matrix3D();
         
         /** @private */ 
         public function DisplayObject()
         {
-			CONFIG::DEBUG
-			{			
-	            if (getQualifiedClassName(this) == "starling.display::DisplayObject")
-	            {
-	                throw new AbstractClassError();
-	            }
-			}		
+//			CONFIG::DEBUG
+//			{			
+//	            if (getQualifiedClassName(this) == "starling.display::DisplayObject")
+//	            {
+//	                throw new AbstractClassError();
+//	            }
+//			}		
 						
-            mX = mY = mPivotX = mPivotY = mRotation = mSkewX = mSkewY = 0.0;
+//            mX = mY = mPivotX = mPivotY = mRotation = mSkewX = mSkewY = 0.0;
             mScaleX = mScaleY = mAlpha = 1.0;            
             mVisible = mTouchable = true;
             mBlendMode = BlendMode.AUTO;
             mTransformationMatrix = new Matrix();
-            mOrientationChanged = mUseHandCursor = false;
+//            mOrientationChanged = mUseHandCursor = false;
         }
         
         /** Disposes all resources of the display object. 
@@ -913,7 +914,7 @@ package starling.display
         
         /** Indicates if this object (and its children) will receive touch events. */
         final public function get touchable():Boolean { return mTouchable; }
-        public function set touchable(value:Boolean):void { mTouchable = value; }
+        final public function set touchable(value:Boolean):void { mTouchable = value; }
         
         /** The blend mode determines how the object is blended with the objects underneath. 
          *   @default auto

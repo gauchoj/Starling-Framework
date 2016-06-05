@@ -10,18 +10,19 @@
 
 package starling.display
 {
-	
-	import flash.geom.Matrix;
-	import flash.geom.Point;
-	import flash.geom.Rectangle;
-	import flash.system.Capabilities;
-	import flash.utils.getQualifiedClassName;
 	import starling.core.RenderSupport;
-	import starling.errors.AbstractClassError;
+	import starling.core.Starling;
+	import starling.core.starling_internal;
 	import starling.events.Event;
 	import starling.filters.FragmentFilter;
 	import starling.utils.MatrixUtil;
-	import starling.core.starling_internal; 
+
+	import com.assukar.airong.utils.Utils;
+
+	import flash.geom.Matrix;
+	import flash.geom.Point;
+	import flash.geom.Rectangle;
+	
 	
 	//import com.assukar.view.starling.StarlingUtils;
 	
@@ -64,35 +65,36 @@ package starling.display
 	 *  @see Sprite
 	 *  @see DisplayObject
 	 */
-	public class DisplayObjectContainer extends DisplayObject
+	public class DisplayObjectContainer 
+	extends DisplayObject
 	{
 		// members
 		
-		private var mChildren:Vector.<DisplayObject>;
+		private var mChildren:Vector.<DisplayObject> = new <DisplayObject>[];
 		private var mTouchGroup:Boolean;
 		
 		/** Helper objects. */
-		private static var sHelperMatrix:Matrix = new Matrix();
-		private static var sHelperPoint:Point = new Point();
-		private static var sBroadcastListeners:Vector.<DisplayObject> = new <DisplayObject>[];
-		private static var sSortBuffer:Vector.<DisplayObject> = new <DisplayObject>[];
+		private static const sHelperMatrix:Matrix = new Matrix();
+		private static const sHelperPoint:Point = new Point();
+		private static const sBroadcastListeners:Vector.<DisplayObject> = new <DisplayObject>[];
+		private static const sSortBuffer:Vector.<DisplayObject> = new <DisplayObject>[];
 		
 		// construction
 		
 		/** @private */
-		public function DisplayObjectContainer()
-		{
-			CONFIG::DEBUG
-			{			
-				if (getQualifiedClassName(this) == "starling.display::DisplayObjectContainer")
-				{
-					throw new AbstractClassError();
-				}
-			}
-			
-			mChildren = new <DisplayObject>[];
-		
-		}
+//		public function DisplayObjectContainer()
+//		{
+//			CONFIG::DEBUG
+//			{			
+//				if (getQualifiedClassName(this) == "starling.display::DisplayObjectContainer")
+//				{
+//					throw new AbstractClassError();
+//				}
+//			}
+//			
+//			mChildren = new <DisplayObject>[];
+//		
+//		}
 		
 		/** Disposes the resources of all children. */
 		public override function dispose():void
@@ -371,37 +373,40 @@ package starling.display
 		}
 		
 		// obj-tion
-		private var alpha1:Number, numChildren1:int, blendMode1:String, i1:int, child1:DisplayObject, filter1:FragmentFilter, mask1:DisplayObject;
+		private var numChildren1:int, i1:int, child1:DisplayObject, alpha1: Number, blendMode1: String;
 		
 		/** @inheritDoc */
 		public override function render(support:RenderSupport, parentAlpha:Number):void
 		{
-			alpha1 = parentAlpha * this.mAlpha;
 			numChildren1 = mChildren.length;
-			blendMode1 = support.mBlendMode;
 			
-			for (i1 = 0; i1 < numChildren1; ++i1)
+			if (numChildren1)
 			{
-				child1 = mChildren[i1];
+				alpha1 = parentAlpha * mAlpha;
+				blendMode1 = support.mBlendMode;
 				
-				if (child1.hasVisibleArea)
+				for (i1 = 0; i1 < numChildren1; ++i1)
 				{
-					filter1 = child1.mFilter;
-					mask1 = child1.mMask;
+					child1 = mChildren[i1];
 					
-					support.pushMatrix();
-					support.transformMatrix(child1);
-					support.blendMode = child1.mBlendMode;
-					
-					if (mask1) support.pushMask(mask1);
-					
-					if (filter1) filter1.render(child1, support, alpha1);
-					else child1.render(support, alpha1);
-					
-					if (mask1) support.popMask();
-					
-					support.blendMode = blendMode1;
-					support.popMatrix();
+					if (child1.hasVisibleArea)
+					{
+						support.pushMatrix();
+						support.transformMatrix(child1);
+						
+//						support.blendMode = child1.mBlendMode;
+						if (child1.mBlendMode != BlendMode.AUTO) support.mBlendMode = child1.mBlendMode;
+						
+						if (child1.mMask) support.pushMask(child1.mMask);
+						if (child1.mFilter) child1.mFilter.render(child1, support, alpha1);
+						else child1.render(support, alpha1);
+						if (child1.mMask) support.popMask();
+						
+//						support.blendMode = blendMode1;
+						if (blendMode1 != BlendMode.AUTO) support.mBlendMode = blendMode1;
+						
+						support.popMatrix();
+					}
 				}
 			}
 		}
@@ -409,8 +414,7 @@ package starling.display
 		/** Dispatches an event on all children (recursively). The event must not bubble. */
 		public function broadcastEvent(event:Event):void
 		{
-			if (event.bubbles)
-				throw new ArgumentError("Broadcast of bubbling events is prohibited");
+			if (event.bubbles) throw new ArgumentError("Broadcast of bubbling events is prohibited");
 			
 			// The event listeners might modify the display tree, which could make the loop crash. 
 			// Thus, we collect them in a list and iterate over that list instead.

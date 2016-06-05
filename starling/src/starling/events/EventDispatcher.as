@@ -40,11 +40,11 @@ package starling.events
         private var mEventListeners:Dictionary;
         
         /** Helper object. */
-        private static var sBubbleChains:Array = [];
+        private static const sBubbleChains:Array = [];
         
-        /** Creates an EventDispatcher. */
-        public function EventDispatcher()
-        {  }
+//        /** Creates an EventDispatcher. */
+//        public function EventDispatcher()
+//        {  }
         
         /** Registers an event listener at a certain object. */
         public function addEventListener(type:String, listener:Function):void
@@ -53,10 +53,8 @@ package starling.events
                 mEventListeners = new Dictionary();
             
             var listeners:Vector.<Function> = mEventListeners[type] as Vector.<Function>;
-            if (listeners == null)
-                mEventListeners[type] = new <Function>[listener];
-            else if (listeners.indexOf(listener) == -1) // check for duplicates
-                listeners[listeners.length] = listener; // avoid 'push'
+            if (listeners == null) mEventListeners[type] = new <Function>[listener];
+            else if (listeners.indexOf(listener) == -1) listeners[listeners.length] = listener; // avoid 'push'
         }
         
         /** Removes an event listener from the object. */

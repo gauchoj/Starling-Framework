@@ -204,8 +204,35 @@ package starling.display
                 return super.hitTest(localPoint, forTouch);
         }
         
+		private function renderFlatten(support:RenderSupport, parentAlpha:Number): void
+		{
+			var alpha1:Number, numBatches1:int, mvpMatrix1:Matrix3D, i1:int, quadBatch1:QuadBatch;
+			
+            if (mFlattenedContents == null) mFlattenedContents = new <QuadBatch>[];
+            
+            if (mFlattenRequested)
+            {
+                QuadBatch.compile(this, mFlattenedContents);
+                support.applyClipRect(); // compiling filters might change scissor rect. :-
+                mFlattenRequested = false;
+            }
+            
+            alpha1 = parentAlpha * this.mAlpha;
+            numBatches1 = mFlattenedContents.length;
+            mvpMatrix1 = support.mvpMatrix3D;
+			
+            support.finishQuadBatch();
+            support.raiseDrawCount(numBatches1);
+            
+			for (i1=0; i1<numBatches1; ++i1)
+            {	
+                quadBatch1 = mFlattenedContents[i1];		
+                quadBatch1.renderCustom(mvpMatrix1, alpha1, (quadBatch1.blendMode == BlendMode.AUTO ? support.blendMode : quadBatch1.blendMode));
+            }
+		}
+		
 		// obj-tion
-		private var alpha1:Number, numBatches1:int, mvpMatrix1:Matrix3D, i1:int, clipRect1:Rectangle, quadBatch1:QuadBatch;
+		private var clipRect1:Rectangle;
 		
         /** @inheritDoc */
         public override function render(support:RenderSupport, parentAlpha:Number):void
@@ -221,31 +248,7 @@ package starling.display
                 }
             }
             
-            if (mFlattenedContents || mFlattenRequested)
-            {
-                if (mFlattenedContents == null) mFlattenedContents = new <QuadBatch>[];
-                
-                if (mFlattenRequested)
-                {
-                    QuadBatch.compile(this, mFlattenedContents);
-//                    if (mFlattenOptimized) QuadBatch.optimize(mFlattenedContents);
-                    support.applyClipRect(); // compiling filters might change scissor rect. :-
-                    mFlattenRequested = false;
-                }
-                
-                alpha1 = parentAlpha * this.mAlpha;
-                numBatches1 = mFlattenedContents.length;
-                mvpMatrix1 = support.mvpMatrix3D;
-				
-                support.finishQuadBatch();
-                support.raiseDrawCount(numBatches1);
-                
-				for (i1=0; i1<numBatches1; ++i1)
-                {	
-                    quadBatch1 = mFlattenedContents[i1];		
-                    quadBatch1.renderCustom(mvpMatrix1, alpha1, (quadBatch1.blendMode == BlendMode.AUTO ? support.blendMode : quadBatch1.blendMode));
-                }
-            }
+            if (mFlattenedContents || mFlattenRequested) renderFlatten(support, parentAlpha);
             else super.render(support, parentAlpha);
             
             if (mClipRect)

@@ -275,7 +275,6 @@ package starling.textures
          *  the current base. */
         starling_internal function createBase():void
         {
-
             var context:Context3D = Starling.context;
             var className:String = getQualifiedClassName(mBase);
             

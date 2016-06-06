@@ -109,12 +109,15 @@ package starling.events
             // this allows users to re-dispatch events without creating a clone.
             
             var previousTarget:EventDispatcher = event.target;
-            event.setTarget(this);
+//            event.setTarget(this);
+			event.target = this;
             
             if (bubbles && this is DisplayObject) bubbleEvent(event);
             else                                  invokeEvent(event);
             
-            if (previousTarget) event.setTarget(previousTarget);
+			if (previousTarget) 
+//				event.setTarget(previousTarget);
+				event.target = previousTarget;
         }
         
         /** @private
@@ -129,7 +132,8 @@ package starling.events
             
             if (numListeners)
             {
-                event.setCurrentTarget(this);
+//                event.setCurrentTarget(this);
+				event.currentTarget = this;
                 
                 // we can enumerate directly over the vector, because:
                 // when somebody modifies the list while we're looping, "addEventListener" is not

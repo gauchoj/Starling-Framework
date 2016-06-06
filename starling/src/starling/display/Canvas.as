@@ -175,7 +175,7 @@ package starling.display
         /** @inheritDoc */
         public override function hitTest(localPoint:Point, forTouch:Boolean=false):DisplayObject
         {
-            if (forTouch && (!visible || !mTouchable)) return null;
+            if (forTouch && (!visible || !touchable)) return null;
             if (!hitTestMask(localPoint)) return null;
 
             for (var i:int = 0, len:int = mPolygons.length; i < len; ++i)

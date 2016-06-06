@@ -86,8 +86,6 @@ package starling.display
             }
         }
         
-//		static public var IGNORE_FLATTEN: Boolean = false;
-		
         /** Optimizes the sprite for optimal rendering performance. Changes in the
          *  children of a flattened sprite will not be displayed any longer. For this to happen,
          *  either call <code>flatten</code> again, or <code>unflatten</code> the sprite. 
@@ -109,11 +107,9 @@ package starling.display
          *  @param ignoreChildOrder If the child order is not important, you can further optimize
          *           the number of draw calls. Naturally, this is not an option for all use-cases.
          */
-//        public function flatten(ignoreChildOrder:Boolean=false):void
 		public function flatten():void
         {					
             mFlattenRequested = true;
-//            mFlattenOptimized = ignoreChildOrder;
             broadcastEventWith(Event.FLATTEN);
         }
 		

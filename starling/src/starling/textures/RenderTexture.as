@@ -208,12 +208,12 @@ package starling.textures
 		
         private function render(object:DisplayObject, matrix:Matrix=null, alpha:Number=1.0):void
         {
-            filter1 = object.mFilter;
+            filter1 = object.filter;
             mask1 = object.mMask;
 
             mSupport.loadIdentity();
-            mSupport.blendMode = object.mBlendMode == BlendMode.AUTO ?
-                BlendMode.NORMAL : object.mBlendMode;
+            mSupport.blendMode = object.blendMode == BlendMode.AUTO ?
+                BlendMode.NORMAL : object.blendMode;
 
             if (matrix) mSupport.prependMatrix(matrix);
             else        mSupport.transformMatrix(object);

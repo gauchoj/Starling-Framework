@@ -90,7 +90,8 @@ package starling.display
             mRotationX = mRotationY = mPivotZ = mZ = 0.0;
             mTransformationMatrix = new Matrix();
             mTransformationMatrix3D = new Matrix3D();
-            setIs3D(true);
+//			setIs3D(true);
+			is3D = true;
 
             addEventListener(Event.ADDED, onAddedChild);
             addEventListener(Event.REMOVED, onRemovedChild);
@@ -119,7 +120,7 @@ package starling.display
             if (is2D) return super.hitTest(localPoint, forTouch);
             else
             {
-                if (forTouch && (!visible || !mTouchable))
+                if (forTouch && (!visible || !touchable))
                     return null;
 
                 // We calculate the interception point between the 3D plane that is spawned up
@@ -162,7 +163,8 @@ package starling.display
                     recursivelySetIs3D(container.getChildAt(i), value);
             }
 
-            object.setIs3D(value);
+//            object.setIs3D(value);
+			object.is3D = value;
         }
 
         private function updateMatrices():void

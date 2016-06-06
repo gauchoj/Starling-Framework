@@ -99,8 +99,8 @@ package starling.text
 
         private var mFontSize:Number;
         private var mColor:uint;
-        private var mText:String;
-        private var mFontName:String;
+        protected var mText:String;
+        public var mFontName:String;
         private var mHAlign:String;
         private var mVAlign:String;
         private var mBold:Boolean;
@@ -206,12 +206,6 @@ package starling.text
             
             if (!mTextBounds) mTextBounds = new Rectangle();
             
-//            var texture:Texture;
-//            var scale:Number = Starling.contentScaleFactor;
-//            var bitmapData:BitmapData = renderText(scale, mTextBounds);
-//            var format:String = sDefaultTextureFormat;
-//            var maxTextureSize:int = Texture.maxSize;
-//            var shrinkHelper:Number = 0;
             scale = Starling.contentScaleFactor;
             bitmapData = renderText(scale, mTextBounds);
             format = sDefaultTextureFormat;
@@ -233,7 +227,7 @@ package starling.text
             mHitArea.width  = bitmapData.width  / scale;
             mHitArea.height = bitmapData.height / scale;
             
-            texture = Texture.fromBitmapData("tf:" + text, bitmapData, false, //false, 
+            texture = Texture.fromBitmapData("tf:" + mText, bitmapData, false, //false, 
 				scale, format);
 			
             texture.root.onRestore = function():void
@@ -555,7 +549,7 @@ package starling.text
         /** @inheritDoc */
         public override function hitTest(localPoint:Point, forTouch:Boolean=false):DisplayObject
         {
-            if (forTouch && (!visible || !mTouchable)) return null;
+            if (forTouch && (!visible || !touchable)) return null;
             else if (mHitArea.containsPoint(localPoint) && hitTestMask(localPoint)) return this;
             else return null;
         }
@@ -579,7 +573,7 @@ package starling.text
         }
         
         /** The displayed text. */
-        public function get text():String { return mText; }
+        final public function get text():String { return mText; }
         public function set text(value:String):void
         {
             if (value == null) value = "";
@@ -591,7 +585,7 @@ package starling.text
         }
         
         /** The name of the font (true type or bitmap font). */
-        public function get fontName():String { return mFontName; }
+//        final public function get fontName():String { return mFontName; }
         public function set fontName(value:String):void
         {
             if (mFontName != value)
@@ -606,7 +600,7 @@ package starling.text
         
         /** The size of the font. For bitmap fonts, use <code>BitmapFont.NATIVE_SIZE</code> for 
          *  the original size. */
-        public function get fontSize():Number { return mFontSize; }
+        final public function get fontSize():Number { return mFontSize; }
         public function set fontSize(value:Number):void
         {
             if (mFontSize != value)
@@ -619,7 +613,7 @@ package starling.text
         /** The color of the text. Note that bitmap fonts should be exported in plain white so
          *  that tinting works correctly. If your bitmap font contains colors, set this property
          *  to <code>Color.WHITE</code> to get the desired result. @default black */
-        public function get color():uint { return mColor; }
+        final public function get color():uint { return mColor; }
         public function set color(value:uint):void
         {
             if (mColor != value)
@@ -630,7 +624,7 @@ package starling.text
         }
         
         /** The horizontal alignment of the text. @default center @see starling.utils.HAlign */
-        public function get hAlign():String { return mHAlign; }
+        final public function get hAlign():String { return mHAlign; }
         public function set hAlign(value:String):void
         {
             if (!HAlign.isValid(value))
@@ -644,7 +638,7 @@ package starling.text
         }
         
         /** The vertical alignment of the text. @default center @see starling.utils.VAlign */
-        public function get vAlign():String { return mVAlign; }
+        final public function get vAlign():String { return mVAlign; }
         public function set vAlign(value:String):void
         {
             if (!VAlign.isValid(value))
@@ -680,7 +674,7 @@ package starling.text
         }
         
         /** Indicates whether the text is bold. @default false */
-        public function get bold():Boolean { return mBold; }
+        final public function get bold():Boolean { return mBold; }
         public function set bold(value:Boolean):void 
         {
             if (mBold != value)
@@ -691,7 +685,7 @@ package starling.text
         }
         
         /** Indicates whether the text is italicized. @default false */
-        public function get italic():Boolean { return mItalic; }
+        final public function get italic():Boolean { return mItalic; }
         public function set italic(value:Boolean):void
         {
             if (mItalic != value)
@@ -702,7 +696,7 @@ package starling.text
         }
         
         /** Indicates whether the text is underlined. @default false */
-        public function get underline():Boolean { return mUnderline; }
+        final public function get underline():Boolean { return mUnderline; }
         public function set underline(value:Boolean):void
         {
             if (mUnderline != value)
@@ -713,7 +707,7 @@ package starling.text
         }
         
         /** Indicates whether kerning is enabled. @default true */
-        public function get kerning():Boolean { return mKerning; }
+        final public function get kerning():Boolean { return mKerning; }
         public function set kerning(value:Boolean):void
         {
             if (mKerning != value)
@@ -725,7 +719,7 @@ package starling.text
         
         /** Indicates whether the font size is scaled down so that the complete text fits
          *  into the text field. @default false */
-        public function get autoScale():Boolean { return mAutoScale; }
+        final public function get autoScale():Boolean { return mAutoScale; }
         public function set autoScale(value:Boolean):void
         {
             if (mAutoScale != value)
@@ -739,7 +733,7 @@ package starling.text
          *  Note that any auto-sizing will make auto-scaling useless. Furthermore, it has 
          *  implications on alignment: horizontally auto-sized text will always be left-, 
          *  vertically auto-sized text will always be top-aligned. @default "none" */
-        public function get autoSize():String { return mAutoSize; }
+        final public function get autoSize():String { return mAutoSize; }
         public function set autoSize(value:String):void
         {
             if (mAutoSize != value)
@@ -753,7 +747,7 @@ package starling.text
          *  fonts, and it makes sense only for TextFields with no more than 10-15 characters.
          *  Otherwise, the CPU costs will exceed any gains you get from avoiding the additional
          *  draw call. @default false */
-        public function get batchable():Boolean { return mBatchable; }
+        final public function get batchable():Boolean { return mBatchable; }
         public function set batchable(value:Boolean):void
         { 
             mBatchable = value;
@@ -763,7 +757,7 @@ package starling.text
         /** The native Flash BitmapFilters to apply to this TextField.
          *
          *  <p>BEWARE: this property is ignored when using bitmap fonts!</p> */
-        public function get nativeFilters():Array { return mNativeFilters; }
+        final public function get nativeFilters():Array { return mNativeFilters; }
         public function set nativeFilters(value:Array) : void
         {
             mNativeFilters = value.concat();
@@ -775,7 +769,7 @@ package starling.text
          *  Clickable hyperlinks and external images are not supported.
          *
          *  <p>BEWARE: this property is ignored when using bitmap fonts!</p> */
-        public function get isHtmlText():Boolean { return mIsHtmlText; }
+        final public function get isHtmlText():Boolean { return mIsHtmlText; }
         public function set isHtmlText(value:Boolean):void
         {
             if (mIsHtmlText != value)
@@ -786,7 +780,7 @@ package starling.text
         }
 
         /** The amount of vertical space (called 'leading') between lines. @default 0 */
-        public function get leading():Number { return mLeading; }
+        final public function get leading():Number { return mLeading; }
         public function set leading(value:Number):void
         {
             if (mLeading != value)
@@ -850,22 +844,13 @@ package starling.text
             return fonts;
         }
 
-		
-		
-		/* ASSUKAR */
-		
 		public function set lineHeight(h:int):void {
-			var font:BitmapFont = TextField.getBitmapFont(fontName);
+			var font:BitmapFont = TextField.getBitmapFont(mFontName);
 			if (!font)
-				throw new Error(fontName + " is not a bitmap font"); 
+				throw new Error(mFontName + " is not a bitmap font"); 
 			font.lineHeight = h;
 		}
 	
-		/* end of ASSUKAR */
-	
-
-        // optimization for 'toLowerCase' calls
-
         private static var sStringCache:Dictionary = new Dictionary();
 
         private static function convertToLowerCase(string:String):String

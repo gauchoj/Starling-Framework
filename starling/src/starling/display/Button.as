@@ -58,7 +58,7 @@ package starling.display
         private var mScaleWhenOver:Number;
         private var mAlphaWhenDown:Number;
         private var mAlphaWhenDisabled:Number;
-        private var mUseHandCursor:Boolean;
+//        private var mUseHandCursor:Boolean;
         private var mEnabled:Boolean;
         private var mState:String;
         private var mTriggerBounds:Rectangle;
@@ -270,14 +270,14 @@ package starling.display
                 createTextField();
                 mTextField.text = value;
                 
-                if (mTextField.mParent == null)
+                if (mTextField.parent == null)
                     mContents.addChild(mTextField);
             }
         }
         
         /** The name of the font displayed on the button. May be a system font or a registered
          *  bitmap font. */
-        public function get fontName():String { return mTextField ? mTextField.fontName : "Verdana"; }
+        public function get fontName():String { return mTextField ? mTextField.mFontName : "Verdana"; }
         public function set fontName(value:String):void
         {
             createTextField();
@@ -411,7 +411,7 @@ package starling.display
 
         /** Indicates if the mouse cursor should transform into a hand while it's over the button. 
          *  @default true */
-        public override function get useHandCursor():Boolean { return mUseHandCursor; }
+//        public override function get useHandCursor():Boolean { return mUseHandCursor; }
         public override function set useHandCursor(value:Boolean):void { mUseHandCursor = value; }
     }
 }

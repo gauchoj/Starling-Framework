@@ -164,7 +164,8 @@ package starling.events
             {
                 var chainLength:int = bubbles ? chain.length : 1;
                 var previousTarget:EventDispatcher = target;
-                setTarget(chain[0] as EventDispatcher);
+//                setTarget(chain[0] as EventDispatcher);
+				target = chain[0] as EventDispatcher;
                 
                 for (var i:int=0; i<chainLength; ++i)
                 {
@@ -177,7 +178,8 @@ package starling.events
                     }
                 }
                 
-                setTarget(previousTarget);
+//                setTarget(previousTarget);
+				target = previousTarget;
             }
         }
         

@@ -71,7 +71,6 @@ package starling.display
 		// members
 		
 		private var mChildren:Vector.<DisplayObject> = new <DisplayObject>[];
-		private var mTouchGroup:Boolean;
 		
 		/** Helper objects. */
 		private static const sHelperMatrix:Matrix = new Matrix();
@@ -80,28 +79,10 @@ package starling.display
 		private static const sSortBuffer:Vector.<DisplayObject> = new <DisplayObject>[];
 		
 		// construction
-		
-		/** @private */
-//		public function DisplayObjectContainer()
-//		{
-//			CONFIG::DEBUG
-//			{			
-//				if (getQualifiedClassName(this) == "starling.display::DisplayObjectContainer")
-//				{
-//					throw new AbstractClassError();
-//				}
-//			}
-//			
-//			mChildren = new <DisplayObject>[];
-//		
-//		}
-		
 		/** Disposes the resources of all children. */
 		public override function dispose():void
 		{
-			for (var i:int = mChildren.length - 1; i >= 0; --i)
-				mChildren[i].dispose();
-			
+			for (var i:int = mChildren.length - 1; i >= 0; --i) mChildren[i].dispose();
 			super.dispose();
 		}
 		
@@ -121,10 +102,9 @@ package starling.display
 			
 			if (index >= 0 && index <= numChildren)
 			{
-				if (child.mParent == this)
+				if (child.parent == this)
 				{
 					setChildIndex(child, index); // avoids dispatching events
-					
 				}
 				else
 				{
@@ -161,7 +141,7 @@ package starling.display
 		 *  If requested, the child will be disposed right away. */
 		public function removeChild(child:DisplayObject, dispose:Boolean = false):DisplayObject
 		{
-			var childIndex:int = getChildIndex(child);
+			var childIndex:int = mChildren.indexOf(child);//getChildIndex(child);
 			if (childIndex != -1) removeChildAt(childIndex, dispose);
 			return child;
 		}
@@ -186,10 +166,8 @@ package starling.display
 				
 				child.setParent(null);
 				index = mChildren.indexOf(child); // index might have changed by event handler
-				if (index >= 0)
-					spliceChildren(index, 1);
-				if (dispose)
-					child.dispose();
+				if (index >= 0) spliceChildren(index, 1);
+				if (dispose) child.dispose();
 				
 				return child;
 			}
@@ -228,16 +206,15 @@ package starling.display
 		/** Returns a child object with a certain name (non-recursively). */
 		public function getChildByName(name:String):DisplayObject
 		{
-			var numChildren:int = mChildren.length;
-			for (var i:int = 0; i < numChildren; ++i)
-				if (mChildren[i].name == name)
-					return mChildren[i];
+//			var numChildren:int = mChildren.length;
+			for (var i:int = mChildren.length-1; i >= 0; i--)//< numChildren; ++i)
+				if (mChildren[i].name == name) return mChildren[i];
 			
 			return null;
 		}
 		
 		/** Returns the index of a child within the container, or "-1" if it is not found. */
-		public function getChildIndex(child:DisplayObject):int
+		final public function getChildIndex(child:DisplayObject):int
 		{
 			return mChildren.indexOf(child);
 		}
@@ -245,7 +222,7 @@ package starling.display
 		/** Moves a child to a certain index. Children at and after the replaced position move up.*/
 		public function setChildIndex(child:DisplayObject, index:int):void
 		{
-			var oldIndex:int = getChildIndex(child);
+			var oldIndex:int = mChildren.indexOf(child);//getChildIndex(child);
 			if (oldIndex == index)
 				return;
 			if (oldIndex == -1)
@@ -257,8 +234,8 @@ package starling.display
 		/** Swaps the indexes of two children. */
 		public function swapChildren(child1:DisplayObject, child2:DisplayObject):void
 		{
-			var index1:int = getChildIndex(child1);
-			var index2:int = getChildIndex(child2);
+			var index1:int = mChildren.indexOf(child1);//getChildIndex(child1);
+			var index2:int = mChildren.indexOf(child2);//getChildIndex(child2);
 			if (index1 == -1 || index2 == -1)
 				throw new ArgumentError("Not a child of this container");
 			swapChildrenAt(index1, index2);
@@ -290,7 +267,7 @@ package starling.display
 				if (child == this)
 					return true;
 				else
-					child = child.mParent;
+					child = child.parent;
 			}
 			return false;
 		}
@@ -343,7 +320,7 @@ package starling.display
 		/** @inheritDoc */
 		public override function hitTest(localPoint:Point, forTouch:Boolean = false):DisplayObject
 		{
-			if (forTouch && (!visible || !mTouchable))
+			if (forTouch && (!visible || !touchable))
 				return null;
 			if (!hitTestMask(localPoint))
 				return null;
@@ -356,7 +333,7 @@ package starling.display
 			for (var i:int = numChildren - 1; i >= 0; --i) // front to back!
 			{
 				var child:DisplayObject = mChildren[i];
-				if (child.isMask)
+				if (child.mIsMask)
 					continue;
 				
 				sHelperMatrix.copyFrom(child.transformationMatrix);
@@ -366,7 +343,7 @@ package starling.display
 				target = child.hitTest(sHelperPoint, forTouch);
 				
 				if (target)
-					return forTouch && mTouchGroup ? this : target;
+					return forTouch && touchGroup ? this : target;
 			}
 			
 			return null;
@@ -395,10 +372,10 @@ package starling.display
 						support.transformMatrix(child1);
 						
 //						support.blendMode = child1.mBlendMode;
-						if (child1.mBlendMode != BlendMode.AUTO) support.mBlendMode = child1.mBlendMode;
+						if (child1.blendMode != BlendMode.AUTO) support.mBlendMode = child1.blendMode;
 						
 						if (child1.mMask) support.pushMask(child1.mMask);
-						if (child1.mFilter) child1.mFilter.render(child1, support, alpha1);
+						if (child1.filter) child1.filter.render(child1, support, alpha1);
 						else child1.render(support, alpha1);
 						if (child1.mMask) support.popMask();
 						
@@ -445,20 +422,20 @@ package starling.display
 		{
 			return mChildren.length;
 		}
-		
-		/** If a container is a 'touchGroup', it will act as a single touchable object.
-		 *  Touch events will have the container as target, not the touched child.
-		 *  (Similar to 'mouseChildren' in the classic display list, but with inverted logic.)
-		 *  @default false */
-		public function get touchGroup():Boolean
-		{
-			return mTouchGroup;
-		}
-		
-		public function set touchGroup(value:Boolean):void
-		{
-			mTouchGroup = value;
-		}
+
+		public var touchGroup:Boolean;
+//		/** If a container is a 'touchGroup', it will act as a single touchable object.
+//		 *  Touch events will have the container as target, not the touched child.
+//		 *  (Similar to 'mouseChildren' in the classic display list, but with inverted logic.)
+//		 *  @default false */
+//		final public function get touchGroup():Boolean
+//		{
+//			return mTouchGroup;
+//		}
+//		final public function set touchGroup(value:Boolean):void
+//		{
+//			mTouchGroup = value;
+//		}
 		
 		// helpers
 		

@@ -76,89 +76,89 @@ package starling.events
          *  from which it cannot recover, e.g. a lost device context. */
         public static const FATAL_ERROR:String = "fatalError";
 
-        /** An event type to be utilized in custom events. Not used by Starling right now. */
-        public static const CHANGE:String = "change";
-        /** An event type to be utilized in custom events. Not used by Starling right now. */
-        public static const CANCEL:String = "cancel";
-        /** An event type to be utilized in custom events. Not used by Starling right now. */
-        public static const SCROLL:String = "scroll";
-        /** An event type to be utilized in custom events. Not used by Starling right now. */
-        public static const OPEN:String = "open";
-        /** An event type to be utilized in custom events. Not used by Starling right now. */
-        public static const CLOSE:String = "close";
-        /** An event type to be utilized in custom events. Not used by Starling right now. */
-        public static const SELECT:String = "select";
-        /** An event type to be utilized in custom events. Not used by Starling right now. */
-        public static const READY:String = "ready";
-		
-		private static var sEventPool:Vector.<Event> = new <Event>[];
+		private static const sEventPool:Vector.<Event> = new <Event>[];
         
-        private var mTarget:EventDispatcher;
-        private var mCurrentTarget:EventDispatcher;
-        private var mType:String;
-        private var mBubbles:Boolean;
-        private var mStopsPropagation:Boolean;
-        private var mStopsImmediatePropagation:Boolean;
-        private var mData:Object;
+//        private var mTarget:EventDispatcher;
+//        private var mCurrentTarget:EventDispatcher;
+//        private var mType:String;
+//        private var mBubbles:Boolean;
+//        private var mStopsPropagation:Boolean;
+//        private var mStopsImmediatePropagation:Boolean;
+//        private var mData:Object;
         
         /** Creates an event object that can be passed to listeners. */
         public function Event(type:String, bubbles:Boolean=false, data:Object=null)
         {
-            mType = type;
-            mBubbles = bubbles;
-            mData = data;
+//            mType = type;
+//            mBubbles = bubbles;
+//            mData = data;
+			
+            this.type = type;
+            this.bubbles = bubbles;
+            this.data = data;
         }
         
         /** Prevents listeners at the next bubble stage from receiving the event. */
         public function stopPropagation():void
         {
-            mStopsPropagation = true;            
+//            mStopsPropagation = true;
+			stopsPropagation = true;            
         }
         
         /** Prevents any other listeners from receiving the event. */
         public function stopImmediatePropagation():void
         {
-            mStopsPropagation = mStopsImmediatePropagation = true;
+//            mStopsPropagation = mStopsImmediatePropagation = true;
+			stopsPropagation = stopsImmediatePropagation = true;
         }
         
         /** Returns a description of the event, containing type and bubble information. */
         public function toString():String
         {
-            return formatString("[{0} type=\"{1}\" bubbles={2}]", 
-                getQualifiedClassName(this).split("::").pop(), mType, mBubbles);
+//            return formatString("[{0} type=\"{1}\" bubbles={2}]", getQualifiedClassName(this).split("::").pop(), mType, mBubbles);
+			return formatString("[{0} type=\"{1}\" bubbles={2}]", getQualifiedClassName(this).split("::").pop(), type, bubbles);
         }
         
+        public var target:EventDispatcher;
+        public var currentTarget:EventDispatcher;
+        public var type:String;
+        public var bubbles:Boolean;
+        public var stopsPropagation:Boolean;
+        public var stopsImmediatePropagation:Boolean;
+        public var data:Object;
+
+		
         /** Indicates if event will bubble. */
-        public function get bubbles():Boolean { return mBubbles; }
-        
-        /** The object that dispatched the event. */
-        public function get target():EventDispatcher { return mTarget; }
-        
-        /** The object the event is currently bubbling at. */
-        public function get currentTarget():EventDispatcher { return mCurrentTarget; }
-        
-        /** A string that identifies the event. */
-        public function get type():String { return mType; }
-        
-        /** Arbitrary data that is attached to the event. */
-        public function get data():Object { return mData; }
-        
-        // properties for internal use
-        
-        /** @private */
-        internal function setTarget(value:EventDispatcher):void { mTarget = value; }
-        
-        /** @private */
-        internal function setCurrentTarget(value:EventDispatcher):void { mCurrentTarget = value; } 
-        
-        /** @private */
-        internal function setData(value:Object):void { mData = value; }
-        
-        /** @private */
-        internal function get stopsPropagation():Boolean { return mStopsPropagation; }
-        
-        /** @private */
-        internal function get stopsImmediatePropagation():Boolean { return mStopsImmediatePropagation; }
+//        final public function get bubbles():Boolean { return mBubbles; }
+//        
+//        /** The object that dispatched the event. */
+//        final public function get target():EventDispatcher { return mTarget; }
+//        
+//        /** The object the event is currently bubbling at. */
+//        final public function get currentTarget():EventDispatcher { return mCurrentTarget; }
+//        
+//        /** A string that identifies the event. */
+//        final public function get type():String { return mType; }
+//        
+//        /** Arbitrary data that is attached to the event. */
+//        final public function get data():Object { return mData; }
+//        
+//        // properties for internal use
+//        
+//        /** @private */
+//        final internal function setTarget(value:EventDispatcher):void { mTarget = value; }
+//        
+//        /** @private */
+//        final internal function setCurrentTarget(value:EventDispatcher):void { mCurrentTarget = value; } 
+//        
+//        /** @private */
+//        final internal function setData(value:Object):void { mData = value; }
+//        
+//        /** @private */
+//        final internal function get stopsPropagation():Boolean { return mStopsPropagation; }
+//        
+//        /** @private */
+//        final internal function get stopsImmediatePropagation():Boolean { return mStopsImmediatePropagation; }
         
         // event pooling
         
@@ -172,18 +172,26 @@ package starling.events
         /** @private */
         starling_internal static function toPool(event:Event):void
         {
-            event.mData = event.mTarget = event.mCurrentTarget = null;
-            sEventPool[sEventPool.length] = event; // avoiding 'push'
+//            event.mData = event.mTarget = event.mCurrentTarget = null;
+			event.data = event.target = event.currentTarget = null;
+            sEventPool[sEventPool.length] = event;
         }
         
         /** @private */
         starling_internal function reset(type:String, bubbles:Boolean=false, data:Object=null):Event
         {
-            mType = type;
-            mBubbles = bubbles;
-            mData = data;
-            mTarget = mCurrentTarget = null;
-            mStopsPropagation = mStopsImmediatePropagation = false;
+//            mType = type;
+//            mBubbles = bubbles;
+//            mData = data;
+//            mTarget = mCurrentTarget = null;
+//            mStopsPropagation = mStopsImmediatePropagation = false;
+			
+            this.type = type;
+            this.bubbles = bubbles;
+            this.data = data;
+            this.target = this.currentTarget = null;
+            this.stopsPropagation = this.stopsImmediatePropagation = false;
+			
             return this;
         }
     }

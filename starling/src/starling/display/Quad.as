@@ -84,7 +84,7 @@ package starling.display
                 mVertexData.getPosition(3, sHelperPoint);
                 resultRect.setTo(0.0, 0.0, sHelperPoint.x, sHelperPoint.y);
             }
-            else if (targetSpace == mParent && rotation == 0.0) // optimization
+            else if (targetSpace == parent && rotation == 0.0) // optimization
             {
                 var scaleX:Number = this.mScaleX;
                 var scaleY:Number = this.mScaleY;

@@ -142,19 +142,13 @@ package starling.display
         private var mRotation:Number = 0.0;
         public var mAlpha:Number;
         private var mVisible:Boolean;
-        public var mTouchable:Boolean;
-        public var mBlendMode:String;
-        private var mName:String;
-        private var mUseHandCursor:Boolean = false;
-        public var mParent:DisplayObjectContainer;  
+        protected var mUseHandCursor:Boolean = false;
         private var mTransformationMatrix:Matrix;
         private var mTransformationMatrix3D:Matrix3D;
         private var mOrientationChanged:Boolean = false;
-        public var mFilter:FragmentFilter;
-        private var mIs3D:Boolean;
         public var mMask:DisplayObject;
-        private var mIsMask:Boolean;
-        
+        internal var mIsMask:Boolean;
+		
         /** Helper objects. */
         private static const sAncestors:Vector.<DisplayObject> = new <DisplayObject>[];
         private static const sHelperPoint:Point = new Point();
@@ -168,27 +162,17 @@ package starling.display
         /** @private */ 
         public function DisplayObject()
         {
-//			CONFIG::DEBUG
-//			{			
-//	            if (getQualifiedClassName(this) == "starling.display::DisplayObject")
-//	            {
-//	                throw new AbstractClassError();
-//	            }
-//			}		
-						
-//            mX = mY = mPivotX = mPivotY = mRotation = mSkewX = mSkewY = 0.0;
             mScaleX = mScaleY = mAlpha = 1.0;            
-            mVisible = mTouchable = true;
-            mBlendMode = BlendMode.AUTO;
+            mVisible = touchable = true;
+            blendMode = BlendMode.AUTO;
             mTransformationMatrix = new Matrix();
-//            mOrientationChanged = mUseHandCursor = false;
         }
         
         /** Disposes all resources of the display object. 
           * GPU buffers are released, event listeners are removed, filters and masks are disposed. */
         public function dispose():void
         {
-            if (mFilter) mFilter.dispose();
+            if (filter) filter.dispose();
             if (mMask) mMask.dispose();
             removeEventListeners();
             mask = null; // revert 'isMask' property, just to be sure.
@@ -197,7 +181,7 @@ package starling.display
         /** Removes the object from its parent, if it has one, and optionally disposes it. */
         public function removeFromParent(dispose:Boolean=false):void
         {
-            if (mParent) mParent.removeChild(this, dispose);
+            if (parent) parent.removeChild(this, dispose);
             else if (dispose) this.dispose();
         }
         
@@ -217,7 +201,7 @@ package starling.display
             {
                 return resultMatrix;
             }
-            else if (targetSpace == mParent || (targetSpace == null && mParent == null))
+            else if (targetSpace == parent || (targetSpace == null && parent == null))
             {
                 resultMatrix.copyFrom(transformationMatrix);
                 return resultMatrix;
@@ -231,12 +215,12 @@ package starling.display
                 while (currentObject != targetSpace)
                 {
                     resultMatrix.concat(currentObject.transformationMatrix);
-                    currentObject = currentObject.mParent;
+                    currentObject = currentObject.parent;
                 }
                 
                 return resultMatrix;
             }
-            else if (targetSpace.mParent == this) // optimization
+            else if (targetSpace.parent == this) // optimization
             {
                 targetSpace.getTransformationMatrix(this, resultMatrix);
                 resultMatrix.invert();
@@ -254,7 +238,7 @@ package starling.display
             while (currentObject != commonParent)
             {
                 resultMatrix.concat(currentObject.transformationMatrix);
-                currentObject = currentObject.mParent;
+                currentObject = currentObject.parent;
             }
             
             if (commonParent == targetSpace)
@@ -267,7 +251,7 @@ package starling.display
             while (currentObject != commonParent)
             {
                 sHelperMatrix.concat(currentObject.transformationMatrix);
-                currentObject = currentObject.mParent;
+                currentObject = currentObject.parent;
             }
             
             // 4. now combine the two matrices
@@ -292,7 +276,7 @@ package starling.display
         public function hitTest(localPoint:Point, forTouch:Boolean=false):DisplayObject
         {
             // on a touch test, invisible or untouchable objects cause the test to fail
-            if (forTouch && (!mVisible || !mTouchable)) return null;
+            if (forTouch && (!mVisible || !touchable)) return null;
 
             // if we've got a mask and the hit occurs outside, fail
             if (mMask && !hitTestMask(localPoint)) return null;
@@ -412,7 +396,7 @@ package starling.display
             {
                 return resultMatrix;
             }
-            else if (targetSpace == mParent || (targetSpace == null && mParent == null))
+            else if (targetSpace == parent || (targetSpace == null && parent == null))
             {
                 resultMatrix.copyFrom(transformationMatrix3D);
                 return resultMatrix;
@@ -426,12 +410,12 @@ package starling.display
                 while (currentObject != targetSpace)
                 {
                     resultMatrix.append(currentObject.transformationMatrix3D);
-                    currentObject = currentObject.mParent;
+                    currentObject = currentObject.parent;
                 }
 
                 return resultMatrix;
             }
-            else if (targetSpace.mParent == this) // optimization
+            else if (targetSpace.parent == this) // optimization
             {
                 targetSpace.getTransformationMatrix3D(this, resultMatrix);
                 resultMatrix.invert();
@@ -449,7 +433,7 @@ package starling.display
             while (currentObject != commonParent)
             {
                 resultMatrix.append(currentObject.transformationMatrix3D);
-                currentObject = currentObject.mParent;
+                currentObject = currentObject.parent;
             }
 
             if (commonParent == targetSpace)
@@ -462,7 +446,7 @@ package starling.display
             while (currentObject != commonParent)
             {
                 sHelperMatrix3D.append(currentObject.transformationMatrix3D);
-                currentObject = currentObject.mParent;
+                currentObject = currentObject.parent;
             }
 
             // 4. now combine the two matrices
@@ -511,26 +495,30 @@ package starling.display
             // check for a recursion
             var ancestor:DisplayObject = value;
             while (ancestor != this && ancestor != null)
-                ancestor = ancestor.mParent;
+                ancestor = ancestor.parent;
             
             if (ancestor == this)
                 throw new ArgumentError("An object cannot be added as a child to itself or one " +
                                         "of its children (or children's children, etc.)");
             else
-                mParent = value; 
+                parent = value; 
         }
         
-        /** @private */
-        internal function setIs3D(value:Boolean):void
-        {
-            mIs3D = value;
-        }
+        public var is3D:Boolean;
+//        /** @private */
+//        internal function setIs3D(value:Boolean):void
+//        {
+//            mIs3D = value;
+//        }
+//
+//        /** Indicates if this object or any of its parents is a 'Sprite3D' object. */
+//        public function get is3D():Boolean { return mIs3D; }
 
         /** @private */
-        internal function get isMask():Boolean
-        {
-            return mIsMask;
-        }
+//        internal function get isMask():Boolean
+//        {
+//            return mIsMask;
+//        }
 
         // helpers
         
@@ -547,12 +535,12 @@ package starling.display
             while (currentObject)
             {
                 sAncestors[sAncestors.length] = currentObject; // avoiding 'push'
-                currentObject = currentObject.mParent;
+                currentObject = currentObject.parent;
             }
 
             currentObject = object2;
             while (currentObject && sAncestors.indexOf(currentObject) == -1)
-                currentObject = currentObject.mParent;
+                currentObject = currentObject.parent;
 
             sAncestors.length = 0;
 
@@ -640,7 +628,6 @@ package starling.display
          *  <p>CAUTION: not a copy, but the actual object!</p> */
         public function get transformationMatrix():Matrix
         {
-			
             if (mOrientationChanged)
             {
                 mOrientationChanged = false;
@@ -741,12 +728,9 @@ package starling.display
             return MatrixUtil.convertTo3D(transformationMatrix, mTransformationMatrix3D);
         }
 
-        /** Indicates if this object or any of its parents is a 'Sprite3D' object. */
-        public function get is3D():Boolean { return mIs3D; }
-
         /** Indicates if the mouse cursor should transform into a hand while it's over the sprite. 
          *  @default false */
-        public function get useHandCursor():Boolean { return mUseHandCursor; }
+        final public function get useHandCursor():Boolean { return mUseHandCursor; }
         public function set useHandCursor(value:Boolean):void
         {
             if (value == mUseHandCursor) return;
@@ -766,13 +750,13 @@ package starling.display
         /** The bounds of the object relative to the local coordinates of the parent. */
         public function get bounds():Rectangle
         {
-            return getBounds(mParent);
+            return getBounds(parent);
         }
         
         /** The width of the object in pixels.
          *  Note that for objects in a 3D space (connected to a Sprite3D), this value might not
          *  be accurate until the object is part of the display list. */
-        public function get width():Number { return getBounds(mParent, sHelperRect).width; }
+        public function get width():Number { return getBounds(parent, sHelperRect).width; }
         public function set width(value:Number):void
         {
             // this method calls 'this.scaleX' instead of changing mScaleX directly.
@@ -786,7 +770,7 @@ package starling.display
         /** The height of the object in pixels.
          *  Note that for objects in a 3D space (connected to a Sprite3D), this value might not
          *  be accurate until the object is part of the display list. */
-        public function get height():Number { return getBounds(mParent, sHelperRect).height; }
+        public function get height():Number { return getBounds(parent, sHelperRect).height; }
         public function set height(value:Number):void
         {
             scaleY = 1.0;
@@ -912,40 +896,39 @@ package starling.display
         public function get visible():Boolean { return mVisible; }
         public function set visible(value:Boolean):void { mVisible = value; }
         
-        /** Indicates if this object (and its children) will receive touch events. */
-        final public function get touchable():Boolean { return mTouchable; }
-        final public function set touchable(value:Boolean):void { mTouchable = value; }
+		public var touchable:Boolean;
+//        /** Indicates if this object (and its children) will receive touch events. */
+//        final public function get touchable():Boolean { return mTouchable; }
+//        final public function set touchable(value:Boolean):void { mTouchable = value; }
         
-        /** The blend mode determines how the object is blended with the objects underneath. 
-         *   @default auto
-         *   @see starling.display.BlendMode */ 
-        final public function get blendMode():String { return mBlendMode; }
-        public function set blendMode(value:String):void { mBlendMode = value; }
+        public var blendMode:String;
+//        /** The blend mode determines how the object is blended with the objects underneath. 
+//         *   @default auto
+//         *   @see starling.display.BlendMode */ 
+//        final public function get blendMode():String { return mBlendMode; }
+//        final public function set blendMode(value:String):void { mBlendMode = value; }
         
-        /** The name of the display object (default: null). Used by 'getChildByName()' of 
-         *  display object containers. */
-        public function get name():String { return mName; }
-        public function set name(value:String):void { mName = value; } 
+        public var name:String;
+//        /** The name of the display object (default: null). Used by 'getChildByName()' of 
+//         *  display object containers. */
+//        final public function get name():String { return mName; }
+//        final public function set name(value:String):void { mName = value; } 
         
-        /** The filter that is attached to the display object. The starling.filters
-         *  package contains several classes that define specific filters you can use. 
-         *  Beware that a filter should NOT be attached to different objects simultaneously (for
-         *  performance reasons). Furthermore, when you set this property to 'null' or
-         *  assign a different filter, the previous filter is NOT disposed automatically
-         *  (since you might want to reuse it). */
-
-		
-        final public function get filter():FragmentFilter 
-		{			
-//			return mIgnoreFilters ? null : mFilter;
-			return mFilter;
-		}
-		
-        public function set filter(value:FragmentFilter):void 
-		{ 
-//			mFilter = mIgnoreFilters ? null : value;
-			mFilter = value;
-		}
+        public var filter:FragmentFilter;
+//        /** The filter that is attached to the display object. The starling.filters
+//         *  package contains several classes that define specific filters you can use. 
+//         *  Beware that a filter should NOT be attached to different objects simultaneously (for
+//         *  performance reasons). Furthermore, when you set this property to 'null' or
+//         *  assign a different filter, the previous filter is NOT disposed automatically
+//         *  (since you might want to reuse it). */
+//        final public function get filter():FragmentFilter 
+//		{			
+//			return mFilter;
+//		}
+//        final public function set filter(value:FragmentFilter):void 
+//		{ 
+//			mFilter = value;
+//		}
  
 
         /** The display object that acts as a mask for the current object.
@@ -980,15 +963,15 @@ package starling.display
             }
         }
 
-
-        /** The display object container that contains this display object. */
-        final public function get parent():DisplayObjectContainer { return mParent; }
+        public var parent:DisplayObjectContainer;  
+//        /** The display object container that contains this display object. */
+//        final public function get parent():DisplayObjectContainer { return mParent; }
         
         /** The topmost object in the display tree the object is part of. */
         public function get base():DisplayObject
         {
             var currentObject:DisplayObject = this;
-            while (currentObject.mParent) currentObject = currentObject.mParent;
+            while (currentObject.parent) currentObject = currentObject.parent;
             return currentObject;
         }
         
@@ -998,10 +981,10 @@ package starling.display
         public function get root():DisplayObject
         {
             var currentObject:DisplayObject = this;
-            while (currentObject.mParent)
+            while (currentObject.parent)
             {
-                if (currentObject.mParent is Stage) return currentObject;
-                else currentObject = currentObject.mParent;
+                if (currentObject.parent is Stage) return currentObject;
+                else currentObject = currentObject.parent;
             }
             
             return null;

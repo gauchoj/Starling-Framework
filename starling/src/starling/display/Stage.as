@@ -57,10 +57,6 @@ package starling.display
      */
     public class Stage extends DisplayObjectContainer
     {
-        private var mWidth:int;
-        private var mHeight:int;
-        private var mColor:uint;
-        private var mFieldOfView:Number;
         private var mProjectionOffset:Point;
         private var mCameraPosition:Vector3D;
         private var mEnterFrameEvent:EnterFrameEvent;
@@ -72,10 +68,10 @@ package starling.display
         /** @private */
         public function Stage(width:int, height:int, color:uint=0)
         {
-            mWidth = width;
-            mHeight = height;
-            mColor = color;
-            mFieldOfView = 1.0;
+            this.stageWidth = width;
+            this.stageHeight = height;
+            this.color = color;
+            this.fieldOfView = 1.0;
             mProjectionOffset = new Point();
             mCameraPosition = new Vector3D();
             mEnterFrameEvent = new EnterFrameEvent(Event.ENTER_FRAME, 0.0);
@@ -93,12 +89,12 @@ package starling.display
          *  the stage itself if nothing else is found. */
         public override function hitTest(localPoint:Point, forTouch:Boolean=false):DisplayObject
         {
-            if (forTouch && (!visible || !mTouchable))
+            if (forTouch && (!visible || !touchable))
                 return null;
             
             // locations outside of the stage area shouldn't be accepted
-            if (localPoint.x < 0 || localPoint.x > mWidth ||
-                localPoint.y < 0 || localPoint.y > mHeight)
+            if (localPoint.x < 0 || localPoint.x > stageWidth ||
+                localPoint.y < 0 || localPoint.y > stageHeight)
                 return null;
             
             // if nothing else is hit, the stage returns itself as target
@@ -134,10 +130,10 @@ package starling.display
             }
             
             support.renderTarget = null;
-            support.setProjectionMatrix(0, 0, mWidth, mHeight, mWidth, mHeight, cameraPosition);
+            support.setProjectionMatrix(0, 0, stageWidth, stageHeight, stageWidth, stageHeight, cameraPosition);
             
             if (transparent) support.clear();
-            else             support.clear(mColor, 1);
+            else             support.clear(color, 1);
             
             render(support, 1.0);
             support.finishQuadBatch();
@@ -161,7 +157,7 @@ package starling.display
             getTransformationMatrix3D(space, sHelperMatrix);
 
             return MatrixUtil.transformCoords3D(sHelperMatrix,
-                mWidth / 2 + mProjectionOffset.x, mHeight / 2 + mProjectionOffset.y,
+                stageWidth / 2 + mProjectionOffset.x, stageHeight / 2 + mProjectionOffset.y,
                -focalLength, result);
         }
 
@@ -250,49 +246,53 @@ package starling.display
         }
         
         /** @private */
-        public override function set filter(value:FragmentFilter):void
-        {
-            throw new IllegalOperationError("Cannot add filter to stage. Add it to 'root' instead!");
-        }
+//        public override function set filter(value:FragmentFilter):void
+//        {
+//            throw new IllegalOperationError("Cannot add filter to stage. Add it to 'root' instead!");
+//        }
+
+        public var color:uint;
+//        /** The background color of the stage. */
+//        final public function get color():uint { return mColor; }
+//        final public function set color(value:uint):void { mColor = value; }
         
-        /** The background color of the stage. */
-        public function get color():uint { return mColor; }
-        public function set color(value:uint):void { mColor = value; }
-        
+        public var stageWidth:int;
         /** The width of the stage coordinate system. Change it to scale its contents relative
          *  to the <code>viewPort</code> property of the Starling object. */ 
-        public function get stageWidth():int { return mWidth; }
-        public function set stageWidth(value:int):void { mWidth = value; }
+//        final public function get stageWidth():int { return mWidth; }
+//        final public function set stageWidth(value:int):void { mWidth = value; }
         
+        public var stageHeight:int;
         /** The height of the stage coordinate system. Change it to scale its contents relative
          *  to the <code>viewPort</code> property of the Starling object. */
-        public function get stageHeight():int { return mHeight; }
-        public function set stageHeight(value:int):void { mHeight = value; }
+//        final public function get stageHeight():int { return mHeight; }
+//        final public function set stageHeight(value:int):void { mHeight = value; }
 
         /** The distance between the stage and the camera. Changing this value will update the
          *  field of view accordingly. */
         public function get focalLength():Number
         {
-            return mWidth / (2 * Math.tan(mFieldOfView/2));
+            return stageWidth / (2 * Math.tan(fieldOfView/2));
         }
 
         public function set focalLength(value:Number):void
         {
-            mFieldOfView = 2 * Math.atan(stageWidth / (2*value));
+            fieldOfView = 2 * Math.atan(stageWidth / (2*value));
         }
 
-        /** Specifies an angle (radian, between zero and PI) for the field of view. This value
-         *  determines how strong the perspective transformation and distortion apply to a Sprite3D
-         *  object.
-         *
-         *  <p>A value close to zero will look similar to an orthographic projection; a value
-         *  close to PI results in a fisheye lens effect. If the field of view is set to 0 or PI,
-         *  nothing is seen on the screen.</p>
-         *
-         *  @default 1.0
-         */
-        public function get fieldOfView():Number { return mFieldOfView; }
-        public function set fieldOfView(value:Number):void { mFieldOfView = value; }
+        public var fieldOfView:Number;
+//        /** Specifies an angle (radian, between zero and PI) for the field of view. This value
+//         *  determines how strong the perspective transformation and distortion apply to a Sprite3D
+//         *  object.
+//         *
+//         *  <p>A value close to zero will look similar to an orthographic projection; a value
+//         *  close to PI results in a fisheye lens effect. If the field of view is set to 0 or PI,
+//         *  nothing is seen on the screen.</p>
+//         *
+//         *  @default 1.0
+//         */
+//        final public function get fieldOfView():Number { return mFieldOfView; }
+//        final public function set fieldOfView(value:Number):void { mFieldOfView = value; }
 
         /** A vector that moves the camera away from its default position in the center of the
          *  stage. Use this property to change the center of projection, i.e. the vanishing

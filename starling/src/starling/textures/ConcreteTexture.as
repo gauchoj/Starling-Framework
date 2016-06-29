@@ -182,8 +182,7 @@ package starling.textures
             var isAsync:Boolean = async is Function || async === true;
             var potTexture:flash.display3D.textures.Texture = mBase as flash.display3D.textures.Texture;
             
-            if (potTexture == null)
-                throw new Error("This texture type does not support ATF data");
+            if (potTexture == null) throw new Error("This texture type does not support ATF data");
             
             if (async is Function)
             {

@@ -496,11 +496,6 @@ package starling.textures
         public static function empty(name: String, width:Number, height:Number, premultipliedAlpha:Boolean=true, //mipMapping:Boolean=false, 
         	optimizeForRenderToTexture:Boolean=false, scale:Number=-1, format:String="bgra", repeat:Boolean=false):Texture
         {
-//			CONFIG::DEBUG
-//			{
-//				if (mipMapping) throw new Error("mipMapping="+ true);
-//			}	
-			
             if (scale <= 0) scale = Starling.contentScaleFactor;
 
             var actualWidth:int, actualHeight:int;
@@ -512,9 +507,6 @@ package starling.textures
             var origWidth:Number  = width  * scale;
             var origHeight:Number = height * scale;
 			
-//            var useRectTexture:Boolean = !mipMapping && !repeat &&
-//                Starling.current.profile != "baselineConstrained" &&
-//                "createRectangleTexture" in context && format.indexOf("compressed") == -1;
             var useRectTexture:Boolean = !repeat &&
                 Starling.current.profile != "baselineConstrained" &&
                 "createRectangleTexture" in context && format.indexOf("compressed") == -1;
@@ -542,7 +534,6 @@ package starling.textures
 				format,
                 actualWidth,
 				actualHeight,
-//				mipMapping,
 				premultipliedAlpha,
                 optimizeForRenderToTexture, 
 				scale,

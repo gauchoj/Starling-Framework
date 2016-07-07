@@ -167,6 +167,9 @@ package starling.display
             blendMode = BlendMode.AUTO;
             mTransformationMatrix = new Matrix();
         }
+		
+		//TODO to review
+		public var disposed:Boolean = false;
         
         /** Disposes all resources of the display object. 
           * GPU buffers are released, event listeners are removed, filters and masks are disposed. */
@@ -176,6 +179,9 @@ package starling.display
             if (mMask) mMask.dispose();
             removeEventListeners();
             mask = null; // revert 'isMask' property, just to be sure.
+			
+			//TODO to review
+			disposed = true; 
         }
         
         /** Removes the object from its parent, if it has one, and optionally disposes it. */

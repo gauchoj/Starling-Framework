@@ -25,8 +25,6 @@ package starling.text
 	import starling.utils.VAlign;
 	import starling.utils.deg2rad;
 
-	import com.assukar.airong.utils.Utils;
-
 	import flash.display.BitmapData;
 	import flash.display.StageQuality;
 	import flash.display3D.Context3DTextureFormat;
@@ -190,7 +188,7 @@ package starling.text
         // TrueType font rendering
         
 		private var texture:Texture,
-            scale:Number,
+            scalee:Number,
             bitmapData:BitmapData,
             format:String,
             maxTextureSize:int,
@@ -206,8 +204,8 @@ package starling.text
             
             if (!mTextBounds) mTextBounds = new Rectangle();
             
-            scale = Starling.contentScaleFactor;
-            bitmapData = renderText(scale, mTextBounds);
+            scalee = Starling.contentScaleFactor;
+            bitmapData = renderText(scalee, mTextBounds);
             format = sDefaultTextureFormat;
             maxTextureSize = Texture.maxSize;
             shrinkHelper = 0;
@@ -215,25 +213,25 @@ package starling.text
             // re-render when size of rendered bitmap overflows 'maxTextureSize'
             while (bitmapData.width > maxTextureSize || bitmapData.height > maxTextureSize)
             {
-                scale *= Math.min(
+                scalee *= Math.min(
                     (maxTextureSize - shrinkHelper) / bitmapData.width,
                     (maxTextureSize - shrinkHelper) / bitmapData.height
                 );
                 bitmapData.dispose();
-                bitmapData = renderText(scale, mTextBounds);
+                bitmapData = renderText(scalee, mTextBounds);
                 shrinkHelper += 1;
             }
 
-            mHitArea.width  = bitmapData.width  / scale;
-            mHitArea.height = bitmapData.height / scale;
+            mHitArea.width  = bitmapData.width  / scalee;
+            mHitArea.height = bitmapData.height / scalee;
             
             texture = Texture.fromBitmapData("tf:" + mText, bitmapData, false, //false, 
-				scale, format);
+				scalee, format);
 			
             texture.root.onRestore = function():void
             {
                 if (mTextBounds == null) mTextBounds = new Rectangle();
-                bitmapData = renderText(scale, mTextBounds);
+                bitmapData = renderText(scalee, mTextBounds);
                 texture.root.uploadBitmapData(bitmapData);
                 bitmapData.dispose();
                 bitmapData = null;

@@ -12,7 +12,6 @@ package starling.display
 {
 	import starling.core.RenderSupport;
 	import starling.core.Starling;
-	import starling.errors.AbstractClassError;
 	import starling.errors.AbstractMethodError;
 	import starling.events.Event;
 	import starling.events.EventDispatcher;
@@ -29,10 +28,8 @@ package starling.display
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
 	import flash.geom.Vector3D;
-	import flash.system.Capabilities;
 	import flash.ui.Mouse;
 	import flash.ui.MouseCursor;
-	import flash.utils.getQualifiedClassName;
     
     /** Dispatched when an object is added to a parent. */
     [Event(name="added", type="starling.events.Event")]

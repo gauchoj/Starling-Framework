@@ -165,7 +165,6 @@ package starling.display
             mTransformationMatrix = new Matrix();
         }
 		
-		//TODO to review
 		public var disposed:Boolean = false;
         
         /** Disposes all resources of the display object. 
@@ -177,7 +176,6 @@ package starling.display
             removeEventListeners();
             mask = null; // revert 'isMask' property, just to be sure.
 			
-			//TODO to review
 			disposed = true; 
         }
         

@@ -474,6 +474,8 @@ package starling.core
 
         public function nextFrame():void
         {
+			starlingScaleFactorr = 0.0;
+			
             var now:Number = getTimer() / 1000.0;
 			var passedTime:Number = now - mLastFrameTimestamp;
             mLastFrameTimestamp = now;
@@ -1184,6 +1186,13 @@ package starling.core
         {
             return sCurrent ? sCurrent.contentScaleFactor : 1.0;
         }
+		
+		static private var starlingScaleFactorr:Number = 0;
+		public static function get starlingScaleFactor(): Number
+		{
+			if (!starlingScaleFactorr) starlingScaleFactorr = Number(Starling.contentScaleFactor.toFixed(2));
+			return starlingScaleFactorr;
+		}
         
         /** Indicates if multitouch input should be supported. */
         public static function get multitouchEnabled():Boolean 

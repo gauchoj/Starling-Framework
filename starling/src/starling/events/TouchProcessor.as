@@ -193,8 +193,7 @@ package starling.events
         
         /** Enqueues a new touch our mouse event with the given properties. */
         public function enqueue(touchID:int, phase:String, globalX:Number, globalY:Number, pressure:Number = 1.0, width:Number = 1.0, height:Number = 1.0):void		
-        {
-			//TODO to review
+        {			
             //mQueue.unshift(arguments);
             mQueue.unshift([touchID, phase, globalX, globalY, pressure, width, height]); 	 		
             

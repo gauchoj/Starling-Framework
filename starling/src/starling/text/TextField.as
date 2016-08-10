@@ -103,7 +103,7 @@ package starling.text
         private var mVAlign:String;
         private var mBold:Boolean;
         private var mItalic:Boolean;
-        private var mUnderline:Boolean;
+        private var mUnderline:Boolean; 
         private var mAutoScale:Boolean;
         private var mAutoSize:String;
         private var mKerning:Boolean;

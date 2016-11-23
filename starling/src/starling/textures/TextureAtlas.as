@@ -199,7 +199,11 @@ package starling.textures
         public function addRegion(name:String, region:Rectangle, frame:Rectangle=null,
                                   rotated:Boolean=false):void
         {
-			if (textureHash[name]) Utils.logError(new AssukarError("duplicated texture:" + name), false);
+			if (textureHash[name])
+			{
+				Utils.log("texture name" + name);
+				Utils.logError(new AssukarError("duplicated texture"), false);//:" + name), false);
+			}
 			
             textureHash[name] = mSubTextures[name] = new SubTexture(mAtlasTexture, region, false, frame, rotated);
             mSubTextureNames = null;

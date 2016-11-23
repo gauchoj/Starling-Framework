@@ -234,10 +234,12 @@ package starling.display
 		/** Swaps the indexes of two children. */
 		public function swapChildren(child1:DisplayObject, child2:DisplayObject):void
 		{
-			var index1:int = mChildren.indexOf(child1);//getChildIndex(child1);
-			var index2:int = mChildren.indexOf(child2);//getChildIndex(child2);
-			if (index1 == -1 || index2 == -1)
-				throw new ArgumentError("Not a child of this container");
+			var index1:int = mChildren.indexOf(child1);
+			if (index1 == -1) throw new ArgumentError(child1 + " not a child of this container");
+			
+			var index2:int = mChildren.indexOf(child2);
+			if (index2 == -1) throw new ArgumentError(child2 + " not a child of this container");
+			
 			swapChildrenAt(index1, index2);
 		}
 		

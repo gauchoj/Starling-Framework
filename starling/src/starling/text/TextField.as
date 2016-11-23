@@ -10,6 +10,7 @@
 
 package starling.text
 {
+	import com.assukar.view.starling.activation.ActivationController;
 	import starling.core.RenderSupport;
 	import starling.core.Starling;
 	import starling.display.DisplayObject;

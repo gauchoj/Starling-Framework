@@ -188,28 +188,32 @@ package starling.display
 				removeChildAt(beginIndex, dispose);
 		}
 		
+		public function hideChildren(): void
+		{
+			for (var i:int = mChildren.length-1; i >= 0; i--) mChildren[i].visible = false;
+		}
+		
+		public function showChildren(): void
+		{
+			for (var i:int = mChildren.length-1; i >= 0; i--) mChildren[i].visible = true;
+		}
+		
 		/** Returns a child object at a certain index. If you pass a negative index,
 		 *  '-1' will return the last child, '-2' the second to last child, etc. */
 		public function getChildAt(index:int):DisplayObject
 		{
 			var numChildren:int = mChildren.length;
 			
-			if (index < 0)
-				index = numChildren + index;
+			if (index < 0) index = numChildren + index;
 			
-			if (index >= 0 && index < numChildren)
-				return mChildren[index];
-			else
-				throw new RangeError("Invalid child index");
+			if (index >= 0 && index < numChildren) return mChildren[index];
+			else throw new RangeError("Invalid child index");
 		}
 		
 		/** Returns a child object with a certain name (non-recursively). */
 		public function getChildByName(name:String):DisplayObject
 		{
-//			var numChildren:int = mChildren.length;
-			for (var i:int = mChildren.length-1; i >= 0; i--)//< numChildren; ++i)
-				if (mChildren[i].name == name) return mChildren[i];
-			
+			for (var i:int = mChildren.length-1; i >= 0; i--) if (mChildren[i].name == name) return mChildren[i];
 			return null;
 		}
 		

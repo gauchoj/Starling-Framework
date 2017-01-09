@@ -141,6 +141,7 @@ package starling.text
             mAutoSize = TextFieldAutoSize.NONE;
             mHitArea = new Rectangle(0, 0, width, height);
             this.fontName = fontName;
+            //mFontName = fontName;
             
             addEventListener(Event.FLATTEN, onFlatten);
         }
@@ -584,7 +585,7 @@ package starling.text
         }
         
         /** The name of the font (true type or bitmap font). */
-//        final public function get fontName():String { return mFontName; }
+        final public function get fontName():String { return mFontName; }
         public function set fontName(value:String):void
         {
             if (mFontName != value)

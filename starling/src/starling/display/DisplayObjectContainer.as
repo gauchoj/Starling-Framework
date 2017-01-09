@@ -349,7 +349,7 @@ package starling.display
 				target = child.hitTest(sHelperPoint, forTouch);
 				
 				if (target)
-					return forTouch && touchGroup ? this : target;
+					return forTouch && mTouchGroup ? this : target;
 			}
 			
 			return null;
@@ -429,19 +429,20 @@ package starling.display
 			return mChildren.length;
 		}
 
-		public var touchGroup:Boolean;
+		//public var touchGroup:Boolean;
+		private var mTouchGroup:Boolean;
 //		/** If a container is a 'touchGroup', it will act as a single touchable object.
 //		 *  Touch events will have the container as target, not the touched child.
 //		 *  (Similar to 'mouseChildren' in the classic display list, but with inverted logic.)
 //		 *  @default false */
-//		final public function get touchGroup():Boolean
-//		{
-//			return mTouchGroup;
-//		}
-//		final public function set touchGroup(value:Boolean):void
-//		{
-//			mTouchGroup = value;
-//		}
+		final public function get touchGroup():Boolean
+		{
+			return mTouchGroup;
+		}
+		public function set touchGroup(value:Boolean):void
+		{
+			mTouchGroup = value;
+		}
 		
 		// helpers
 		

@@ -160,8 +160,8 @@ package starling.display
         public function DisplayObject()
         {
             mScaleX = mScaleY = mAlpha = 1.0;            
-            mVisible = touchable = true;
-            blendMode = BlendMode.AUTO;
+            mVisible = mTouchable = true;
+            mBlendMode = BlendMode.AUTO;
             mTransformationMatrix = new Matrix();
         }
 		
@@ -277,7 +277,7 @@ package starling.display
         public function hitTest(localPoint:Point, forTouch:Boolean=false):DisplayObject
         {
             // on a touch test, invisible or untouchable objects cause the test to fail
-            if (forTouch && (!mVisible || !touchable)) return null;
+            if (forTouch && (!mVisible || !mTouchable)) return null;
 
             // if we've got a mask and the hit occurs outside, fail
             if (mMask && !hitTestMask(localPoint)) return null;
@@ -897,17 +897,19 @@ package starling.display
         public function get visible():Boolean { return mVisible; }
         public function set visible(value:Boolean):void { mVisible = value; }
         
-		public var touchable:Boolean;
+		//public var touchable:Boolean;
+		private var mTouchable:Boolean;
 //        /** Indicates if this object (and its children) will receive touch events. */
-//        final public function get touchable():Boolean { return mTouchable; }
-//        final public function set touchable(value:Boolean):void { mTouchable = value; }
+        final public function get touchable():Boolean { return mTouchable; }
+        public function set touchable(value:Boolean):void { mTouchable = value; }
         
-        public var blendMode:String;
+        //public var blendMode:String;
+        private var mBlendMode:String;
 //        /** The blend mode determines how the object is blended with the objects underneath. 
 //         *   @default auto
 //         *   @see starling.display.BlendMode */ 
-//        final public function get blendMode():String { return mBlendMode; }
-//        final public function set blendMode(value:String):void { mBlendMode = value; }
+        final public function get blendMode():String { return mBlendMode; }
+        public function set blendMode(value:String):void { mBlendMode = value; }
         
         public var name:String;
 //        /** The name of the display object (default: null). Used by 'getChildByName()' of 

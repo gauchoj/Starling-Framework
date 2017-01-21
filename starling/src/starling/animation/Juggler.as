@@ -154,6 +154,7 @@ package starling.animation
 		 *  reused.</p> */
 		public function delayCall(call:Function, delay:Number, ... args):DelayedCall
 		{
+			//if (!call) throw new Error("null call");
 			if (call == null) throw new Error("null call");
 			
 //			var delayedCall:DelayedCall = DelayedCall.starling_internal::fromPool(call, delay, args);
@@ -171,6 +172,7 @@ package starling.animation
 		 *  reused.</p> */
 		public function repeatCall(call:Function, interval:Number, repeatCount:int = 0, ... args):IAnimatable
 		{
+			//if (!call) throw new Error("null call");
 			if (call == null) throw new Error("null call");
 			
 //			var delayedCall:DelayedCall = DelayedCall.starling_internal::fromPool(call, interval, args);

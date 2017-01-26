@@ -1,7 +1,7 @@
 // =================================================================================================
 //
 //	Starling Framework
-//	Copyright 2011-2014 Gamua. All Rights Reserved.
+//	Copyright Gamua GmbH. All Rights Reserved.
 //
 //	This program is free software. You can redistribute and/or modify it
 //	in accordance with the terms of the accompanying license agreement.
@@ -330,9 +330,9 @@ package starling.text
 
                                 // remove characters and add them again to next line
                                 var numCharsToRemove:int = lastWhiteSpace == -1 ? 1 : i - lastWhiteSpace;
-                                var removeIndex:int = currentLine.length - numCharsToRemove;
-                                
-                                currentLine.splice(removeIndex, numCharsToRemove);
+
+                                for (var j:int=0; j<numCharsToRemove; ++j) // faster than 'splice'
+                                    currentLine.pop();
                                 
                                 if (currentLine.length == 0)
                                     break;

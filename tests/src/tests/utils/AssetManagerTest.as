@@ -1,7 +1,7 @@
 // =================================================================================================
 //
 //  Starling Framework
-//  Copyright 2011-2014 Gamua. All Rights Reserved.
+//  Copyright Gamua GmbH. All Rights Reserved.
 //
 //  This program is free software. You can redistribute and/or modify it
 //  in accordance with the terms of the accompanying license agreement.
@@ -231,9 +231,12 @@ package tests.utils
             
             manager.addTextureAtlas(NAME, atlas);
             assertStrictlyEquals(atlas, manager.getTextureAtlas(NAME));
+            assertEquals(1, manager.getTextureAtlasNames(NAME).length);
+            assertEquals(NAME, manager.getTextureAtlasNames(NAME)[0]);
             
             manager.removeTextureAtlas(NAME, false);// do not dispose, it holds no real texture
             assertNull(manager.getTextureAtlas(NAME));
+            assertEquals(0, manager.getTextureAtlasNames(NAME).length);
         }
         
         [Test]

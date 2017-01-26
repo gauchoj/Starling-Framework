@@ -1,7 +1,7 @@
 // =================================================================================================
 //
 //	Starling Framework
-//	Copyright 2011-2014 Gamua. All Rights Reserved.
+//	Copyright Gamua GmbH. All Rights Reserved.
 //
 //	This program is free software. You can redistribute and/or modify it
 //	in accordance with the terms of the accompanying license agreement.
@@ -266,6 +266,13 @@ package starling.text
          *  @param textFormat the default text format that's currently set on the text field.
          */
         protected function formatText(textField:flash.text.TextField, textFormat:TextFormat):void {}
+
+        /** Forces a redraw of the current contents right before the display object is rendered.
+         *  Useful especially in combination with the "formatText" method. */
+        protected final function requireRedraw():void
+        {
+        	mRequiresRedraw = true;
+        }
 
         private function renderText(scale:Number, resultTextBounds:Rectangle):BitmapData
         {

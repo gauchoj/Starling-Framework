@@ -1,7 +1,7 @@
 // =================================================================================================
 //
 //	Starling Framework
-//	Copyright 2011-2015 Gamua. All Rights Reserved.
+//	Copyright Gamua GmbH. All Rights Reserved.
 //
 //	This program is free software. You can redistribute and/or modify it
 //	in accordance with the terms of the accompanying license agreement.
@@ -24,7 +24,7 @@ package starling.utils
 
         /** Inserts a value into the 'int'-Vector at the specified index. Supports negative
          *  indices (counting from the end); gaps will be filled up with zeroes. */
-        public static function insertIntAt(vector:Vector.<int>, index:int, value:uint):void
+        public static function insertIntAt(vector:Vector.<int>, index:int, value:int):void
         {
             var i:int;
             var length:uint = vector.length;

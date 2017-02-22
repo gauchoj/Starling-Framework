@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module type="Flex" version="4">
+  <component name="FlexBuildConfigurationManager" active="starling">
+    <configurations>
+      <configuration name="starling" pure-as="true" output-type="RuntimeLoadedModule" output-file=".swf" skip-build="true">
+        <dependencies target-player="23.0">
+          <entries>
+            <entry library-id="3d9ebd5f-d682-4a32-a1b5-2937c6f705fd">
+              <dependency linkage="Merged" />
+            </entry>
+          </entries>
+          <sdk name="23.0.0.257" />
+        </dependencies>
+        <compiler-options>
+          <map>
+            <entry key="compiler.debug.swf" value="false" />
+          </map>
+        </compiler-options>
+        <packaging-air-desktop />
+        <packaging-android />
+        <packaging-ios />
+      </configuration>
+    </configurations>
+    <compiler-options />
+  </component>
+  <component name="NewModuleRootManager" inherit-compiler-output="true">
+    <exclude-output />
+    <content url="file://$MODULE_DIR$" />
+    <orderEntry type="jdk" jdkName="23.0.0.257" jdkType="Flex SDK Type (new)" />
+    <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="module-library" exported="">
+      <library type="flex">
+        <properties id="3d9ebd5f-d682-4a32-a1b5-2937c6f705fd" />
+        <CLASSES>
+          <root url="file://$MODULE_DIR$/../../../../Assukar/dev/client/airong/src" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+  </component>
+</module>

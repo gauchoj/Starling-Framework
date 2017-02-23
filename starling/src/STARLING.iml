@@ -6,7 +6,7 @@
         <dependencies target-player="23.0">
           <entries>
             <entry library-id="3d9ebd5f-d682-4a32-a1b5-2937c6f705fd">
-              <dependency linkage="Merged" />
+              <dependency linkage="External" />
             </entry>
           </entries>
           <sdk name="23.0.0.257" />
@@ -25,7 +25,9 @@
   </component>
   <component name="NewModuleRootManager" inherit-compiler-output="true">
     <exclude-output />
-    <content url="file://$MODULE_DIR$" />
+    <content url="file://$MODULE_DIR$">
+      <sourceFolder url="file://$MODULE_DIR$" isTestSource="false" />
+    </content>
     <orderEntry type="jdk" jdkName="23.0.0.257" jdkType="Flex SDK Type (new)" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module-library" exported="">

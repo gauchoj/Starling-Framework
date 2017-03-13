@@ -553,8 +553,8 @@ package starling.display
         
         public override function dispatchEvent(event:Event):void
         {
-            if (event.type == Event.REMOVED_FROM_STAGE && stage == null)
-                return; // special check to avoid double-dispatch of RfS-event.
+            if (event.type == Event.REMOVED_FROM_STAGE && stage == null) return;
+                 // special check to avoid double-dispatch of RfS-event.
             else
                 super.dispatchEvent(event);
         }

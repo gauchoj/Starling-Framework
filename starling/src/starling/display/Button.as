@@ -145,7 +145,7 @@ package starling.display
 
             if (!mEnabled)
             {
-                return;
+
             }
             else if (touch == null)
             {

@@ -451,8 +451,7 @@ package starling.display
 			// This is a port of the C++ merge sort algorithm shown here:
 			// http://www.cprogramming.com/tutorial/computersciencetheory/mergesort.html
 			
-			if (length <= 1)
-				return;
+			if (length <= 1) return;
 			else
 			{
 				var i:int = 0;

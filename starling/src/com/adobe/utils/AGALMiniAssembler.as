@@ -119,7 +119,7 @@ package com.adobe.utils
 			
 			for ( i = 0; i < lng && _error == ""; i++ )
 			{
-				var line:String = new String( lines[i] );
+				var line:String = String( lines[i] );
 				line = line.replace( REGEXP_OUTER_SPACES, "" );
 				
 				// remove comments

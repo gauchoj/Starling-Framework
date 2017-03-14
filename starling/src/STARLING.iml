@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module type="Flex" version="4">
-  <component name="FlexBuildConfigurationManager" active="starling">
+  <component name="FlexBuildConfigurationManager" active="[lib]">
     <configurations>
-      <configuration name="starling" pure-as="true" output-type="RuntimeLoadedModule" output-file=".swf" skip-build="true">
+      <configuration name="[lib]" pure-as="true" output-type="Library" output-file=".swc" skip-build="true">
         <dependencies target-player="23.0">
           <entries>
-            <entry library-id="3d9ebd5f-d682-4a32-a1b5-2937c6f705fd">
+            <entry module-name="ASSUKAR-AIRONG" build-configuration-name="[lib]">
               <dependency linkage="External" />
             </entry>
           </entries>
@@ -30,15 +30,6 @@
     </content>
     <orderEntry type="jdk" jdkName="23.0.0.257" jdkType="Flex SDK Type (new)" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module-library" exported="">
-      <library type="flex">
-        <properties id="3d9ebd5f-d682-4a32-a1b5-2937c6f705fd" />
-        <CLASSES>
-          <root url="file://$MODULE_DIR$/../../../../Assukar/dev/client/airong/src" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
+    <orderEntry type="module" module-name="ASSUKAR-AIRONG" exported="" />
   </component>
 </module>

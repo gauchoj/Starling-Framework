@@ -2,11 +2,11 @@
 <module type="Flex" version="4">
   <component name="FlexBuildConfigurationManager" active="[lib]">
     <configurations>
-      <configuration name="[lib]" pure-as="true" output-type="Library" output-file=".swc" skip-build="true">
+      <configuration name="[lib]" pure-as="true" output-type="Library" output-file="starling-lib.swc" output-folder="$MODULE_DIR$/../../../../Assukar/dev/client/libs/temp" skip-build="true">
         <dependencies target-player="23.0">
           <entries>
             <entry module-name="ASSUKAR-AIRONG" build-configuration-name="[lib]">
-              <dependency linkage="External" />
+              <dependency linkage="Include" />
             </entry>
           </entries>
           <sdk name="23.0.0.257" />

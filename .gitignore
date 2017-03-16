@@ -10,7 +10,6 @@ target/
 .FlexUnitSettings
 .idea/
 .project
-*.iml
 
 # OS X folders
 .DS_Store

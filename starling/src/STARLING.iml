@@ -3,13 +3,13 @@
   <component name="FlexBuildConfigurationManager" active="[lib]">
     <configurations>
       <configuration name="[lib]" pure-as="true" output-type="Library" output-file="starling-lib.swc" output-folder="$MODULE_DIR$/../../../dev/client/libs/temp" skip-build="true">
-        <dependencies target-player="25.0">
+        <dependencies target-player="23.0">
           <entries>
             <entry module-name="ASSUKAR-AIRONG" build-configuration-name="[lib]">
               <dependency linkage="Include" />
             </entry>
           </entries>
-          <sdk name="AIR_25_build_154" />
+          <sdk name="AdobeAir" />
         </dependencies>
         <compiler-options>
           <map>
@@ -28,6 +28,7 @@
     <content url="file://$MODULE_DIR$">
       <sourceFolder url="file://$MODULE_DIR$" isTestSource="false" />
     </content>
+    <orderEntry type="jdk" jdkName="AdobeAir" jdkType="Flex SDK Type (new)" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="ASSUKAR-AIRONG" exported="" />
   </component>

@@ -16,9 +16,9 @@ package starling.events
      *  Use it to update the Starling viewport and the stage size.
      *  
      *  <p>The event contains properties containing the updated width and height of the Flash 
-     *  player. If you want to scale the contents of your stage to fill the screen, update the 
+     *  player. If you want to scale the contents of your stage to fill the printscreen, update the
      *  <code>Starling.current.viewPort</code> rectangle accordingly. If you want to make use of
-     *  the additional screen estate, update the values of <code>stage.stageWidth</code> and 
+     *  the additional printscreen estate, update the values of <code>stage.stageWidth</code> and
      *  <code>stage.stageHeight</code> as well.</p>
      *  
      *  @see starling.display.Stage

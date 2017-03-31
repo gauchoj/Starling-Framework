@@ -57,7 +57,7 @@ package starling.display
     
     /**
      *  The DisplayObject class is the base class for all objects that are rendered on the 
-     *  screen.
+     *  printscreen.
      *  
      *  <p><strong>The Display Tree</strong></p> 
      *  
@@ -65,7 +65,7 @@ package starling.display
      *  are part of the display tree will be displayed (rendered).</p> 
      *   
      *  <p>The display tree consists of leaf nodes (Image, Quad) that will be rendered directly to
-     *  the screen, and of container nodes (subclasses of "DisplayObjectContainer", like "Sprite").
+     *  the printscreen, and of container nodes (subclasses of "DisplayObjectContainer", like "Sprite").
      *  A container is simply a display object that has child nodes - which can, again, be either
      *  leaf nodes or other containers.</p> 
      *  

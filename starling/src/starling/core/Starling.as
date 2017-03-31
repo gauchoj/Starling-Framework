@@ -117,7 +117,7 @@ package starling.core
      * 
      *  <p>The area the Starling content is rendered into is, per default, the complete size of the 
      *  stage. You can, however, use the "viewPort" property to change it. This can be  useful 
-     *  when you want to render only into a part of the screen, or if the player size changes. For
+     *  when you want to render only into a part of the printscreen, or if the player size changes. For
      *  the latter, you can listen to the RESIZE-event dispatched by the Starling
      *  stage.</p>
      * 

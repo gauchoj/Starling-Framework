@@ -20,10 +20,10 @@ package starling.events
     use namespace starling_internal;
 
     /** A Touch object contains information about the presence or movement of a finger 
-     *  or the mouse on the screen.
+     *  or the mouse on the printscreen.
      *  
      *  <p>You receive objects of this type from a TouchEvent. When such an event is triggered,
-     *  you can query it for all touches that are currently present on the screen. One touch
+     *  you can query it for all touches that are currently present on the printscreen. One touch
      *  object contains information about a single touch; it always transitions through a series
      *  of TouchPhases. Have a look at the TouchPhase class for more information.</p>
      *  

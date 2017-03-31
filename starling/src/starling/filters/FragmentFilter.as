@@ -427,7 +427,7 @@ package starling.filters
 
                 if (object == stage || object == object.root)
                 {
-                    // optimize for full-screen effects
+                    // optimize for full-printscreen effects
                     marginX = marginY = 0;
                     resultRect.setTo(0, 0, stage.stageWidth, stage.stageHeight);
                 }

@@ -3,7 +3,7 @@
   <component name="FlexBuildConfigurationManager" active="[lib]">
     <configurations>
       <configuration name="[lib]" pure-as="true" output-type="Library" output-file=".swc" skip-build="true">
-        <dependencies target-player="23.0">
+        <dependencies target-player="25.0">
           <entries>
             <entry module-name="ASSUKAR-AIRONG" build-configuration-name="[lib]">
               <dependency linkage="Include" />

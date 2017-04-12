@@ -201,7 +201,7 @@ package starling.textures
         {
 			if (textureHash[name])
 			{
-				Utils.log("texture name" + name);
+				Utils.log("texture name: " + name);
 				Utils.logError(new AssukarError("duplicated texture"), false);//:" + name), false);
 			}
 			

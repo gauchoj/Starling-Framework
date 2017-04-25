@@ -10,31 +10,31 @@
 
 package starling.textures
 {
-	import starling.core.Starling;
-	import starling.errors.AbstractClassError;
-	import starling.errors.MissingContextError;
-	import starling.errors.NotSupportedError;
-	import starling.utils.Color;
-	import starling.utils.SystemUtil;
-	import starling.utils.VertexData;
-	import starling.utils.execute;
-	import starling.utils.getNextPowerOfTwo;
+    import com.assukar.airong.error.AssukarError;
+    import com.assukar.airong.utils.Utils;
 
-	import com.assukar.airong.error.AssukarError;
-	import com.assukar.airong.utils.Utils;
+    import flash.display.Bitmap;
+    import flash.display.BitmapData;
+    import flash.display3D.Context3D;
+    import flash.display3D.Context3DTextureFormat;
+    import flash.display3D.textures.TextureBase;
+    import flash.geom.Rectangle;
+    import flash.media.Camera;
+    import flash.net.NetStream;
+    import flash.utils.ByteArray;
+    import flash.utils.getQualifiedClassName;
 
-	import flash.display.Bitmap;
-	import flash.display.BitmapData;
-	import flash.display3D.Context3D;
-	import flash.display3D.Context3DTextureFormat;
-	import flash.display3D.textures.TextureBase;
-	import flash.geom.Rectangle;
-	import flash.media.Camera;
-	import flash.net.NetStream;
-	import flash.utils.ByteArray;
-	import flash.utils.getQualifiedClassName;
-	
-	/** <p>A texture stores the information that represents an image. It cannot be added to the
+    import starling.core.Starling;
+    import starling.errors.AbstractClassError;
+    import starling.errors.MissingContextError;
+    import starling.errors.NotSupportedError;
+    import starling.utils.Color;
+    import starling.utils.SystemUtil;
+    import starling.utils.VertexData;
+    import starling.utils.execute;
+    import starling.utils.getNextPowerOfTwo;
+
+    /** <p>A texture stores the information that represents an image. It cannot be added to the
 	 *  display list directly; instead it has to be mapped onto a display object. In Starling,
 	 *  that display object is the class "Image".</p>
 	 *

@@ -233,17 +233,18 @@ package starling.display
             throw new IllegalOperationError("Cannot rotate stage");
         }
         
-        /** @private */
-        public override function set skewX(value:Number):void
-        {
-            throw new IllegalOperationError("Cannot skew stage");
-        }
-        
-        /** @private */
-        public override function set skewY(value:Number):void
-        {
-            throw new IllegalOperationError("Cannot skew stage");
-        }
+		// SKEW:: 
+//        /** @private */
+//        public override function set skewX(value:Number):void
+//        {
+//            throw new IllegalOperationError("Cannot skew stage");
+//        }
+//        
+//        /** @private */
+//        public override function set skewY(value:Number):void
+//        {
+//            throw new IllegalOperationError("Cannot skew stage");
+//        }
         
         /** @private */
 //        public override function set filter(value:FragmentFilter):void

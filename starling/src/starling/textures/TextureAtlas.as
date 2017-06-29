@@ -201,8 +201,8 @@ package starling.textures
         {
 			if (textureHash[name])
 			{
-				Utils.log("texture name: " + name);
-				Utils.logError(new AssukarError("duplicated texture"), false);//:" + name), false);
+				Utils.log("/********* TEXTURE::DUPLICATED " + name + " *********/");
+//				Utils.logError(new AssukarError("duplicated texture"), false);//:" + name), false);
 			}
 			
             textureHash[name] = mSubTextures[name] = new SubTexture(mAtlasTexture, region, false, frame, rotated);

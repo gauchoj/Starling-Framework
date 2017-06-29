@@ -204,12 +204,12 @@ package starling.events
         }
         
         /** Returns if there are listeners registered for a certain event type. */
-		private var vec1: Vector.<Function>;
+//		private var vec1: Vector.<Function>;
         public function hasEventListener(type:String):Boolean
         {
 			if (mEventListeners)
 			{
-				vec1 = mEventListeners[type] as Vector.<Function>;
+				var vec1: Vector.<Function> = mEventListeners[type] as Vector.<Function>;
 				return vec1 && vec1.length;
 			}
 			else

@@ -310,23 +310,18 @@ package starling.display
             mTransformationChanged = true;
         }
 
-        /** @private */
-        public override function set skewX(value:Number):void
-        {
-            throw new Error("3D objects do not support skewing");
-
-            // super.skewX = value;
-            // mOrientationChanged = true;
-        }
-
-        /** @private */
-        public override function set skewY(value:Number):void
-        {
-            throw new Error("3D objects do not support skewing");
-
-            // super.skewY = value;
-            // mOrientationChanged = true;
-        }
+		// SKEW:: 
+//        /** @private */
+//        public override function set skewX(value:Number):void
+//        {
+//            throw new Error("3D objects do not support skewing");
+//        }
+//
+//        /** @private */
+//        public override function set skewY(value:Number):void
+//        {
+//            throw new Error("3D objects do not support skewing");
+//        }
 
         /** The rotation of the object about the z axis, in radians.
          *  (In Starling, all angles are measured in radians.) */

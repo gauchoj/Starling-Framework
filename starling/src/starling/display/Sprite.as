@@ -62,7 +62,7 @@ package starling.display
         private static const sHelperPoint:Point = new Point();
         private static const sHelperRect:Rectangle = new Rectangle();
         
-        /** Creates an empty sprite. */
+//        /** Creates an empty sprite. */
 //        public function Sprite()
 //        {
 //            super();

@@ -128,14 +128,17 @@ package starling.display
     {
         // members
         
+		// SKEW::
+//        private var mSkewX:Number = 0.0;
+//        private var mSkewY:Number = 0.0;
+		//
+		
         private var mX:Number = 0.0;
         private var mY:Number = 0.0;
         public var mPivotX:Number = 0.0;
         public var mPivotY:Number = 0.0;
         public var mScaleX:Number;
         public var mScaleY:Number;
-        private var mSkewX:Number = 0.0;
-        private var mSkewY:Number = 0.0;
         private var mRotation:Number = 0.0;
         public var mAlpha:Number;
         private var mVisible:Boolean;
@@ -633,8 +636,10 @@ package starling.display
             {
                 mOrientationChanged = false;
                 
-                if (mSkewX == 0.0 && mSkewY == 0.0)
-                {
+				// SKEW::
+//                if (mSkewX == 0.0 && mSkewY == 0.0)
+//                {
+
                     // optimization: no skewing / rotation simplifies the matrix math
                     
                     if (mRotation == 0.0)
@@ -655,24 +660,24 @@ package starling.display
                         
                         mTransformationMatrix.setTo(a, b, c, d, tx, ty);
                     }
-                }
-                else
-                {
-                    mTransformationMatrix.identity();
-                    mTransformationMatrix.scale(mScaleX, mScaleY);
-                    MatrixUtil.skew(mTransformationMatrix, mSkewX, mSkewY);
-                    mTransformationMatrix.rotate(mRotation);
-                    mTransformationMatrix.translate(mX, mY);
-                    
-                    if (mPivotX != 0.0 || mPivotY != 0.0)
-                    {
-                        // prepend pivot transformation
-                        mTransformationMatrix.tx = mX - mTransformationMatrix.a * mPivotX
-                                                      - mTransformationMatrix.c * mPivotY;
-                        mTransformationMatrix.ty = mY - mTransformationMatrix.b * mPivotX 
-                                                      - mTransformationMatrix.d * mPivotY;
-                    }
-                }
+//                }
+//                else
+//                {
+//                    mTransformationMatrix.identity();
+//                    mTransformationMatrix.scale(mScaleX, mScaleY);
+//                    MatrixUtil.skew(mTransformationMatrix, mSkewX, mSkewY);
+//                    mTransformationMatrix.rotate(mRotation);
+//                    mTransformationMatrix.translate(mX, mY);
+//                    
+//                    if (mPivotX != 0.0 || mPivotY != 0.0)
+//                    {
+//                        // prepend pivot transformation
+//                        mTransformationMatrix.tx = mX - mTransformationMatrix.a * mPivotX
+//                                                      - mTransformationMatrix.c * mPivotY;
+//                        mTransformationMatrix.ty = mY - mTransformationMatrix.b * mPivotX 
+//                                                      - mTransformationMatrix.d * mPivotY;
+//                    }
+//                }
             }
 				
             
@@ -690,6 +695,11 @@ package starling.display
             mX = matrix.tx;
             mY = matrix.ty;
             
+			// SKEW::
+		    var mSkewX:Number = 0.0;
+			var mSkewY:Number = 0.0;
+			// 
+			
             mSkewX = Math.atan(-matrix.c / matrix.d);
             mSkewY = Math.atan( matrix.b / matrix.a);
 
@@ -845,31 +855,32 @@ package starling.display
             }	
         }
         
-        /** The horizontal skew angle in radians. */
-        public function get skewX():Number { return mSkewX; }
-        public function set skewX(value:Number):void 
-        {
-            value = MathUtil.normalizeAngle(value);
-            
-            if (mSkewX != value)
-            {
-                mSkewX = value;
-                mOrientationChanged = true;
-            }
-        }
-        
-        /** The vertical skew angle in radians. */
-        public function get skewY():Number { return mSkewY; }
-        public function set skewY(value:Number):void 
-        {
-            value = MathUtil.normalizeAngle(value);
-            
-            if (mSkewY != value)
-            {
-                mSkewY = value;
-                mOrientationChanged = true;
-            }
-        }
+		// SKEW::
+//        /** The horizontal skew angle in radians. */
+//        public function get skewX():Number { return mSkewX; }
+//        public function set skewX(value:Number):void 
+//        {
+//            value = MathUtil.normalizeAngle(value);
+//            
+//            if (mSkewX != value)
+//            {
+//                mSkewX = value;
+//                mOrientationChanged = true;
+//            }
+//        }
+//        
+//        /** The vertical skew angle in radians. */
+//        public function get skewY():Number { return mSkewY; }
+//        public function set skewY(value:Number):void 
+//        {
+//            value = MathUtil.normalizeAngle(value);
+//            
+//            if (mSkewY != value)
+//            {
+//                mSkewY = value;
+//                mOrientationChanged = true;
+//            }
+//        }
         
         /** The rotation of the object in radians. (In Starling, all angles are measured 
          *  in radians.) */

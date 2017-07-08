@@ -10,13 +10,15 @@
 
 package starling.utils
 {
-    import flash.display3D.Context3D;
-    import flash.events.Event;
-    import flash.events.EventDispatcher;
-    import flash.system.Capabilities;
-    import flash.utils.getDefinitionByName;
-    
-    import starling.errors.AbstractClassError;
+	import starling.errors.AbstractClassError;
+
+	import com.assukar.airong.utils.Utils;
+
+	import flash.display3D.Context3D;
+	import flash.events.Event;
+	import flash.events.EventDispatcher;
+	import flash.system.Capabilities;
+	import flash.utils.getDefinitionByName;
 
     /** A utility class with methods related to the current platform and runtime. */
     public class SystemUtil
@@ -72,7 +74,7 @@ package starling.utils
                 try { call[0].apply(null, call[1]); }
                 catch (e:Error)
                 {
-                    trace("[Starling] Error in 'executeWhenApplicationIsActive' call:", e.message);
+                    Utils.log("[Starling] Error in 'executeWhenApplicationIsActive' call:", e.message);
                 }
             }
 

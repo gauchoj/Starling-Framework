@@ -79,9 +79,7 @@ package starling.display
         {
             if (mFlattenedContents)
             {
-                for (var i:int=0, max:int=mFlattenedContents.length; i<max; ++i)
-                    mFlattenedContents[i].dispose();
-                
+                for (var i:int=0, max:int=mFlattenedContents.length; i<max; ++i) mFlattenedContents[i].dispose();
                 mFlattenedContents = null;
             }
         }

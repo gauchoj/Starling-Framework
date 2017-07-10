@@ -154,12 +154,8 @@ package starling.animation
 		 *  reused.</p> */
 		public function delayCall(call:Function, delay:Number, ... args):DelayedCall
 		{
-			//if (!call) throw new Error("null call");
 			if (call == null) throw new Error("null call");
-			
-//			var delayedCall:DelayedCall = DelayedCall.starling_internal::fromPool(call, delay, args);
 			var delayedCall:DelayedCall = new DelayedCall(call, delay, args);
-//			delayedCall.addEventListener(Event.REMOVE_FROM_JUGGLER, onPooledDelayedCallComplete);
 			add(delayedCall);
 			return delayedCall;
 		}

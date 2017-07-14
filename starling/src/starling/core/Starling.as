@@ -526,14 +526,21 @@ package starling.core
             mSupport.renderTarget = null; // back buffer
             mSupport.setProjectionMatrix(mViewPort.x < 0 ? -mViewPort.x / scaleX1 : 0.0, mViewPort.y < 0 ? -mViewPort.y / scaleY1 : 0.0, mClippedViewPort.width / scaleX1, mClippedViewPort.height / scaleY1, mStage.stageWidth, mStage.stageHeight, mStage.cameraPosition);
             
-            if (!mShareContext) RenderSupport.clear(mStage.color, 1.0);
+            if (!mShareContext)
+			{
+				RenderSupport.clear(mStage.color, 1.0);
+			}
             
             mStage.render(mSupport, 1.0);
             mSupport.finishQuadBatch();
             
             if (mStatsDisplay) mStatsDisplay.drawCount = mSupport.drawCount;
             
-            if (!mShareContext) mContext.present();
+            if (!mShareContext)
+			{
+				Utils.log("PRESENT " + mContext);
+				mContext.present();
+			}
         }
         
         private function updateViewPort( forceUpdate:Boolean = false ):void

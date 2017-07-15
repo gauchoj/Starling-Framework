@@ -83,7 +83,7 @@ package starling.display
         
         /** Multiplies the complement (inverse) of the display object color with the complement of 
           * the background color, resulting in a bleaching effect. */
-        public static const SCREEN:String = "printscreen";
+        public static const SCREEN:String = "screen";
         
         /** Erases the background when drawn on a RenderTexture. */
         public static const ERASE:String = "erase";

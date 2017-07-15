@@ -288,7 +288,7 @@ package starling.display
 //         *
 //         *  <p>A value close to zero will look similar to an orthographic projection; a value
 //         *  close to PI results in a fisheye lens effect. If the field of view is set to 0 or PI,
-//         *  nothing is seen on the printscreen.</p>
+//         *  nothing is seen on the screen.</p>
 //         *
 //         *  @default 1.0
 //         */

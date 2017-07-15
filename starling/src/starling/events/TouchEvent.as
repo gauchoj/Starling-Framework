@@ -18,7 +18,7 @@ package starling.events
     /** A TouchEvent is triggered either by touch or mouse input.  
      *  
      *  <p>In Starling, both touch events and mouse events are handled through the same class: 
-     *  TouchEvent. To process user input from a touch printscreen or the mouse, you have to register
+     *  TouchEvent. To process user input from a touch screen or the mouse, you have to register
      *  an event listener for events of the type <code>TouchEvent.TOUCH</code>. This is the only
      *  event type you need to handle; the long list of mouse event types as they are used in
      *  conventional Flash are mapped to so-called "TouchPhases" instead.</p> 

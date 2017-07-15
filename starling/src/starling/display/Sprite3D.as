@@ -24,7 +24,7 @@ package starling.display
     /** A container that allows you to position objects in three-dimensional space.
      *
      *  <p>Starling is, at its heart, a 2D engine. However, sometimes, simple 3D effects are
-     *  useful for special effects, e.g. for printscreen transitions or to turn playing cards
+     *  useful for special effects, e.g. for screen transitions or to turn playing cards
      *  realistically. This class makes it possible to create such 3D effects.</p>
      *
      *  <p><strong>Positioning objects in 3D</strong></p>

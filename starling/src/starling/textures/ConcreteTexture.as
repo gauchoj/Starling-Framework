@@ -132,29 +132,6 @@ package starling.textures
                     mBase as flash.display3D.textures.Texture;
 					
 					potTexture.uploadFromBitmapData(data);
-				
-                
-//                if (mMipMapping && data.width > 1 && data.height > 1) 
-//				{
-//                    var currentWidth:int  = data.width  >> 1;
-//                    var currentHeight:int = data.height >> 1;
-//                    var level:int = 1;
-//                    var canvas:BitmapData = new BitmapData(currentWidth, currentHeight, true, 0);
-//                    var transform:Matrix = new Matrix(.5, 0, 0, .5);
-//                    var bounds:Rectangle = new Rectangle();
-//                    while (currentWidth >= 1 || currentHeight >= 1)
-//                    {
-//                        bounds.width = currentWidth; bounds.height = currentHeight;
-//                        canvas.fillRect(bounds, 0);
-//                        canvas.draw(data, transform, null, null, null, true);
-//                        potTexture.uploadFromBitmapData(canvas, level++);
-//                        transform.scale(0.5, 0.5);
-//                        currentWidth  = currentWidth  >> 1;
-//                        currentHeight = currentHeight >> 1;
-//                    }
-//                    canvas.dispose();
-//                }
-				
             }
             else 
             {

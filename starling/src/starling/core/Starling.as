@@ -177,6 +177,8 @@ package starling.core
      *
      */ public class Starling extends EventDispatcher
     {
+		static private const LOG_SHARE_CONTEXT: Boolean = true;
+		
         /** The version of the Starling framework. */
         public static const VERSION:String = "1.8";
         
@@ -298,21 +300,22 @@ package starling.core
             
             if (mStage3D.context3D && mStage3D.context3D.driverInfo != "Disposed")
             {
-                if (profile == "auto" || profile is Array)
-                    throw new ArgumentError("When sharing the context3D, " + "the actual profile has to be supplied");
-                else
-                    mProfile = "profile" in mStage3D.context3D ? mStage3D.context3D["profile"] : profile as String;
+                if (profile == "auto" || profile is Array) throw new ArgumentError("When sharing the context3D, " + "the actual profile has to be supplied");
+                else mProfile = "profile" in mStage3D.context3D ? mStage3D.context3D["profile"] : profile as String;
                 
                 mShareContext = true;
                 setTimeout(initialize, 1); // we don't call it right away, because Starling should
                                            // behave the same way with or without a shared context
+                                           
+				if (LOG_SHARE_CONTEXT) Utils.log("STARLING:SHARECONTEXT mShareContext=" + mShareContext + " mProfile=" + mProfile);
             }
             else
             {
                 if (!SystemUtil.supportsDepthAndStencil) Utils.log("[Starling] Mask support requires 'depthAndStencil' to be enabled" + " in the application descriptor.");
-                
                 mShareContext = false;
                 requestContext3D(stage3D, renderMode, profile);
+				
+				if (LOG_SHARE_CONTEXT) Utils.log("STARLING:SHARECONTEXT mShareContext=" + mShareContext);
             }
         }
         
@@ -344,6 +347,9 @@ package starling.core
             if (mSupport) mSupport.dispose();
             if (mTouchProcessor) mTouchProcessor.dispose();
             if (sCurrent == this) sCurrent = null;
+			
+			if (LOG_SHARE_CONTEXT) Utils.log("STARLING:SHARECONTEXT dispose mShareContext=" + mShareContext + " mContext=" + mContext);
+						
             if (mContext && !mShareContext)
             {
                 // Per default, the context is recreated as long as there are listeners on it.
@@ -419,7 +425,6 @@ package starling.core
         
         private function initialize():void
         {
-            
             makeCurrent();
             
             initializeGraphicsAPI();
@@ -558,6 +563,8 @@ package starling.core
                 
                 mClippedViewPort = mViewPort.intersection(new Rectangle(0, 0, mNativeStage.stageWidth, mNativeStage.stageHeight));
                 
+				if (LOG_SHARE_CONTEXT) Utils.log("STARLING:SHARECONTEXT updateViewPort mShareContext=" + mShareContext + " mProfile=" + mProfile);
+				
                 if (!mShareContext)
                 {
                     // setting x and y might move the context to invalid bounds (since changing
@@ -573,13 +580,11 @@ package starling.core
                     mStage3D.y = mClippedViewPort.y;
                     
                     configureBackBuffer(mClippedViewPort.width, mClippedViewPort.height, mAntiAliasing, //
-                            //false, //
                             true, //
                             mSupportHighResolutions);
                     
                     if (mSupportHighResolutions && "contentsScaleFactor" in mNativeStage) mNativeStageContentScaleFactor = mNativeStage["contentsScaleFactor"];
-                    else
-                        mNativeStageContentScaleFactor = 1.0;
+                    else mNativeStageContentScaleFactor = 1.0;
                 }
             }
         }
@@ -698,8 +703,17 @@ package starling.core
         public var frameCount:uint = 0;
         //used to space out asset pushs between frames
         private var frameCallbacks:Vector.<Function>;
-        private var acallback:Function;
+		
+		public function startFrame(): void
+		{
+			enterFrameDate = new Date();
+		}
         
+		public function finalizeFrame(): void
+		{
+			frameLength = new Date().getTime() - enterFrameDate.getTime();
+		}
+		
         public function pushFrameCallback( callback:Function ):void
         {
             if (!frameCallbacks) frameCallbacks = new <Function>[];
@@ -715,10 +729,10 @@ package starling.core
             
             if (!mShareContext)
             {
-                enterFrameDate = new Date();
+                startFrame();
                 if (mStarted) nextFrame();
                 else if (mRendering) render();
-                frameLength = new Date().getTime() - enterFrameDate.getTime();
+				finalizeFrame();
             }
             
             mNativeOverlay.x = mViewPort.x;
@@ -726,13 +740,12 @@ package starling.core
             mNativeOverlay.scaleX = mViewPort.width / mStage.stageWidth;
             mNativeOverlay.scaleY = mViewPort.height / mStage.stageHeight;
 
-//			Utils.print("STARLING " + frameCount + " " + mStarted + " " + mRendering);
-            
             if (frameCallbacks)
             {
                 if (frameCallbacks.length > 0)
                 {
-                    acallback = frameCallbacks.shift() as Function;
+					Utils.log("CALLING FRAMECALLBACK");
+                    var acallback: Function = frameCallbacks.shift() as Function;
                     acallback();
                 }
                 else
@@ -1168,14 +1181,16 @@ package starling.core
         
         /** Indicates if the Context3D render calls are managed externally to Starling,
          *  to allow other frameworks to share the Stage3D instance. @default false */
-        public function get shareContext():Boolean
-        {
-            return mShareContext;
-        }
+		 // hidden to avoid behavior change dependent on share context 
+//        public function get shareContext():Boolean
+//        {
+//            return mShareContext;
+//        }
         
         public function set shareContext( value:Boolean ):void
         {
             mShareContext = value;
+			if (LOG_SHARE_CONTEXT) Utils.log("STARLING:SHARECONTEXT shareContext=" + mShareContext);
         }
         
         /** The Context3D profile used for rendering. Beware that if you are using a shared

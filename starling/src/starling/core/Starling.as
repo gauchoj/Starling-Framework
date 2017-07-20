@@ -1,50 +1,50 @@
 package starling.core
 {
-	import starling.animation.Juggler;
-	import starling.display.DisplayObject;
-	import starling.display.Stage;
-	import starling.events.EventDispatcher;
-	import starling.events.ResizeEvent;
-	import starling.events.TouchPhase;
-	import starling.events.TouchProcessor;
-	import starling.utils.HAlign;
-	import starling.utils.SystemUtil;
-	import starling.utils.VAlign;
-	import starling.utils.execute;
-
-	import com.assukar.airong.utils.Debug;
-	import com.assukar.airong.utils.Utils;
-
-	import flash.display.InteractiveObject;
-	import flash.display.Shape;
-	import flash.display.Sprite;
-	import flash.display.Stage3D;
-	import flash.display.StageAlign;
-	import flash.display.StageScaleMode;
-	import flash.display3D.Context3D;
-	import flash.display3D.Context3DCompareMode;
-	import flash.display3D.Context3DRenderMode;
-	import flash.display3D.Context3DTriangleFace;
-	import flash.display3D.Program3D;
-	import flash.errors.IllegalOperationError;
-	import flash.events.ErrorEvent;
-	import flash.events.Event;
-	import flash.events.KeyboardEvent;
-	import flash.events.MouseEvent;
-	import flash.events.TouchEvent;
-	import flash.geom.Rectangle;
-	import flash.system.Capabilities;
-	import flash.text.TextField;
-	import flash.text.TextFieldAutoSize;
-	import flash.text.TextFormat;
-	import flash.text.TextFormatAlign;
-	import flash.ui.Mouse;
-	import flash.ui.Multitouch;
-	import flash.ui.MultitouchInputMode;
-	import flash.utils.ByteArray;
-	import flash.utils.Dictionary;
-	import flash.utils.getTimer;
-	import flash.utils.setTimeout;
+    import com.assukar.airong.utils.Debug
+    import com.assukar.airong.utils.Utils
+    
+    import flash.display.InteractiveObject
+    import flash.display.Shape
+    import flash.display.Sprite
+    import flash.display.Stage3D
+    import flash.display.StageAlign
+    import flash.display.StageScaleMode
+    import flash.display3D.Context3D
+    import flash.display3D.Context3DCompareMode
+    import flash.display3D.Context3DRenderMode
+    import flash.display3D.Context3DTriangleFace
+    import flash.display3D.Program3D
+    import flash.errors.IllegalOperationError
+    import flash.events.ErrorEvent
+    import flash.events.Event
+    import flash.events.KeyboardEvent
+    import flash.events.MouseEvent
+    import flash.events.TouchEvent
+    import flash.geom.Rectangle
+    import flash.system.Capabilities
+    import flash.text.TextField
+    import flash.text.TextFieldAutoSize
+    import flash.text.TextFormat
+    import flash.text.TextFormatAlign
+    import flash.ui.Mouse
+    import flash.ui.Multitouch
+    import flash.ui.MultitouchInputMode
+    import flash.utils.ByteArray
+    import flash.utils.Dictionary
+    import flash.utils.getTimer
+    import flash.utils.setTimeout
+    
+    import starling.animation.Juggler
+    import starling.display.DisplayObject
+    import starling.display.Stage
+    import starling.events.EventDispatcher
+    import starling.events.ResizeEvent
+    import starling.events.TouchPhase
+    import starling.events.TouchProcessor
+    import starling.utils.HAlign
+    import starling.utils.SystemUtil
+    import starling.utils.VAlign
+    import starling.utils.execute
     
     /** Dispatched when a new render context is created. The 'data' property references the context. */
     [Event(name="context3DCreate", type="starling.events.Event")]
@@ -177,8 +177,8 @@ package starling.core
      *
      */ public class Starling extends EventDispatcher
     {
-		static private const LOG_SHARE_CONTEXT: Boolean = true;
-		
+        static private const LOG_SHARE_CONTEXT:Boolean = true;
+        
         /** The version of the Starling framework. */
         public static const VERSION:String = "1.8";
         
@@ -220,7 +220,7 @@ package starling.core
         private static var sHandleLostContext:Boolean = true;
         private static var sContextData:Dictionary = new Dictionary(true);
         private static var sAll:Vector.<Starling> = new <Starling>[];
-		
+        
         // construction
         
         /** Creates a new Starling instance.
@@ -306,16 +306,16 @@ package starling.core
                 mShareContext = true;
                 setTimeout(initialize, 1); // we don't call it right away, because Starling should
                                            // behave the same way with or without a shared context
-                                           
-				if (LOG_SHARE_CONTEXT) Utils.log("STARLING:SHARECONTEXT mShareContext=" + mShareContext + " mProfile=" + mProfile);
+                
+                if (LOG_SHARE_CONTEXT) Utils.log("STARLING:SHARECONTEXT mShareContext=" + mShareContext + " mProfile=" + mProfile);
             }
             else
             {
                 if (!SystemUtil.supportsDepthAndStencil) Utils.log("[Starling] Mask support requires 'depthAndStencil' to be enabled" + " in the application descriptor.");
                 mShareContext = false;
                 requestContext3D(stage3D, renderMode, profile);
-				
-				if (LOG_SHARE_CONTEXT) Utils.log("STARLING:SHARECONTEXT mShareContext=" + mShareContext);
+                
+                if (LOG_SHARE_CONTEXT) Utils.log("STARLING:SHARECONTEXT mShareContext=" + mShareContext);
             }
         }
         
@@ -347,9 +347,9 @@ package starling.core
             if (mSupport) mSupport.dispose();
             if (mTouchProcessor) mTouchProcessor.dispose();
             if (sCurrent == this) sCurrent = null;
-			
-			if (LOG_SHARE_CONTEXT) Utils.log("STARLING:SHARECONTEXT dispose mShareContext=" + mShareContext + " mContext=" + mContext);
-						
+            
+            if (LOG_SHARE_CONTEXT) Utils.log("STARLING:SHARECONTEXT dispose mShareContext=" + mShareContext + " mContext=" + mContext);
+            
             if (mContext && !mShareContext)
             {
                 // Per default, the context is recreated as long as there are listeners on it.
@@ -423,9 +423,9 @@ package starling.core
             }
         }
         
-		public var pendingInitialization: Boolean = true;
-		public var initializations: int = 0;
-		
+        public var pendingInitialization:Boolean = true;
+        public var initializations:int = 0;
+        
         private function initialize():void
         {
             makeCurrent();
@@ -435,9 +435,9 @@ package starling.core
             
             mTouchProcessor.simulateMultitouch = mSimulateMultitouch;
             mLastFrameTimestamp = getTimer() / 1000.0;
-			
-			pendingInitialization = false;
-			Utils.printStackTrace("pendingInitialization = false");
+            
+            pendingInitialization = false;
+//			Utils.printStackTrace("pendingInitialization = false");
         }
         
         private function initializeGraphicsAPI():void
@@ -537,9 +537,9 @@ package starling.core
             mSupport.setProjectionMatrix(mViewPort.x < 0 ? -mViewPort.x / scaleX1 : 0.0, mViewPort.y < 0 ? -mViewPort.y / scaleY1 : 0.0, mClippedViewPort.width / scaleX1, mClippedViewPort.height / scaleY1, mStage.stageWidth, mStage.stageHeight, mStage.cameraPosition);
             
             if (!mShareContext)
-			{
-				RenderSupport.clear(mStage.color, 1.0);
-			}
+            {
+                RenderSupport.clear(mStage.color, 1.0);
+            }
             
             mStage.render(mSupport, 1.0);
             mSupport.finishQuadBatch();
@@ -547,10 +547,10 @@ package starling.core
             if (mStatsDisplay) mStatsDisplay.drawCount = mSupport.drawCount;
             
             if (!mShareContext)
-			{
-				Utils.log("PRESENT " + mContext);
-				mContext.present();
-			}
+            {
+                Utils.log("PRESENT " + mContext);
+                mContext.present();
+            }
         }
         
         private function updateViewPort( forceUpdate:Boolean = false ):void
@@ -568,8 +568,8 @@ package starling.core
                 
                 mClippedViewPort = mViewPort.intersection(new Rectangle(0, 0, mNativeStage.stageWidth, mNativeStage.stageHeight));
                 
-				if (LOG_SHARE_CONTEXT) Utils.log("STARLING:SHARECONTEXT updateViewPort mShareContext=" + mShareContext + " mProfile=" + mProfile);
-				
+                if (LOG_SHARE_CONTEXT) Utils.log("STARLING:SHARECONTEXT updateViewPort mShareContext=" + mShareContext + " mProfile=" + mProfile);
+                
                 if (!mShareContext)
                 {
                     // setting x and y might move the context to invalid bounds (since changing
@@ -691,10 +691,10 @@ package starling.core
         
         private function onContextCreated( event:Event ):void
         {
-			initializations++;
-			pendingInitialization = true;
-			Utils.printStackTrace("pendingInitialization=true initializations=" + initializations);
-			
+            initializations++;
+            pendingInitialization = true;
+//            Utils.printStackTrace("pendingInitialization=true initializations=" + initializations);
+            
             if (!Starling.handleLostContext && mContext)
             {
                 event.stopImmediatePropagation();
@@ -712,20 +712,20 @@ package starling.core
         public var frameCount:uint = 0;
         //used to space out asset pushs between frames
         private var frameCallbacks:Vector.<Function>;
-		
+        
         public function pushFrameCallback( callback:Function ):void
         {
             if (!frameCallbacks) frameCallbacks = new <Function>[];
             frameCallbacks.push(callback);
         }
-		
-		public function renderFrame(): void
-		{
+        
+        public function renderFrame():void
+        {
             enterFrameDate = new Date();
             if (mStarted) nextFrame();
             else if (mRendering) render();
-			frameLength = new Date().getTime() - enterFrameDate.getTime();
-		}
+            frameLength = new Date().getTime() - enterFrameDate.getTime();
+        }
         
         private function onEnterFrame( event:Event ):void
         {
@@ -736,24 +736,24 @@ package starling.core
             
             if (!mShareContext)
             {
-				renderFrame();
+                renderFrame();
             }
             
             mNativeOverlay.x = mViewPort.x;
             mNativeOverlay.y = mViewPort.y;
             mNativeOverlay.scaleX = mViewPort.width / mStage.stageWidth;
             mNativeOverlay.scaleY = mViewPort.height / mStage.stageHeight;
-
+            
             if (frameCallbacks)
             {
-				for (var i: int = 0; i < 5 && frameCallbacks.length > 0; i++)
+                for (var i:int = 0; i < 5 && frameCallbacks.length > 0; i++)
                 {
-					Utils.log("CALLING FRAMECALLBACK " + i);
-                    var acallback: Function = frameCallbacks.shift() as Function;
+                    Utils.log("CALLING FRAMECALLBACK " + i);
+                    var acallback:Function = frameCallbacks.shift() as Function;
                     acallback();
                 }
-                    
-				if (frameCallbacks.length == 0) frameCallbacks = null;
+                
+                if (frameCallbacks.length == 0) frameCallbacks = null;
             }
         }
         
@@ -1181,7 +1181,7 @@ package starling.core
         
         /** Indicates if the Context3D render calls are managed externally to Starling,
          *  to allow other frameworks to share the Stage3D instance. @default false */
-		 // hidden to avoid behavior change dependent on share context 
+        // hidden to avoid behavior change dependent on share context
 //        public function get shareContext():Boolean
 //        {
 //            return mShareContext;
@@ -1190,7 +1190,7 @@ package starling.core
         public function set shareContext( value:Boolean ):void
         {
             mShareContext = value;
-			if (LOG_SHARE_CONTEXT) Utils.log("STARLING:SHARECONTEXT shareContext=" + mShareContext);
+            if (LOG_SHARE_CONTEXT) Utils.log("STARLING:SHARECONTEXT shareContext=" + mShareContext);
         }
         
         /** The Context3D profile used for rendering. Beware that if you are using a shared

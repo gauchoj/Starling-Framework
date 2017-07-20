@@ -220,7 +220,7 @@ package starling.core
         private static var sHandleLostContext:Boolean = true;
         private static var sContextData:Dictionary = new Dictionary(true);
         private static var sAll:Vector.<Starling> = new <Starling>[];
-        
+		
         // construction
         
         /** Creates a new Starling instance.
@@ -424,6 +424,7 @@ package starling.core
         }
         
 		public var pendingInitialization: Boolean = true;
+		public var initializations: int = 0;
 		
         private function initialize():void
         {
@@ -436,6 +437,7 @@ package starling.core
             mLastFrameTimestamp = getTimer() / 1000.0;
 			
 			pendingInitialization = false;
+			Utils.printStackTrace("pendingInitialization = false");
         }
         
         private function initializeGraphicsAPI():void
@@ -689,8 +691,9 @@ package starling.core
         
         private function onContextCreated( event:Event ):void
         {
+			initializations++;
 			pendingInitialization = true;
-			Utils.printStackTrace();
+			Utils.printStackTrace("pendingInitialization=true initializations=" + initializations);
 			
             if (!Starling.handleLostContext && mContext)
             {
@@ -710,21 +713,19 @@ package starling.core
         //used to space out asset pushs between frames
         private var frameCallbacks:Vector.<Function>;
 		
-		public function startFrame(): void
-		{
-			enterFrameDate = new Date();
-		}
-        
-		public function finalizeFrame(): void
-		{
-			frameLength = new Date().getTime() - enterFrameDate.getTime();
-		}
-		
         public function pushFrameCallback( callback:Function ):void
         {
             if (!frameCallbacks) frameCallbacks = new <Function>[];
             frameCallbacks.push(callback);
         }
+		
+		public function renderFrame(): void
+		{
+            enterFrameDate = new Date();
+            if (mStarted) nextFrame();
+            else if (mRendering) render();
+			frameLength = new Date().getTime() - enterFrameDate.getTime();
+		}
         
         private function onEnterFrame( event:Event ):void
         {
@@ -735,10 +736,7 @@ package starling.core
             
             if (!mShareContext)
             {
-                startFrame();
-                if (mStarted) nextFrame();
-                else if (mRendering) render();
-				finalizeFrame();
+				renderFrame();
             }
             
             mNativeOverlay.x = mViewPort.x;
@@ -748,16 +746,14 @@ package starling.core
 
             if (frameCallbacks)
             {
-                if (frameCallbacks.length > 0)
+				for (var i: int = 0; i < 5 && frameCallbacks.length > 0; i++)
                 {
-					Utils.log("CALLING FRAMECALLBACK");
+					Utils.log("CALLING FRAMECALLBACK " + i);
                     var acallback: Function = frameCallbacks.shift() as Function;
                     acallback();
                 }
-                else
-                {
-                    frameCallbacks = null;
-                }
+                    
+				if (frameCallbacks.length == 0) frameCallbacks = null;
             }
         }
         
@@ -782,8 +778,7 @@ package starling.core
             var stageHeight:int = event.target.stageHeight;
             
             if (contextValid) dispatchResizeEvent();
-            else
-                addEventListener(Event.CONTEXT3D_CREATE, dispatchResizeEvent);
+            else addEventListener(Event.CONTEXT3D_CREATE, dispatchResizeEvent);
             
             function dispatchResizeEvent():void
             {

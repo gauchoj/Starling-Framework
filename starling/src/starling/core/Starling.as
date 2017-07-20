@@ -423,6 +423,8 @@ package starling.core
             }
         }
         
+		public var pendingInitialization: Boolean = true;
+		
         private function initialize():void
         {
             makeCurrent();
@@ -432,6 +434,8 @@ package starling.core
             
             mTouchProcessor.simulateMultitouch = mSimulateMultitouch;
             mLastFrameTimestamp = getTimer() / 1000.0;
+			
+			pendingInitialization = false;
         }
         
         private function initializeGraphicsAPI():void
@@ -440,8 +444,7 @@ package starling.core
             mContext.enableErrorChecking = Debug.active;
             contextData[PROGRAM_DATA_NAME] = new Dictionary();
             
-            Utils.log("[Starling] Initialization complete.");
-            Utils.log("[Starling] Display Driver:", mContext.driverInfo);
+            Utils.log("Starling:: Initialization " + mContext.driverInfo);
             
             updateViewPort(true);
             dispatchEventWith(Event.CONTEXT3D_CREATE, false, mContext);
@@ -684,11 +687,10 @@ package starling.core
                 stopWithFatalError("Stage3D error: " + event.text);
         }
         
-		public var processingContextCreation: Boolean = false;
-		
         private function onContextCreated( event:Event ):void
         {
-			processingContextCreation = true;
+			pendingInitialization = true;
+			Utils.printStackTrace();
 			
             if (!Starling.handleLostContext && mContext)
             {
@@ -700,8 +702,6 @@ package starling.core
             {
                 initialize();
             }
-			
-			processingContextCreation = false;
         }
         
         private var enterFrameDate:Date;

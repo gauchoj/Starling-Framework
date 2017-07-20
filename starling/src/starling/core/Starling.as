@@ -1,50 +1,50 @@
 package starling.core
 {
-    import com.assukar.airong.error.AssukarError
-    import com.assukar.airong.utils.Utils
-    
-    import flash.display.InteractiveObject
-    import flash.display.Shape
-    import flash.display.Sprite
-    import flash.display.Stage3D
-    import flash.display.StageAlign
-    import flash.display.StageScaleMode
-    import flash.display3D.Context3D
-    import flash.display3D.Context3DCompareMode
-    import flash.display3D.Context3DRenderMode
-    import flash.display3D.Context3DTriangleFace
-    import flash.display3D.Program3D
-    import flash.errors.IllegalOperationError
-    import flash.events.ErrorEvent
-    import flash.events.Event
-    import flash.events.KeyboardEvent
-    import flash.events.MouseEvent
-    import flash.events.TouchEvent
-    import flash.geom.Rectangle
-    import flash.system.Capabilities
-    import flash.text.TextField
-    import flash.text.TextFieldAutoSize
-    import flash.text.TextFormat
-    import flash.text.TextFormatAlign
-    import flash.ui.Mouse
-    import flash.ui.Multitouch
-    import flash.ui.MultitouchInputMode
-    import flash.utils.ByteArray
-    import flash.utils.Dictionary
-    import flash.utils.getTimer
-    import flash.utils.setTimeout
-    
-    import starling.animation.Juggler
-    import starling.display.DisplayObject
-    import starling.display.Stage
-    import starling.events.EventDispatcher
-    import starling.events.ResizeEvent
-    import starling.events.TouchPhase
-    import starling.events.TouchProcessor
-    import starling.utils.HAlign
-    import starling.utils.SystemUtil
-    import starling.utils.VAlign
-    import starling.utils.execute
+	import starling.animation.Juggler;
+	import starling.display.DisplayObject;
+	import starling.display.Stage;
+	import starling.events.EventDispatcher;
+	import starling.events.ResizeEvent;
+	import starling.events.TouchPhase;
+	import starling.events.TouchProcessor;
+	import starling.utils.HAlign;
+	import starling.utils.SystemUtil;
+	import starling.utils.VAlign;
+	import starling.utils.execute;
+
+	import com.assukar.airong.utils.Debug;
+	import com.assukar.airong.utils.Utils;
+
+	import flash.display.InteractiveObject;
+	import flash.display.Shape;
+	import flash.display.Sprite;
+	import flash.display.Stage3D;
+	import flash.display.StageAlign;
+	import flash.display.StageScaleMode;
+	import flash.display3D.Context3D;
+	import flash.display3D.Context3DCompareMode;
+	import flash.display3D.Context3DRenderMode;
+	import flash.display3D.Context3DTriangleFace;
+	import flash.display3D.Program3D;
+	import flash.errors.IllegalOperationError;
+	import flash.events.ErrorEvent;
+	import flash.events.Event;
+	import flash.events.KeyboardEvent;
+	import flash.events.MouseEvent;
+	import flash.events.TouchEvent;
+	import flash.geom.Rectangle;
+	import flash.system.Capabilities;
+	import flash.text.TextField;
+	import flash.text.TextFieldAutoSize;
+	import flash.text.TextFormat;
+	import flash.text.TextFormatAlign;
+	import flash.ui.Mouse;
+	import flash.ui.Multitouch;
+	import flash.ui.MultitouchInputMode;
+	import flash.utils.ByteArray;
+	import flash.utils.Dictionary;
+	import flash.utils.getTimer;
+	import flash.utils.setTimeout;
     
     /** Dispatched when a new render context is created. The 'data' property references the context. */
     [Event(name="context3DCreate", type="starling.events.Event")]
@@ -196,7 +196,7 @@ package starling.core
         private var mTouchProcessor:TouchProcessor;
         private var mAntiAliasing:int;
         private var mSimulateMultitouch:Boolean;
-        private var mEnableErrorChecking:Boolean;
+//        private var mEnableErrorChecking:Boolean;
         private var mLastFrameTimestamp:Number;
         private var mLeftMouseDown:Boolean;
         private var mStatsDisplay:StatsDisplay;
@@ -270,7 +270,7 @@ package starling.core
             mJuggler = new Juggler();
             mAntiAliasing = 0;
             mSimulateMultitouch = false;
-            mEnableErrorChecking = false;
+//            mEnableErrorChecking = false;
             mSupportHighResolutions = false;
             mBroadcastKeyboardEvents = true;
             mLastFrameTimestamp = getTimer() / 1000.0;
@@ -437,7 +437,7 @@ package starling.core
         private function initializeGraphicsAPI():void
         {
             mContext = mStage3D.context3D;
-            mContext.enableErrorChecking = mEnableErrorChecking;
+            mContext.enableErrorChecking = Debug.active;
             contextData[PROGRAM_DATA_NAME] = new Dictionary();
             
             Utils.log("[Starling] Initialization complete.");
@@ -684,8 +684,12 @@ package starling.core
                 stopWithFatalError("Stage3D error: " + event.text);
         }
         
+		public var processingContextCreation: Boolean = false;
+		
         private function onContextCreated( event:Event ):void
         {
+			processingContextCreation = true;
+			
             if (!Starling.handleLostContext && mContext)
             {
                 event.stopImmediatePropagation();
@@ -696,6 +700,8 @@ package starling.core
             {
                 initialize();
             }
+			
+			processingContextCreation = false;
         }
         
         private var enterFrameDate:Date;
@@ -1012,18 +1018,17 @@ package starling.core
         
         /** Indicates if Stage3D render methods will report errors. Activate only when needed,
          *  as this has a negative impact on performance. @default false */
-        public function get enableErrorChecking():Boolean
-        {
-            return mEnableErrorChecking;
-        }
-        
-        public function set enableErrorChecking( value:Boolean ):void
-        {
-            if (value)  throw new AssukarError("set \"enableErrorChecking\" to false!");
-            
-            mEnableErrorChecking = value;
-            if (mContext) mContext.enableErrorChecking = value;
-        }
+//        public function get enableErrorChecking():Boolean
+//        {
+//            return mEnableErrorChecking;
+//        }
+//        
+//        public function set enableErrorChecking( value:Boolean ):void
+//        {
+////            if (value)  throw new AssukarError("set \"enableErrorChecking\" to false!");
+//            mEnableErrorChecking = value;
+//            if (mContext) mContext.enableErrorChecking = value;
+//        }
         
         /** The antialiasing level. 0 - no antialasing, 16 - maximum antialiasing. @default 0 */
         public function get antiAliasing():int

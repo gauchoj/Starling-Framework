@@ -509,21 +509,6 @@ package starling.display
         }
         
         public var is3D:Boolean;
-//        /** @private */
-//        internal function setIs3D(value:Boolean):void
-//        {
-//            mIs3D = value;
-//        }
-//
-//        /** Indicates if this object or any of its parents is a 'Sprite3D' object. */
-//        public function get is3D():Boolean { return mIs3D; }
-
-        /** @private */
-//        internal function get isMask():Boolean
-//        {
-//            return mIsMask;
-//        }
-
         // helpers
         
         private final function isEquivalent(a:Number, b:Number, epsilon:Number=0.0001):Boolean

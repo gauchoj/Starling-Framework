@@ -377,7 +377,6 @@ package starling.display
 						support.pushMatrix();
 						support.transformMatrix(child1);
 						
-//						support.blendMode = child1.mBlendMode;
 						if (child1.blendMode != BlendMode.AUTO) support.mBlendMode = child1.blendMode;
 						
 						if (child1.mMask) support.pushMask(child1.mMask);
@@ -385,7 +384,6 @@ package starling.display
 						else child1.render(support, alpha1);
 						if (child1.mMask) support.popMask();
 						
-//						support.blendMode = blendMode1;
 						if (blendMode1 != BlendMode.AUTO) support.mBlendMode = blendMode1;
 						
 						support.popMatrix();

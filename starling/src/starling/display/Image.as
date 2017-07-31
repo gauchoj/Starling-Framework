@@ -15,11 +15,12 @@ package starling.display
 	import starling.textures.TextureSmoothing;
 	import starling.utils.VertexData;
 
+	import com.assukar.airong.utils.Utils;
+
 	import flash.display.Bitmap;
 	import flash.geom.Matrix;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
-    
     
     /** An Image is a quad with a texture mapped onto it.
      *  
@@ -37,8 +38,11 @@ package starling.display
      *  @see starling.textures.Texture
      *  @see Quad
      */     
-    public class Image extends Quad
+    public class Image 
+	extends Quad
     {
+		static public var DEFAULT_SMOOTHING: String = TextureSmoothing.BILINEAR;
+		
         private var mTexture:Texture;
         private var mSmoothing:String;
         
@@ -66,12 +70,9 @@ package starling.display
                 mVertexData.setTexCoords(3, 1.0, 1.0);
 				
                 mTexture = texture;
-                mSmoothing = TextureSmoothing.BILINEAR;
+                mSmoothing = DEFAULT_SMOOTHING;
                 mVertexDataCache = new VertexData(4, pma);
                 mVertexDataCacheInvalid = true;
-				
-				
-				
             }
             else
             {
@@ -80,10 +81,8 @@ package starling.display
         }
         
         /** Creates an Image with a texture that is created from a bitmap object. */
-//        public static function fromBitmap(name: String, bitmap:Bitmap, generateMipMaps:Boolean=false, scale:Number=1):Image
 		public static function fromBitmap(name: String, bitmap:Bitmap, scale:Number=1):Image
         {
-//            return new Image(Texture.fromBitmap(name, bitmap, generateMipMaps, false, scale));
 			return new Image(Texture.fromBitmap(name, bitmap, false, scale));
         }
         
@@ -181,9 +180,11 @@ package starling.display
         public function get smoothing():String { return mSmoothing; }
         public function set smoothing(value:String):void 
         {
-//            if (TextureSmoothing.isValid(value)) 
-			mSmoothing = value;
-//            else throw new ArgumentError("Invalid smoothing mode: " + value);
+			if (mSmoothing != value)
+			{
+//				Utils.print("SMOOTHING " + value);
+				mSmoothing = value;
+			}
         }
 		
         /** @inheritDoc */

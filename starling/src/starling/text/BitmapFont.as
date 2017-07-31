@@ -125,8 +125,7 @@ package starling.text
             mLineHeight = parseFloat(fontXml.common.@lineHeight) / scale;
             mBaseline = parseFloat(fontXml.common.@base) / scale;
             
-            if (fontXml.info.@smooth.toString() == "0")
-                smoothing = TextureSmoothing.NONE;
+            if (fontXml.info.@smooth.toString() == "0") smoothing = TextureSmoothing.NONE;
             
             if (mSize <= 0)
             {

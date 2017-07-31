@@ -771,9 +771,9 @@ package starling.core
             
             if (frameCallbacks)
             {
-                for (var i:int = 0; i < 5 && frameCallbacks.length > 0; i++)
+                for (var i:int = 0; i < 1 && frameCallbacks.length > 0; i++)
                 {
-                    Utils.log("CALLING FRAMECALLBACK " + i);
+//                    Utils.log("CALLING FRAMECALLBACK " + i);
                     var acallback:Function = frameCallbacks.shift() as Function;
                     acallback();
                 }

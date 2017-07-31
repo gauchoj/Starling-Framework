@@ -46,7 +46,7 @@ package starling.display
      */    
     public class MovieClip extends Image implements IAnimatable
     {
-        private var mTextures:Vector.<Texture>;
+        public var mTextures:Vector.<Texture>;
         private var mSounds:Vector.<Sound>;
         private var mDurations:Vector.<Number>;
         private var mStartTimes:Vector.<Number>;
@@ -340,14 +340,12 @@ package starling.display
         
         /** If enabled, no new sounds will be started during playback. Sounds that are already
          *  playing are not affected. */
-        public function get muted():Boolean {
-			throw new AbstractError(); 
-//			return mMuted; 
-			}
-        public function set muted(value:Boolean):void {
-			throw new AbstractError(); 
-//			mMuted = value; 
-			}
+//        public function get muted():Boolean {
+//			throw new AbstractError(); 
+//			}
+//        public function set muted(value:Boolean):void {
+//			throw new AbstractError(); 
+//			}
 
         /** The SoundTransform object used for playback of all frame sounds. @default null */
 //        public function get soundTransform():SoundTransform { return mSoundTransform; }

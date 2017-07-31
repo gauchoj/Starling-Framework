@@ -141,7 +141,6 @@ package starling.text
             mAutoSize = TextFieldAutoSize.NONE;
             mHitArea = new Rectangle(0, 0, width, height);
             this.fontName = fontName;
-            //mFontName = fontName;
             
             addEventListener(Event.FLATTEN, onFlatten);
         }
@@ -173,15 +172,8 @@ package starling.text
         {
             if (mRequiresRedraw)
             {
-                if (getBitmapFont(mFontName))
-				{
-					createComposedContents();
-				}
-                else
-				{
-					createRenderedContents();
-				}
-
+                if (getBitmapFont(mFontName)) createComposedContents();
+                else createRenderedContents();
                 updateBorder();
                 mRequiresRedraw = false;
             }
@@ -227,8 +219,7 @@ package starling.text
             mHitArea.width  = bitmapData.width  / scalee;
             mHitArea.height = bitmapData.height / scalee;
             
-            texture = Texture.fromBitmapData("tf:" + mText, bitmapData, false, //false, 
-				scalee, format);
+            texture = Texture.fromBitmapData("TF:" + mText, bitmapData, false, scalee, format, false, false);
 			
             texture.root.onRestore = function():void
             {
@@ -242,7 +233,7 @@ package starling.text
             bitmapData.dispose();
             bitmapData = null;
             
-            if (mImage == null) 
+            if (!mImage) 
             {
                 mImage = new Image(texture);
                 mImage.touchable = false;
@@ -568,15 +559,21 @@ package starling.text
             // not change the scaling, but make the texture bigger/smaller, while the size 
             // of the text/font stays the same (this applies to the height, as well).
             
-            mHitArea.width = value;
-            mRequiresRedraw = true;
+			if (mHitArea.width != value)
+			{
+	            mHitArea.width = value;
+	            mRequiresRedraw = true;
+			}
         }
         
         /** @inheritDoc */
         public override function set height(value:Number):void
         {
-            mHitArea.height = value;
-            mRequiresRedraw = true;
+			if (mHitArea.height != value)
+			{
+	            mHitArea.height = value;
+	            mRequiresRedraw = true;
+			}
         }
         
         /** The displayed text. */

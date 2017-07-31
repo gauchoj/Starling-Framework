@@ -276,7 +276,7 @@ package starling.text
         public static function get texture():Texture
         {
             var bitmapData:BitmapData = getBitmapData();
-            var texture:Texture = Texture.fromBitmapData("MiniBitmapFont", bitmapData, false);
+            var texture:Texture = Texture.fromBitmapData("MiniBitmapFont", bitmapData, false, 1, "bgra", false, false);
             bitmapData.dispose();
             bitmapData = null;
 

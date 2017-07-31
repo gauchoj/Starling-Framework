@@ -55,29 +55,30 @@ package starling.display
         public function Image(texture:Texture)
         {
             if (texture)
-            {
-                var frame:Rectangle = texture.frame;
-                var width:Number  = frame ? frame.width  : texture.width;
-                var height:Number = frame ? frame.height : texture.height;
-				
-                pma = texture.premultipliedAlpha;
-                
-                super(width, height, 0xffffff, pma);
-                
-                mVertexData.setTexCoords(0, 0.0, 0.0);
-                mVertexData.setTexCoords(1, 1.0, 0.0);
-                mVertexData.setTexCoords(2, 0.0, 1.0);
-                mVertexData.setTexCoords(3, 1.0, 1.0);
-				
-                mTexture = texture;
-                mSmoothing = DEFAULT_SMOOTHING;
-                mVertexDataCache = new VertexData(4, pma);
-                mVertexDataCacheInvalid = true;
-            }
-            else
-            {
-                throw new ArgumentError("Texture cannot be null");
-            }
+			{
+	            var frame:Rectangle = texture.frame;
+	            var width:Number  = frame ? frame.width  : texture.width;
+	            var height:Number = frame ? frame.height : texture.height;
+	            pma = texture.premultipliedAlpha;
+            
+	            super(width, height, 0xffffff, pma);
+			}
+			else throw new ArgumentError("Texture cannot be null");
+			
+            mVertexData.setTexCoords(0, 0.0, 0.0);
+            mVertexData.setTexCoords(1, 1.0, 0.0);
+            mVertexData.setTexCoords(2, 0.0, 1.0);
+            mVertexData.setTexCoords(3, 1.0, 1.0);
+			
+            mTexture = texture;
+            mSmoothing = DEFAULT_SMOOTHING;
+            mVertexDataCache = new VertexData(4, pma);
+            mVertexDataCacheInvalid = true;
+			
+			CONFIG::DEBUG
+			{
+				name = texture.name;
+			}			
         }
         
         /** Creates an Image with a texture that is created from a bitmap object. */
@@ -161,11 +162,9 @@ package starling.display
         public function get texture():Texture { return mTexture; }
         public function set texture(value:Texture):void 
         { 
-            if (value == null)
-            {
-                throw new ArgumentError("Texture cannot be null");
-            }
-            else if (value != mTexture)
+            if (!value) throw new ArgumentError("Texture cannot be null");
+            
+			if (value != mTexture)
             {
                 mTexture = value;
                 mVertexData.setPremultipliedAlpha(mTexture.premultipliedAlpha);

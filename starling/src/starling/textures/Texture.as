@@ -118,13 +118,13 @@ package starling.textures
 		/** @private */
 		function Texture()
 		{
-			CONFIG::DEBUG
-			{
-				if (getQualifiedClassName(this) == "starling.textures::Texture")
-				{
-					throw new AbstractClassError();
-				}
-			}
+//			CONFIG::DEBUG
+//			{
+//				if (getQualifiedClassName(this) == "starling.textures::Texture")
+//				{
+//					throw new AbstractClassError();
+//				}
+//			}
 		}
 		
 		public var name:String;
@@ -159,17 +159,14 @@ package starling.textures
 			
 			if (data is Class)
 			{
-				//                texture = fromEmbeddedAsset(name, data as Class, options.mipMapping, options.optimizeForRenderToTexture, options.scale, options.format, options.repeat);
 				texture = fromEmbeddedAsset(name, data as Class, options.optimizeForRenderToTexture, options.scale, options.format, options.repeat);
 			}
 			else if (data is BitmapData)
 			{
-				//                texture = fromBitmapData(name, data as BitmapData, options.mipMapping, options.optimizeForRenderToTexture, options.scale, options.format, options.repeat);
 				texture = fromBitmapData(name, data as BitmapData, options.optimizeForRenderToTexture, options.scale, options.format, options.repeat);
 			}
 			else if (data is ByteArray)
 			{
-				//                texture = fromAtfData(name, data as ByteArray, options.scale, options.mipMapping, options.onReady, options.repeat);
 				texture = fromAtfData(name, data as ByteArray, options.scale, options.onReady, options.repeat);
 			}
 			else throw new ArgumentError("Unsupported 'data' type: " + getQualifiedClassName(data));
@@ -198,8 +195,7 @@ package starling.textures
 			
 			if (asset is Bitmap)
 			{
-				texture = Texture.fromBitmap(name, asset as Bitmap, //mipMapping,
-				optimizeForRenderToTexture, scale, format, repeat);
+				texture = Texture.fromBitmap(name, asset as Bitmap, optimizeForRenderToTexture, scale, format, repeat, false);
 				texture.root.onRestore = function():void
 				{
 					texture.root.uploadBitmap(new assetClass());
@@ -207,8 +203,7 @@ package starling.textures
 			}
 			else if (asset is ByteArray)
 			{
-				texture = Texture.fromAtfData(name, asset as ByteArray, scale, //mipMapping, 
-				null, repeat);
+				texture = Texture.fromAtfData(name, asset as ByteArray, scale, null, repeat, false);
 				texture.root.onRestore = function():void
 				{
 					texture.root.uploadAtfData(new assetClass());
@@ -239,10 +234,9 @@ package starling.textures
 		 *  @param repeat   the repeat value of the texture. Only useful for power-of-two textures.
 		 */
 		public static function fromBitmap(name:String, bitmap:Bitmap, //generateMipMaps:Boolean=false,
-		optimizeForRenderToTexture:Boolean = false, scale:Number = 1, format:String = "bgra", repeat:Boolean = false):Texture
+		optimizeForRenderToTexture:Boolean = false, scale:Number = 1, format:String = "bgra", repeat:Boolean = false, restoreImplementation: Boolean = true):Texture
 		{
-			return fromBitmapData(name, bitmap.bitmapData, //generateMipMaps, 
-			optimizeForRenderToTexture, scale, format, repeat);
+			return fromBitmapData(name, bitmap.bitmapData, optimizeForRenderToTexture, scale, format, repeat, restoreImplementation);
 		}
 		
 		/** Creates a texture object from bitmap data.
@@ -260,34 +254,32 @@ package starling.textures
 		 *                  quality).
 		 *  @param repeat   the repeat value of the texture. Only useful for power-of-two textures.
 		 */
-		public static function fromBitmapData(name:String, data:BitmapData, //generateMipMaps:Boolean=false,
-		optimizeForRenderToTexture:Boolean = false, scale:Number = 1, format:String = "bgra", repeat:Boolean = false):Texture
+		public static function fromBitmapData(name:String, data:BitmapData, 
+		optimizeForRenderToTexture:Boolean = false, scale:Number = 1, format:String = "bgra", repeat:Boolean = false, restoreImplementation: Boolean = true):Texture
 		{
+			var texture:Texture = Texture.empty(name, data.width / scale, data.height / scale, true, optimizeForRenderToTexture, scale, format, repeat);
 			
-			var texture:Texture = Texture.empty(name, data.width / scale, data.height / scale, true, //generateMipMaps, 
-			optimizeForRenderToTexture, scale, format, repeat);
-			
-			texture.name = name;
-			texture.root.name = name;
+			texture.name = texture.root.name = "BMD:" + name;
+//			texture.root.name = name;
 			
 			texture.root.uploadBitmapData(data);
-			texture.root.onRestore = function():void
+			
+			if (restoreImplementation)
 			{
-				texture.root.uploadBitmapData(data);
-			};
+				texture.root.onRestore = function():void
+				{
+					texture.root.uploadBitmapData(data);
+				};
+			}
 			
 			return texture;
 		}
 		
 		static public function fromByteArray(name:String, data:ByteArray, rect:Rectangle, optimizeForRenderToTexture:Boolean = false, scale:Number = 1, repeat:Boolean = false):Texture
 		{
+			var texture:Texture = Texture.empty(name, rect.width / scale, rect.height / scale, true, optimizeForRenderToTexture, scale, Context3DTextureFormat.BGRA, repeat);
 			
-			var texture:Texture = Texture.empty(name, rect.width / scale, rect.height / scale, true, 
-			//				false,
-			optimizeForRenderToTexture, scale, Context3DTextureFormat.BGRA, repeat);
-			
-			texture.name = name;
-			texture.root.name = name;
+			texture.name = texture.root.name = "BA:" + name;
 			
 			texture.root.uploadByteArray(data);
 			texture.root.onRestore = function():void
@@ -307,14 +299,8 @@ package starling.textures
 		 *  asynchronously. It can only be used when the callback has been executed. This is the
 		 *  expected function definition: <code>function(texture:Texture):void;</code></p> */
 		
-		public static function fromAtfData(name:String, data:ByteArray, scale:Number = 1, //useMipMaps:Boolean=false, 
-		async:Function = null, repeat:Boolean = false):Texture
+		public static function fromAtfData(name:String, data:ByteArray, scale:Number = 1, async:Function = null, repeat:Boolean = false, restoreImplementation: Boolean = true):Texture
 		{
-			//			CONFIG::DEBUG
-			//			{
-			//				if (useMipMaps) throw new Error("useMipMaps=" + true);
-			//			}
-			
 			var context:Context3D = Starling.context;
 			if (context == null) throw new MissingContextError();
 			
@@ -322,16 +308,19 @@ package starling.textures
 			
 			var nativeTexture:flash.display3D.textures.Texture = context.createTexture(atfData.width, atfData.height, atfData.format, false);
 			
-			var concreteTexture:ConcreteTexture = new ConcreteTexture(nativeTexture, atfData.format, atfData.width, atfData.height, //useMipMaps && atfData.numTextures > 1,
-			false, false, scale, repeat);
+			var concreteTexture:ConcreteTexture = new ConcreteTexture(nativeTexture, atfData.format, atfData.width, atfData.height, false, false, scale, repeat);
 			
 			concreteTexture.name = name;
 			
 			concreteTexture.uploadAtfData(data, 0, async);
-			concreteTexture.onRestore = function():void
+			
+			if (restoreImplementation)
 			{
-				concreteTexture.uploadAtfData(data, 0);
-			};
+				concreteTexture.onRestore = function():void
+				{
+					concreteTexture.uploadAtfData(data, 0);
+				};
+			}
 			
 			return concreteTexture;
 		
@@ -488,7 +477,6 @@ package starling.textures
 			
 			var useRectTexture:Boolean = !repeat && Starling.current.profile != "baselineConstrained" && "createRectangleTexture" in context && format.indexOf("compressed") == -1;
 			
-			//TODO to review
 			if (context.driverInfo.search("Disposed") != -1) 
 			{
 				Utils.log("texture=" + name);
@@ -503,7 +491,6 @@ package starling.textures
 				// Rectangle Textures are supported beginning with AIR 3.8. By calling the new
 				// methods only through those lookups, we stay compatible with older SDKs.
 				//nativeTexture = context["createRectangleTexture"](actualWidth, actualHeight, format, optimizeForRenderToTexture);
-				
 				nativeTexture = context.createRectangleTexture(actualWidth, actualHeight, format, optimizeForRenderToTexture);
 				
 			}

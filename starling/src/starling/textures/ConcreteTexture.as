@@ -57,20 +57,14 @@ package starling.textures
         
         /** Creates a ConcreteTexture object from a TextureBase, storing information about size,
          *  mip-mapping, and if the channels contain premultiplied alpha values. */
-        function ConcreteTexture(base:TextureBase, format:String, width:int, height:int, //mipMapping:Boolean, 
+        function ConcreteTexture(base:TextureBase, format:String, width:int, height:int, 
 				premultipliedAlpha:Boolean, optimizedForRenderTexture:Boolean=false, scale:Number=1, repeat:Boolean=false)
         {
-//			CONFIG::DEBUG
-//			{
-//				if (mipMapping) throw new Error("mipMapping="+ true);
-//			}
-						
             mScale = scale <= 0 ? 1.0 : scale;
             mBase = base;
             mFormat = format;
             mWidth = width;
             mHeight = height;
-//            mMipMapping = mipMapping;
             mPremultipliedAlpha = premultipliedAlpha;
             mOptimizedForRenderTexture = optimizedForRenderTexture;
             mRepeat = repeat;

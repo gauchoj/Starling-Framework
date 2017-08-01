@@ -362,32 +362,30 @@ package starling.display
 		public override function render(support:RenderSupport, parentAlpha:Number):void
 		{
 			numChildren1 = mChildren.length;
+			if (!numChildren1) return;
 			
-			if (numChildren1)
+			alpha1 = parentAlpha * mAlpha;
+			blendMode1 = support.mBlendMode;
+			
+			for (i1 = 0; i1 < numChildren1; ++i1)
 			{
-				alpha1 = parentAlpha * mAlpha;
-				blendMode1 = support.mBlendMode;
+				child1 = mChildren[i1];
 				
-				for (i1 = 0; i1 < numChildren1; ++i1)
+				if (child1.hasVisibleArea)
 				{
-					child1 = mChildren[i1];
+					support.pushMatrix();
+					support.transformMatrix(child1);
 					
-					if (child1.hasVisibleArea)
-					{
-						support.pushMatrix();
-						support.transformMatrix(child1);
-						
-						if (child1.blendMode != BlendMode.AUTO) support.mBlendMode = child1.blendMode;
-						
-						if (child1.mMask) support.pushMask(child1.mMask);
-						if (child1.filter) child1.filter.render(child1, support, alpha1);
-						else child1.render(support, alpha1);
-						if (child1.mMask) support.popMask();
-						
-						if (blendMode1 != BlendMode.AUTO) support.mBlendMode = blendMode1;
-						
-						support.popMatrix();
-					}
+					if (child1.blendMode != BlendMode.AUTO) support.mBlendMode = child1.blendMode;
+					
+					if (child1.mMask) support.pushMask(child1.mMask);
+					if (child1.filter) child1.filter.render(child1, support, alpha1);
+					else child1.render(support, alpha1);
+					if (child1.mMask) support.popMask();
+					
+					if (blendMode1 != BlendMode.AUTO) support.mBlendMode = blendMode1;
+					
+					support.popMatrix();
 				}
 			}
 		}

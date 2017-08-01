@@ -13,7 +13,6 @@ package starling.textures
 	import starling.utils.cleanMasterString;
 
 	import com.assukar.airong.error.AssukarError;
-	import com.assukar.airong.utils.Utils;
 
 	import flash.geom.Rectangle;
 	import flash.utils.Dictionary;
@@ -75,22 +74,25 @@ package starling.textures
     public class TextureAtlas
     {
         private var mAtlasTexture:Texture;
-        private var mSubTextures:Dictionary;
+        public var mSubTextures:Dictionary;
         private var mSubTextureNames:Vector.<String>;
         
         /** helper objects */
         private static var sNames:Vector.<String> = new <String>[];
 		
-		private var textureHash: Dictionary;
+//		private var textureHash: Dictionary;
+		private var registry: TextureRegistry;
         
         /** Create a texture atlas from a texture by parsing the regions from an XML file. */
-        public function TextureAtlas(texture:Texture, atlasXml:XML, textureHash: Dictionary)
+        public function TextureAtlas(registry: TextureRegistry, texture:Texture, atlasXml:XML)//textureHash: Dictionary)
         {
+			if (!atlasXml) throw new AssukarError();
             mSubTextures = new Dictionary();
             mAtlasTexture = texture;
-			this.textureHash = textureHash;
-			
-            if (atlasXml) parseAtlasXml(atlasXml);
+//			this.textureHash = textureHash;
+//            if (atlasXml) 
+			this.registry = registry;
+			parseAtlasXml(atlasXml);
         }
         
         /** Disposes the atlas texture. */
@@ -102,24 +104,35 @@ package starling.textures
         /** This function is called by the constructor and will parse an XML in Starling's 
          *  default atlas file format. Override this method to create custom parsing logic
          *  (e.g. to support a different file format). */
-        protected function parseAtlasXml(atlasXml:XML):void
+        final protected function parseAtlasXml(atlasXml:XML):void
         {
             var scale:Number = mAtlasTexture.scale;
             var region:Rectangle = new Rectangle();
             var frame:Rectangle  = new Rectangle();
+			
+            var name:String;
+            var x:Number;
+            var y:Number;
+            var width:Number;
+            var height:Number;
+            var frameX:Number;
+            var frameY:Number;
+            var frameWidth:Number;
+            var frameHeight:Number;
+            var rotated:Boolean;			
             
             for each (var subTexture:XML in atlasXml.SubTexture)
             {
-                var name:String        = cleanMasterString(subTexture.@name);
-                var x:Number           = parseFloat(subTexture.@x) / scale;
-                var y:Number           = parseFloat(subTexture.@y) / scale;
-                var width:Number       = parseFloat(subTexture.@width)  / scale;
-                var height:Number      = parseFloat(subTexture.@height) / scale;
-                var frameX:Number      = parseFloat(subTexture.@frameX) / scale;
-                var frameY:Number      = parseFloat(subTexture.@frameY) / scale;
-                var frameWidth:Number  = parseFloat(subTexture.@frameWidth)  / scale;
-                var frameHeight:Number = parseFloat(subTexture.@frameHeight) / scale;
-                var rotated:Boolean    = parseBool( subTexture.@rotated);
+                name        = cleanMasterString(subTexture.@name);
+                x           = parseFloat(subTexture.@x) / scale;
+                y           = parseFloat(subTexture.@y) / scale;
+                width       = parseFloat(subTexture.@width)  / scale;
+                height      = parseFloat(subTexture.@height) / scale;
+                frameX      = parseFloat(subTexture.@frameX) / scale;
+                frameY      = parseFloat(subTexture.@frameY) / scale;
+                frameWidth  = parseFloat(subTexture.@frameWidth)  / scale;
+                frameHeight = parseFloat(subTexture.@frameHeight) / scale;
+                rotated    = parseBool( subTexture.@rotated);
 
                 region.setTo(x, y, width, height);
                 frame.setTo(frameX, frameY, frameWidth, frameHeight);
@@ -196,16 +209,15 @@ package starling.textures
 
         /** Adds a named region for a SubTexture (described by rectangle with coordinates in
          *  points) with an optional frame. */
-        public function addRegion(name:String, region:Rectangle, frame:Rectangle=null,
-                                  rotated:Boolean=false):void
+        public function addRegion(name:String, region:Rectangle, frame:Rectangle=null, rotated:Boolean=false):void
         {
-			if (textureHash[name])
-			{
-				Utils.log("/********* TEXTURE::DUPLICATED " + name + " *********/");
-//				Utils.logError(new AssukarError("duplicated texture"), false);//:" + name), false);
-			}
+//			if (textureHash[name])
+//			{
+//				Utils.log("/********* TEXTURE::DUPLICATED " + name + " *********/");
+//			}
 			
-            textureHash[name] = mSubTextures[name] = new SubTexture(mAtlasTexture, region, false, frame, rotated);
+//            textureHash[name] = 
+			registry.register(name, mSubTextures[name] = new SubTexture(mAtlasTexture, region, false, frame, rotated));
             mSubTextureNames = null;
         }
         
@@ -215,7 +227,8 @@ package starling.textures
             var subTexture:SubTexture = mSubTextures[name];
             if (subTexture) subTexture.dispose();
             delete mSubTextures[name];
-			textureHash[name] = null;
+//			textureHash[name] = null;
+			registry.unregister(name);
             mSubTextureNames = null;
         }
         

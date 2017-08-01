@@ -105,6 +105,8 @@ package starling.utils
             return resultPoint;
         }
 
+		static private var sinX:Number, cosX:Number, sinY:Number, cosY:Number;
+		
         /** Appends a skew transformation to a matrix (angles in radians). The skew matrix
          *  has the following form:
          *  <pre>
@@ -115,10 +117,10 @@ package starling.utils
          */
         public static function skew(matrix:Matrix, skewX:Number, skewY:Number):void
         {
-            var sinX:Number = Math.sin(skewX);
-            var cosX:Number = Math.cos(skewX);
-            var sinY:Number = Math.sin(skewY);
-            var cosY:Number = Math.cos(skewY);
+            sinX = Math.sin(skewX);
+            cosX = Math.cos(skewX);
+            sinY = Math.sin(skewY);
+            cosY = Math.cos(skewY);
 
             matrix.setTo(matrix.a  * cosY - matrix.b  * sinX,
                          matrix.a  * sinY + matrix.b  * cosX,
@@ -154,11 +156,13 @@ package starling.utils
                          matrix.tx, matrix.ty);
         }
 
+		static private var sin:Number, cos:Number;
+		
         /** Prepends an incremental rotation to a Matrix object (angle in radians). */
         public static function prependRotation(matrix:Matrix, angle:Number):void
         {
-            var sin:Number = Math.sin(angle);
-            var cos:Number = Math.cos(angle);
+            sin = Math.sin(angle);
+            cos = Math.cos(angle);
 
             matrix.setTo(matrix.a * cos + matrix.c * sin,  matrix.b * cos + matrix.d * sin,
                          matrix.c * cos - matrix.a * sin,  matrix.d * cos - matrix.b * sin,
@@ -175,10 +179,10 @@ package starling.utils
          */
         public static function prependSkew(matrix:Matrix, skewX:Number, skewY:Number):void
         {
-            var sinX:Number = Math.sin(skewX);
-            var cosX:Number = Math.cos(skewX);
-            var sinY:Number = Math.sin(skewY);
-            var cosY:Number = Math.cos(skewY);
+            sinX = Math.sin(skewX);
+            cosX = Math.cos(skewX);
+            sinY = Math.sin(skewY);
+            cosY = Math.cos(skewY);
 
             matrix.setTo(matrix.a * cosY + matrix.c * sinY,
                          matrix.b * cosY + matrix.d * sinY,

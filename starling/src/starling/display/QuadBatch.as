@@ -165,10 +165,7 @@ package starling.display
 		private function expand():void
 		{
 			var oldCapacity:int = this.capacity;
-			
-			if (oldCapacity >= MAX_NUM_QUADS)
-				throw new Error("Exceeded maximum number of quads!");
-			
+			if (oldCapacity >= MAX_NUM_QUADS) throw new Error("Exceeded maximum number of quads!");
 			this.capacity = oldCapacity < 8 ? 16 : oldCapacity * 2;
 		}
 		
@@ -197,7 +194,7 @@ package starling.display
 			{
 				mSyncRequired = true;
 				mVertexBuffer = null;
-				Utils.log("QuadBatch.createBuffers PROBLEM RENDERING numVertices=" + numVertices + " error=" + e.errorID + " frameCount=" + Starling.current.frameCount);// + "/" + Starling.current.frameProblemCount + "/" + Starling.current.problemVirginFrame);
+				Utils.log("QuadBatch.createBuffers PROBLEM RENDERING numVertices=" + numVertices + " error=" + e.errorID + " frameCount=" + Starling.current.frameCount);
 				if (e.errorID != 3672) throw e;
 				return false;
 			}
@@ -379,7 +376,6 @@ package starling.display
 			if (mNumQuads == 0) return false;
 			else if (mNumQuads + numQuads > MAX_NUM_QUADS) return true; // maximum buffer size
 			else if (mTexture == null && texture == null)
-//				return this.blendMode != blendMode || this.ignoreFilters != ignoreFilters;
 				return this.blendMode != blendMode;
 			else if (mTexture != null && texture != null)
 				return mTexture.base != texture.base || mTexture.repeat != texture.repeat || mSmoothing != smoothing || mTinted != (mForceTinted || tinted || parentAlpha != 1.0) || this.blendMode != blendMode;
@@ -445,9 +441,7 @@ package starling.display
 		/** Updates the alpha value of a specific quad. */
 		public function setQuadAlpha(quadID:int, alpha:Number):void
 		{
-			for (var i:int = 0; i < 4; ++i)
-				mVertexData.setAlpha(quadID * 4 + i, alpha);
-			
+			for (var i:int = 0; i < 4; ++i) mVertexData.setAlpha(quadID * 4 + i, alpha);
 			mSyncRequired = true;
 		}
 		
@@ -536,7 +530,7 @@ package starling.display
 		
 		private static function compileObject(object:DisplayObject, quadBatches:Vector.<QuadBatch>, quadBatchID:int, transformationMatrix:Matrix, alpha:Number = 1.0, blendMode:String = null, ignoreCurrentFilter:Boolean = false):int
 		{
-			if (object is Sprite3D) throw new IllegalOperationError("Sprite3D objects cannot be flattened");
+//			if (object is Sprite3D) throw new IllegalOperationError("Sprite3D objects cannot be flattened");
 			
 			var i:int;
 			var quadBatch:QuadBatch;
@@ -734,15 +728,14 @@ package starling.display
 		
 		// program management
 		
+		private var target:Starling, programName:String, program:Program3D, vertexShader:String, fragmentShader:String;
+		
 		private function getProgram(tinted:Boolean):Program3D
 		{
-			var target:Starling = Starling.current;
-			var programName:String = QUAD_PROGRAM_NAME;
-			
-//			if (mTexture) programName = getImageProgramName(tinted, mTexture.mipMapping, mTexture.repeat, mTexture.format, mSmoothing);
+			if (!target) target = Starling.current;
+			programName = QUAD_PROGRAM_NAME;
 			if (mTexture) programName = getImageProgramName(tinted, mTexture.repeat, mTexture.format, mSmoothing);
-			
-			var program:Program3D = target.getProgram(programName);
+			program = target.getProgram(programName);
 			
 			if (!program)
 			{
@@ -755,8 +748,8 @@ package starling.display
 				// vc1 -> mvpMatrix
 				// fs0 -> texture
 				
-				var vertexShader:String;
-				var fragmentShader:String;
+//				var vertexShader:String;
+//				var fragmentShader:String;
 				
 				if (!mTexture) // Quad-Shaders
 				{
@@ -787,26 +780,23 @@ package starling.display
 			return program;
 		}
 		
-//		private static function getImageProgramName(tinted:Boolean, mipMap:Boolean = false, repeat:Boolean = false, format:String = "bgra", smoothing:String = "bilinear"):String
+		static private var bitField:uint, name:String;
+		
 		private static function getImageProgramName(tinted:Boolean, repeat:Boolean = false, format:String = "bgra", smoothing:String = "bilinear"):String
 		{
-			var bitField:uint = 0;
+			bitField = 0;
 			
 			if (tinted) bitField |= 1;
 //			if (mipMap) bitField |= 1 << 1;
 			if (repeat) bitField |= 1 << 2;
 			
-			if (smoothing == TextureSmoothing.NONE)
-				bitField |= 1 << 3;
-			else if (smoothing == TextureSmoothing.TRILINEAR)
-				bitField |= 1 << 4;
+			if (smoothing == TextureSmoothing.NONE) bitField |= 1 << 3;
+			else if (smoothing == TextureSmoothing.TRILINEAR) bitField |= 1 << 4;
 			
-			if (format == Context3DTextureFormat.COMPRESSED)
-				bitField |= 1 << 5;
-			else if (format == "compressedAlpha")
-				bitField |= 1 << 6;
+			if (format == Context3DTextureFormat.COMPRESSED) bitField |= 1 << 5;
+			else if (format == "compressedAlpha") bitField |= 1 << 6;
 			
-			var name:String = sProgramNameCache[bitField];
+			name = sProgramNameCache[bitField];
 			
 			if (name == null)
 			{

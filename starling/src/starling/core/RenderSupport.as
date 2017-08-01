@@ -562,13 +562,12 @@ package starling.core
 		
         public function batchQuad(quad:Quad, parentAlpha:Number, texture:Texture=null, smoothing:String=null):void
         {
-            if (mQuadBatches[mCurrentQuadBatchID].isStateChange(quad.tinted, parentAlpha, texture, smoothing, mBlendMode, 1, false))//quad.ignoreFilters))
+            if (mQuadBatches[mCurrentQuadBatchID].isStateChange(quad.tinted, parentAlpha, texture, smoothing, mBlendMode, 1, false))
             {
                 finishQuadBatch();
             }
             
             mQuadBatches[mCurrentQuadBatchID].addQuad(quad, parentAlpha, texture, smoothing, mModelViewMatrix, mBlendMode);
-            //mQuadBatches[mCurrentQuadBatchID].addQuad(quad, parentAlpha, texture, smoothing, backSide, mModelViewMatrix, mBlendMode);
         }
         
         /** Adds a batch of quads to the current batch of unrendered quads. If there is a state 
@@ -653,12 +652,6 @@ package starling.core
 
         private function createQuadBatch():QuadBatch
         {
-//            var profile:String = Starling.current.profile;
-//            var forceTinted:Boolean = (profile != "baselineConstrained" && profile != "baseline");
-//            var quadBatch:QuadBatch = new QuadBatch();
-//            quadBatch.forceTinted = forceTinted;
-//            return quadBatch;
-			
             profile1 = Starling.current.profile;
             quadBatch1 = new QuadBatch();
             quadBatch1.forceTinted = (profile1 != "baselineConstrained" && profile1 != "baseline");

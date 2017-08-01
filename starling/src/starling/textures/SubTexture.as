@@ -59,7 +59,7 @@ package starling.textures
             //       be fixed ('ownsParent' at the very end).
             
 			if (parent) name = parent.name;
-			else name = "SubTexture:no:parent";
+			else name = "SubTexture:noparent";
 			
             mParent = parent;
             mRegion = region ? region.clone() : new Rectangle(0, 0, parent.width, parent.height);

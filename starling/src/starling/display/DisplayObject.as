@@ -360,7 +360,7 @@ package starling.display
          *  if it is not currently used as a mask for another display object. */
         public function get hasVisibleArea():Boolean
         {
-            return mAlpha != 0.0 && mVisible && !mIsMask && mScaleX != 0.0 && mScaleY != 0.0;
+            return mVisible && mAlpha != 0.0 && !mIsMask && mScaleX != 0.0 && mScaleY != 0.0;
         }
         
         /** Moves the pivot point to a certain position within the local coordinate system

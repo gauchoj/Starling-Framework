@@ -82,15 +82,17 @@ package starling.textures
 		
 //		private var textureHash: Dictionary;
 		private var registry: TextureRegistry;
+		public var name: String;
         
         /** Create a texture atlas from a texture by parsing the regions from an XML file. */
-        public function TextureAtlas(registry: TextureRegistry, texture:Texture, atlasXml:XML)//textureHash: Dictionary)
+        public function TextureAtlas(name: String, registry: TextureRegistry, texture:Texture, atlasXml:XML)//textureHash: Dictionary)
         {
 			if (!atlasXml) throw new AssukarError();
             mSubTextures = new Dictionary();
             mAtlasTexture = texture;
 //			this.textureHash = textureHash;
 //            if (atlasXml) 
+			this.name = name;
 			this.registry = registry;
 			parseAtlasXml(atlasXml);
         }
@@ -211,13 +213,7 @@ package starling.textures
          *  points) with an optional frame. */
         public function addRegion(name:String, region:Rectangle, frame:Rectangle=null, rotated:Boolean=false):void
         {
-//			if (textureHash[name])
-//			{
-//				Utils.log("/********* TEXTURE::DUPLICATED " + name + " *********/");
-//			}
-			
-//            textureHash[name] = 
-			registry.register(name, mSubTextures[name] = new SubTexture(mAtlasTexture, region, false, frame, rotated));
+			registry.register(name, mSubTextures[name] = new SubTexture(mAtlasTexture, region, false, frame, rotated), this);
             mSubTextureNames = null;
         }
         

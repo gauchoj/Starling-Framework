@@ -109,28 +109,9 @@ package starling.textures
         public function RenderTexture(name: String, width:int, height:int, persistent:Boolean=true,
                                       scale:Number=-1, format:String="bgra", repeat:Boolean=false)
         {
-            var legalWidth:Number  = width;
-            var legalHeight:Number = height;
-
-            // TODO: when Adobe has fixed this bug on the iPad 1 (see 'supportsNonPotDimensions'),
-            //       we can remove 'legalWidth/Height' and just pass on the original values.
-            //
-            // [Workaround]
-
-//            if (scale <= 0) scale = Starling.contentScaleFactor;
-//
-//
-//            if (!supportsNonPotDimensions)
-//            {
-//                legalWidth  = getNextPowerOfTwo(width  * scale) / scale;
-//                legalHeight = getNextPowerOfTwo(height * scale) / scale;
-//            }
-
-            // [/Workaround]
-            
 			this.name = name;
 
-            mActiveTexture = Texture.empty("render.mActiveTexture", legalWidth, legalHeight, PMA, //false, 
+            mActiveTexture = Texture.empty("render.mActiveTexture", width, height, PMA, //false, 
 				true, scale, format, repeat);
             mActiveTexture.root.onRestore = mActiveTexture.root.clear;
             
@@ -145,7 +126,7 @@ package starling.textures
             
             if (persistent && (!optimizePersistentBuffers || !SystemUtil.supportsRelaxedTargetClearRequirement))
             {
-                mBufferTexture = Texture.empty("render.mBufferTexture", legalWidth, legalHeight, PMA, //false, 
+                mBufferTexture = Texture.empty("render.mBufferTexture", width, height, PMA, //false, 
 					true, scale, format, repeat);
                 mBufferTexture.root.onRestore = mBufferTexture.root.clear;
                 mHelperImage = new Image(mBufferTexture);

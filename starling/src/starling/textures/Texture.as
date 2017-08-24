@@ -140,8 +140,6 @@ package starling.textures
 		 *  atlas. */
 		public function dispose():void
 		{
-			throw new AbstractError();
-			// override in subclasses
 		}
 		
 		/** Creates a texture object from any of the supported data types, using the specified
@@ -430,7 +428,8 @@ package starling.textures
 		 */
 		public static function fromColor(name:String, width:Number, height:Number, color:uint = 0xffffffff, optimizeForRenderToTexture:Boolean = false, scale:Number = -1, format:String = "bgra"):Texture
 		{
-			var texture:Texture = Texture.empty(name, width, height, true, //false,
+//			trace('fromColor: ' + (fromColor));
+			var texture: Texture = Texture.empty(name, width, height, true, // false,
 			optimizeForRenderToTexture, scale, format);
 			
 			texture.name = name;
@@ -462,8 +461,8 @@ package starling.textures
 		 *                 compressed formats to save memory (at the price of reduced image quality).
 		 *  @param repeat  the repeat mode of the texture. Only useful for power-of-two textures.
 		 */
-		public static function empty(name:String, width:Number, height:Number, premultipliedAlpha:Boolean = true, //mipMapping:Boolean=false, 
-		optimizeForRenderToTexture:Boolean = false, scale:Number = -1, format:String = "bgra", repeat:Boolean = false):Texture
+		public static function empty(name:String, width:Number, height:Number, premultipliedAlpha:Boolean = true,  
+			optimizeForRenderToTexture:Boolean = false, scale:Number = -1, format:String = "bgra", repeat:Boolean = false):Texture
 		{
 			if (scale <= 0) scale = Starling.contentScaleFactor;
 			
@@ -510,7 +509,6 @@ package starling.textures
 			if (actualWidth - origWidth < 0.001 && actualHeight - origHeight < 0.001)
 				return concreteTexture;
 			else
-				//return new SubTexture(concreteTexture, new Rectangle(0, 0, width, height), true);
 				return new SubTexture(concreteTexture, new Rectangle(0, 0, actualWidth, actualHeight), true);
 		
 		}
@@ -526,10 +524,11 @@ package starling.textures
 		 *  @param rotated  If true, the SubTexture will show the parent region rotated by
 		 *                  90 degrees (CCW).
 		 */
-		public static function fromTexture(texture:Texture, region:Rectangle = null, frame:Rectangle = null, rotated:Boolean = false):Texture
-		{
-			return new SubTexture(texture, region, false, frame, rotated);
-		}
+		 // moved to DisposableImage.as
+//		public static function fromTexture(texture:Texture, region:Rectangle = null, frame:Rectangle = null, rotated:Boolean = false):Texture
+//		{
+//			return new SubTexture(texture, region, false, frame, rotated);
+//		}
 		
 		/** Converts texture coordinates and vertex positions of raw vertex data into the format
 		 *  required for rendering. While the texture coordinates of an image always use the

@@ -205,22 +205,38 @@ package starling.filters
             if (mMode == FragmentFilterMode.BELOW) object.render(support, parentAlpha);
         }
         
+        private var passTexture:Texture;
+        private var cacheTexture:Texture;
+        private var context:Context3D;
+        private var targetSpace:DisplayObject;
+        private var stage:Stage;
+        private var scale:Number;
+        private var projMatrix:Matrix;
+        private var projMatrix3D:Matrix3D;
+        private var bounds:Rectangle;
+        private var boundsPot:Rectangle;
+        private var previousStencilRefValue:uint;
+        private var previousRenderTarget:Texture;
+        private var intersectWithStage:Boolean;
+        private var quadBatch:QuadBatch;
+        private var image:Image;		
+					
         private function renderPasses(object:DisplayObject, support:RenderSupport,
                                       parentAlpha:Number, intoCache:Boolean=false):QuadBatch
         {
-            var passTexture:Texture;
-            var cacheTexture:Texture = null;
-            var context:Context3D = Starling.context;
-            var targetSpace:DisplayObject = object.stage;
-            var stage:Stage  = Starling.current.stage;
-            var scale:Number = Starling.current.contentScaleFactor;
-            var projMatrix:Matrix     = mHelperMatrix;
-            var projMatrix3D:Matrix3D = mHelperMatrix3D;
-            var bounds:Rectangle      = mHelperRect;
-            var boundsPot:Rectangle   = mHelperRect2;
-            var previousStencilRefValue:uint;
-            var previousRenderTarget:Texture;
-            var intersectWithStage:Boolean;
+            passTexture = null;
+            cacheTexture = null;
+            context = Starling.context;
+            targetSpace = object.stage;
+            stage  = Starling.current.stage;
+            scale = Starling.current.contentScaleFactor;
+            projMatrix     = mHelperMatrix;
+            projMatrix3D = mHelperMatrix3D;
+            bounds      = mHelperRect;
+            boundsPot   = mHelperRect2;
+            previousStencilRefValue = 0;
+            previousRenderTarget = null;
+            intersectWithStage = false;
 
             if (context == null) throw new MissingContextError();
             
@@ -251,8 +267,8 @@ package starling.filters
             previousRenderTarget = support.renderTarget;
             previousStencilRefValue = support.stencilReferenceValue;
 
-            if (previousRenderTarget && !SystemUtil.supportsRelaxedTargetClearRequirement)
-                throw new IllegalOperationError("To nest filters, you need at least Flash Player / AIR version 15.");
+//            if (previousRenderTarget && !SystemUtil.supportsRelaxedTargetClearRequirement)
+//                throw new IllegalOperationError("To nest filters, you need at least Flash Player / AIR version 15.");
             
             if (intoCache)
                 cacheTexture = Texture.empty("FragmentFilter:" + name, boundsPot.width, boundsPot.height, PMA, //false, 
@@ -340,8 +356,8 @@ package starling.filters
                 // the filter output in object coordinates, we wrap it in a QuadBatch: that way,
                 // we can modify it with a transformation matrix.
                 
-                var quadBatch:QuadBatch = new QuadBatch();
-                var image:Image = new Image(cacheTexture);
+                quadBatch = new QuadBatch();
+                image = new Image(cacheTexture);
                 
                 // targetSpace could be null, so we calculate the matrix from the other side
                 // and invert.
@@ -380,10 +396,7 @@ package starling.filters
 			}
 			catch (e:Error)
 			{
-//				Starling.current.frameProblemCount++;
-//				Starling.current.frameProblemProduces++;
-				Utils.log("FragmentFilter.updateBuffers PROBLEM RENDERING " + e.errorID + " " + Starling.current.frameCount);// + "/" + Starling.current.frameProblemCount + "/" + Starling.current.problemVirginFrame);
-//				if (Starling.current.problemVirginFrame) Starling.current.frameProblemProduces++;
+				Utils.log("FragmentFilter.updateBuffers PROBLEM RENDERING " + e.errorID + " " + Starling.current.frameCount);
 			}
         }
         

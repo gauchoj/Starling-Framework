@@ -126,7 +126,7 @@ package starling.text
 		
 		override public function get visible():Boolean 
 		{ 
-			return super.visible && !emptyText; 
+			return super.visible && !emptyTextRendered; 
 		}
         
         /** Create a new text field with the given properties. */
@@ -175,19 +175,19 @@ package starling.text
 			return !mText || mText == "";
 		}
 		
+		private var emptyTextRendered: Boolean = false;
+		
         /** Forces the text field to be constructed right away. Normally, 
          *  it will only do so lazily, i.e. before being rendered. */
         public function redraw():void
         {
             if (mRequiresRedraw)
             {
-//				if (!emptyText)
-//				{
-	                if (getBitmapFont(mFontName)) createComposedContents();
-	                else createRenderedContents();
-	                updateBorder();
-//				}
+                if (getBitmapFont(mFontName)) createComposedContents();
+                else createRenderedContents();
+                updateBorder();
                 mRequiresRedraw = false;
+				emptyTextRendered = emptyText;
             }
         }
         

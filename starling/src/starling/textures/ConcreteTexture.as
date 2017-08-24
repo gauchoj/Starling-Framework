@@ -18,7 +18,7 @@ package starling.textures
 	import starling.events.Event;
 	import starling.utils.Color;
 
-	import com.assukar.airong.utils.Utils;
+	import com.assukar.airong.error.AssukarError;
 
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
@@ -48,7 +48,7 @@ package starling.textures
         private var mRepeat:Boolean;
         private var mOnRestore:Function;
         private var mDataUploaded:Boolean;
-        private var mTextureReadyCallback:Function;
+//        private var mTextureReadyCallback:Function;
         
         /** helper object */
         private static var sOrigin:Point = new Point();
@@ -75,7 +75,7 @@ package starling.textures
             mRepeat = repeat;
             mOnRestore = null;
             mDataUploaded = false;
-            mTextureReadyCallback = null;
+//            mTextureReadyCallback = null;
         }
         
         /** Disposes the TextureBase object. */
@@ -165,7 +165,8 @@ package starling.textures
             
             if (async is Function)
             {
-                mTextureReadyCallback = async as Function;
+				throw new AssukarError();
+//                mTextureReadyCallback = async as Function;
 //                mBase.addEventListener(TEXTURE_READY, onTextureReady);
             }
             
@@ -190,7 +191,13 @@ package starling.textures
             if (className == "flash.display3D.textures::VideoTexture")
             {
                 mDataUploaded = true;
-                mTextureReadyCallback = onComplete;
+				
+				if (onComplete) 
+				{
+					throw new AssukarError();
+//                	mTextureReadyCallback = onComplete;
+				}
+				
                 mBase["attach" + type](attachment);
 //                mBase.addEventListener(TEXTURE_READY, onTextureReady);
             }

@@ -1,10 +1,9 @@
 package starling.textures
 {
 	import com.assukar.airong.ds.HashSet;
-	import com.assukar.airong.ds.LinkedList;
 	import com.assukar.airong.utils.Singleton;
+	import com.assukar.airong.utils.Statics;
 	import com.assukar.airong.utils.Utils;
-
 	import flash.utils.setInterval;
 	/**
 	 * @author Assukar
@@ -28,6 +27,14 @@ package starling.textures
 		private var registers: int = 0;
 		private var removals: int = 0;
 		
+		private function bytes(size: int): String
+		{
+			if (size < Statics.KB) return size+"b";
+			else if (size < Statics.MB) return (size/Statics.KB).toFixed(0)+"Kb";
+			else if (size < Statics.GB) return (size/Statics.MB).toFixed(1)+"Mb";
+			else return (size/Statics.GB).toFixed(3)+"Gb";
+		}
+		
 		private function dump(): void
 		{
 			var groups: HashSet = new HashSet();
@@ -37,23 +44,28 @@ package starling.textures
 			});
 			
 			var i: int = 0;
+			var asize: uint = 0;
 			groups.apply(function(group: String): void
 			{
 				var c: int = 0;
 				var str: String = "";
+				var size: uint = 0;
 				hashset.apply(function(texture: Texture): void
 				{
 					if (group == texture.group)
 					{
 						i++;
 						c++;
-						str += "   " + i + " " + texture.name + "\n"; 
+						size += texture.nativeWidth * texture.nativeHeight;
+						str += "   " + i + " " + texture.name + " " + bytes(texture.nativeWidth * texture.nativeHeight) + "\n"; 
 					}
 				});
-				trace(">> " + group + " " + c);
+				asize += size;
+				trace(">> " + group + " " + c + " " + bytes(size));
 				trace(str);
 			});
 			
+			Utils.print("ALL " + bytes(asize));
 			Utils.print("registers=" + registers + " removals=" + removals);
 		}
 		

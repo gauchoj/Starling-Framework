@@ -38,11 +38,19 @@ package starling.textures
 			var i: int = 0;
 			groups.apply(function(group: String): void
 			{
-				trace(">> " + group);
+				var c: int = 0;
+				var str: String;
 				hashset.apply(function(texture: Texture): void
 				{
-					if (group == texture.group) trace("   " + ++i + " " + texture.name); 
+					if (group == texture.group)
+					{
+						i++;
+						c++;
+						str += "   " + i + " " + texture.name + "\n"; 
+					}
 				});
+				trace(">> " + group + " " + c);
+				trace(str);
 			});
 			
 			Utils.print("registers=" + registers + " removals=" + removals);

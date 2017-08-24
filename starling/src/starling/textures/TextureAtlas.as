@@ -90,8 +90,7 @@ package starling.textures
 			if (!atlasXml) throw new AssukarError();
             mSubTextures = new Dictionary();
             mAtlasTexture = texture;
-//			this.textureHash = textureHash;
-//            if (atlasXml) 
+			texture.resetName("TextureAtlas:" + texture.name); 
 			this.name = name;
 			this.registry = registry;
 			parseAtlasXml(atlasXml);
@@ -123,18 +122,18 @@ package starling.textures
             var frameHeight:Number;
             var rotated:Boolean;			
             
-            for each (var subTexture:XML in atlasXml.SubTexture)
+            for each (var subTexturee:XML in atlasXml.SubTexture)
             {
-                name        = cleanMasterString(subTexture.@name);
-                x           = parseFloat(subTexture.@x) / scale;
-                y           = parseFloat(subTexture.@y) / scale;
-                width       = parseFloat(subTexture.@width)  / scale;
-                height      = parseFloat(subTexture.@height) / scale;
-                frameX      = parseFloat(subTexture.@frameX) / scale;
-                frameY      = parseFloat(subTexture.@frameY) / scale;
-                frameWidth  = parseFloat(subTexture.@frameWidth)  / scale;
-                frameHeight = parseFloat(subTexture.@frameHeight) / scale;
-                rotated    = parseBool( subTexture.@rotated);
+                name        = cleanMasterString(subTexturee.@name);
+                x           = parseFloat(subTexturee.@x) / scale;
+                y           = parseFloat(subTexturee.@y) / scale;
+                width       = parseFloat(subTexturee.@width)  / scale;
+                height      = parseFloat(subTexturee.@height) / scale;
+                frameX      = parseFloat(subTexturee.@frameX) / scale;
+                frameY      = parseFloat(subTexturee.@frameY) / scale;
+                frameWidth  = parseFloat(subTexturee.@frameWidth)  / scale;
+                frameHeight = parseFloat(subTexturee.@frameHeight) / scale;
+                rotated    = parseBool( subTexturee.@rotated);
 
                 region.setTo(x, y, width, height);
                 frame.setTo(frameX, frameY, frameWidth, frameHeight);
@@ -158,7 +157,7 @@ package starling.textures
             for each (var name:String in getNames(prefix, sNames))
 			{
 				txt = result[result.length] = getTexture(name);
-				txt.name = name; 
+//				txt.name = name; 
 			}
             sNames.length = 0;
             return result;
@@ -185,11 +184,13 @@ package starling.textures
             return result;
         }
         
+		private var subTexture:SubTexture;
+		
         /** Returns the region rectangle associated with a specific name, or <code>null</code>
          *  if no region with that name has been registered. */
         public function getRegion(name:String):Rectangle
         {
-            var subTexture:SubTexture = mSubTextures[name];
+            subTexture = mSubTextures[name];
             return subTexture ? subTexture.region : null;
         }
         
@@ -197,15 +198,15 @@ package starling.textures
          *  has no frame. */
         public function getFrame(name:String):Rectangle
         {
-            var subTexture:SubTexture = mSubTextures[name];
+            subTexture = mSubTextures[name];
             return subTexture ? subTexture.frame : null;
         }
-        
+		
         /** If true, the specified region in the atlas is rotated by 90 degrees (clockwise). The
          *  SubTexture is thus rotated counter-clockwise to cancel out that transformation. */
         public function getRotation(name:String):Boolean
         {
-            var subTexture:SubTexture = mSubTextures[name];
+            subTexture = mSubTextures[name];
             return subTexture ? subTexture.rotated : false;
         }
 
@@ -213,17 +214,17 @@ package starling.textures
          *  points) with an optional frame. */
         public function addRegion(name:String, region:Rectangle, frame:Rectangle=null, rotated:Boolean=false):void
         {
-			registry.register(name, mSubTextures[name] = new SubTexture(mAtlasTexture, region, false, frame, rotated), this);
+			registry.register(name, subTexture = mSubTextures[name] = new SubTexture(this.name + ":" + name, mAtlasTexture, region, false, frame, rotated), this);
+//			subTexture.name = this.name + ":" + name;
             mSubTextureNames = null;
         }
         
         /** Removes a region with a certain name. */
         public function removeRegion(name:String):void
         {
-            var subTexture:SubTexture = mSubTextures[name];
+            subTexture = mSubTextures[name];
             if (subTexture) subTexture.dispose();
             delete mSubTextures[name];
-//			textureHash[name] = null;
 			registry.unregister(name);
             mSubTextureNames = null;
         }

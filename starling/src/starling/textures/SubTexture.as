@@ -51,15 +51,15 @@ package starling.textures
          *  @param rotated    If true, the SubTexture will show the parent region rotated by
          *                    90 degrees (CCW).
          */
-        function SubTexture(parent:Texture, region:Rectangle=null,
+        function SubTexture(name: String, parent:Texture, region:Rectangle=null,
                                    ownsParent:Boolean=false, frame:Rectangle=null,
                                    rotated:Boolean=false)
         {
-            // TODO: in a future version, the order of arguments of this constructor should
-            //       be fixed ('ownsParent' at the very end).
-            
-			if (parent) name = parent.name;
-			else name = "SubTexture:noparent";
+//			if (parent) name = parent.name;
+//			else name = "SubTexture:noparent";
+			
+//			super((parent?parent.name + "::":"") + name);
+			super(name);
 			
             mParent = parent;
             mRegion = region ? region.clone() : new Rectangle(0, 0, parent.width, parent.height);

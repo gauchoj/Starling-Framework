@@ -19,7 +19,7 @@ package starling.textures
     internal class ConcreteVideoTexture extends ConcreteTexture
     {
         /** Creates a new VideoTexture. 'base' must be of type 'VideoTexture'. */
-        public function ConcreteVideoTexture(base:TextureBase, scale:Number = 1)
+        public function ConcreteVideoTexture(name: String, base:TextureBase, scale:Number = 1)
         {
             // we must not reference the "VideoTexture" class directly
             // because it's only available in AIR.
@@ -29,7 +29,7 @@ package starling.textures
             var height:Number = "videoHeight" in base ? base["videoHeight"] : 0;
 
 //            super(base, format, width, height, false, false, false, scale, false);
-			super(base, format, width, height, false, false, scale, false);
+			super(name, base, format, width, height, false, false, scale, false);
 
             if (getQualifiedClassName(base) != "flash.display3D.textures::VideoTexture")
                 throw new ArgumentError("'base' must be VideoTexture");

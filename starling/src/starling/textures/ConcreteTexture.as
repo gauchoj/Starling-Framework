@@ -17,7 +17,6 @@ package starling.textures
 	import starling.errors.NotSupportedError;
 	import starling.events.Event;
 	import starling.utils.Color;
-	import starling.utils.execute;
 
 	import com.assukar.airong.utils.Utils;
 
@@ -25,9 +24,7 @@ package starling.textures
 	import flash.display.BitmapData;
 	import flash.display3D.Context3D;
 	import flash.display3D.textures.TextureBase;
-	import flash.geom.Matrix;
 	import flash.geom.Point;
-	import flash.geom.Rectangle;
 	import flash.media.Camera;
 	import flash.net.NetStream;
 	import flash.utils.ByteArray;
@@ -38,7 +35,8 @@ package starling.textures
     /** A ConcreteTexture wraps a Stage3D texture object, storing the properties of the texture. */
     public class ConcreteTexture extends Texture
     {
-        private static const TEXTURE_READY:String = "textureReady"; // defined here for backwards compatibility
+//        private static const TEXTURE_READY:String = "textureReady"; // defined here for backwards compatibility
+
         private var mBase:TextureBase;
         private var mFormat:String;
         private var mWidth:int;
@@ -57,9 +55,16 @@ package starling.textures
         
         /** Creates a ConcreteTexture object from a TextureBase, storing information about size,
          *  mip-mapping, and if the channels contain premultiplied alpha values. */
-        function ConcreteTexture(base:TextureBase, format:String, width:int, height:int, 
+        function ConcreteTexture(name: String, base:TextureBase, format:String, width:int, height:int, 
 				premultipliedAlpha:Boolean, optimizedForRenderTexture:Boolean=false, scale:Number=1, repeat:Boolean=false)
         {
+			super(name);
+			
+			CONFIG::DEBUG
+			{
+				TextureCatalog.ME.register(this);
+			}
+			
             mScale = scale <= 0 ? 1.0 : scale;
             mBase = base;
             mFormat = format;
@@ -78,12 +83,17 @@ package starling.textures
         {
             if (mBase)
             {
-                mBase.removeEventListener(TEXTURE_READY, onTextureReady);
+//                mBase.removeEventListener(TEXTURE_READY, onTextureReady);
                 mBase.dispose();
             }
 
             this.onRestore = null;
             super.dispose();
+			
+			CONFIG::DEBUG
+			{
+				TextureCatalog.ME.dispose(this);
+			}
         }
         
         // texture data upload
@@ -103,15 +113,15 @@ package starling.textures
         {
             var potData:BitmapData;
 			
-			try
-			{
-				data.width;
-			}
-			catch (e: Error)
-			{
-				Utils.log("name=" + name + " mWidth=" + mWidth + " mHeight=" + mHeight);
-				throw e;
-			}
+//			try
+//			{
+//				data.width;
+//			}
+//			catch (e: Error)
+//			{
+//				Utils.log("name=" + name + " mWidth=" + mWidth + " mHeight=" + mHeight);
+//				throw e;
+//			}
 			
             if (data.width != mWidth || data.height != mHeight)
             {
@@ -122,10 +132,8 @@ package starling.textures
 			
             if (mBase is flash.display3D.textures.Texture)
             {
-                var potTexture:flash.display3D.textures.Texture = 
-                    mBase as flash.display3D.textures.Texture;
-					
-					potTexture.uploadFromBitmapData(data);
+                var potTexture:flash.display3D.textures.Texture =mBase as flash.display3D.textures.Texture;
+				potTexture.uploadFromBitmapData(data);
             }
             else 
             {
@@ -158,7 +166,7 @@ package starling.textures
             if (async is Function)
             {
                 mTextureReadyCallback = async as Function;
-                mBase.addEventListener(TEXTURE_READY, onTextureReady);
+//                mBase.addEventListener(TEXTURE_READY, onTextureReady);
             }
             
             potTexture.uploadCompressedTextureFromByteArray(data, offset, isAsync);
@@ -184,17 +192,17 @@ package starling.textures
                 mDataUploaded = true;
                 mTextureReadyCallback = onComplete;
                 mBase["attach" + type](attachment);
-                mBase.addEventListener(TEXTURE_READY, onTextureReady);
+//                mBase.addEventListener(TEXTURE_READY, onTextureReady);
             }
             else throw new Error("This texture type does not support " + type + " data");
         }
 
-        private function onTextureReady(event:Object):void
-        {
-            mBase.removeEventListener(TEXTURE_READY, onTextureReady);
-            execute(mTextureReadyCallback, this);
-            mTextureReadyCallback = null;
-        }
+//        private function onTextureReady(event:Object):void
+//        {
+//            mBase.removeEventListener(TEXTURE_READY, onTextureReady);
+//            execute(mTextureReadyCallback, this);
+//            mTextureReadyCallback = null;
+//        }
 		
 		
 		public function uploadByteArray(data:ByteArray):void {
@@ -281,8 +289,9 @@ package starling.textures
             // FP 11.8 plugin/projector: calling clear on a compressed texture doesn't work there
             // (while it *does* work on iOS + Android).
             
-            try { RenderSupport.clear(color, alpha); }
-            catch (e:Error) {}
+			RenderSupport.clear(color, alpha);
+//            try { RenderSupport.clear(color, alpha); }
+//            catch (e:Error) {}
             
             context.setRenderToBackBuffer();
             mDataUploaded = true;

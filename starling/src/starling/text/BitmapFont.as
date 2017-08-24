@@ -156,7 +156,7 @@ package starling.text
                 region.height = parseFloat(charElement.@height) / scale;
                 
 //                texturee = Texture.fromTexture(texture, region);
-                bitmapChar = new BitmapChar(id, new SubTexture(texture, region), xOffset, yOffset, xAdvance); 
+                bitmapChar = new BitmapChar(id, new SubTexture("BF:" + name + ":" + id, texture, region), xOffset, yOffset, xAdvance); 
                 addChar(id, bitmapChar);
             }
             

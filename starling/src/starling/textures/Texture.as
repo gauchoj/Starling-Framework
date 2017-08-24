@@ -18,11 +18,8 @@ package starling.textures
 	import starling.utils.VertexData;
 	import starling.utils.execute;
 	import starling.utils.getNextPowerOfTwo;
-
-	import com.assukar.airong.error.AbstractError;
 	import com.assukar.airong.error.AssukarError;
 	import com.assukar.airong.utils.Utils;
-
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
 	import flash.display3D.Context3D;
@@ -116,18 +113,28 @@ package starling.textures
 	public class Texture
 	{
 		/** @private */
-		function Texture()
+		function Texture(namee:String)
 		{
-//			CONFIG::DEBUG
-//			{
-//				if (getQualifiedClassName(this) == "starling.textures::Texture")
-//				{
-//					throw new AbstractClassError();
-//				}
-//			}
+			resetName(namee);
+		}
+
+		public function resetName(namee:String): void
+		{
+			this.namee = namee;
 		}
 		
-		public var name:String;
+		private var namee:String;
+		public function get group():String
+		{
+			if (namee.indexOf(":") > -1) return namee.substr(0, namee.indexOf(":"));
+			else return "?";
+		}
+		
+		public function get name():String
+		{
+			if (namee.indexOf(":") > -1) return namee.substr(namee.indexOf(":")+1);
+			else return namee;			
+		}
 		
 		public function toString():String
 		{
@@ -258,7 +265,7 @@ package starling.textures
 		{
 			var texture:Texture = Texture.empty(name, data.width / scale, data.height / scale, true, optimizeForRenderToTexture, scale, format, repeat);
 			
-			texture.name = texture.root.name = "BMD:" + name;
+//			texture.name = texture.root.name = "BMD:" + name;
 //			texture.root.name = name;
 			
 			texture.root.uploadBitmapData(data);
@@ -278,7 +285,7 @@ package starling.textures
 		{
 			var texture:Texture = Texture.empty(name, rect.width / scale, rect.height / scale, true, optimizeForRenderToTexture, scale, Context3DTextureFormat.BGRA, repeat);
 			
-			texture.name = texture.root.name = "BA:" + name;
+//			texture.name = texture.root.name = "BA:" + name;
 			
 			texture.root.uploadByteArray(data);
 			texture.root.onRestore = function():void
@@ -307,9 +314,9 @@ package starling.textures
 			
 			var nativeTexture:flash.display3D.textures.Texture = context.createTexture(atfData.width, atfData.height, atfData.format, false);
 			
-			var concreteTexture:ConcreteTexture = new ConcreteTexture(nativeTexture, atfData.format, atfData.width, atfData.height, false, false, scale, repeat);
+			var concreteTexture:ConcreteTexture = new ConcreteTexture(name, nativeTexture, atfData.format, atfData.width, atfData.height, false, false, scale, repeat);
 			
-			concreteTexture.name = name;
+//			concreteTexture.name = name;
 			
 			concreteTexture.uploadAtfData(data, 0, async);
 			
@@ -405,9 +412,9 @@ package starling.textures
 				execute(onComplete, texture);
 			});
 			
-			var texture:ConcreteVideoTexture = new ConcreteVideoTexture(base, scale);
-			texture.name = name;
-			texture.root.name = name;
+			var texture:ConcreteVideoTexture = new ConcreteVideoTexture(name, base, scale);
+//			texture.name = name;
+//			texture.root.name = name;
 			texture.onRestore = function():void
 			{
 				texture.root.attachVideo(type, attachment);
@@ -432,8 +439,8 @@ package starling.textures
 			var texture: Texture = Texture.empty(name, width, height, true, // false,
 			optimizeForRenderToTexture, scale, format);
 			
-			texture.name = name;
-			texture.root.name = name;
+//			texture.name = name;
+//			texture.root.name = name;
 			
 			texture.root.clear(color, Color.getAlpha(color) / 255.0);
 			texture.root.onRestore = function():void
@@ -501,15 +508,15 @@ package starling.textures
 				nativeTexture = context.createTexture(actualWidth, actualHeight, format, optimizeForRenderToTexture);
 			}
 			
-			var concreteTexture:ConcreteTexture = new ConcreteTexture(nativeTexture, format, actualWidth, actualHeight, premultipliedAlpha, optimizeForRenderToTexture, scale, repeat);
+			var concreteTexture:ConcreteTexture = new ConcreteTexture(name, nativeTexture, format, actualWidth, actualHeight, premultipliedAlpha, optimizeForRenderToTexture, scale, repeat);
 			
 			concreteTexture.onRestore = concreteTexture.clear;
-			concreteTexture.name = name;
+//			concreteTexture.name = name;
 			
 			if (actualWidth - origWidth < 0.001 && actualHeight - origHeight < 0.001)
 				return concreteTexture;
 			else
-				return new SubTexture(concreteTexture, new Rectangle(0, 0, actualWidth, actualHeight), true);
+				return new SubTexture(name, concreteTexture, new Rectangle(0, 0, actualWidth, actualHeight), true);
 		
 		}
 		

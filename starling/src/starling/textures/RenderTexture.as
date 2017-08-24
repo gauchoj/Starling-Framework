@@ -10,22 +10,21 @@
 
 package starling.textures
 {
-    import flash.display3D.Context3D;
-    import flash.display3D.VertexBuffer3D;
-    import flash.display3D.textures.TextureBase;
-    import flash.geom.Matrix;
-    import flash.geom.Rectangle;
-    
-    import starling.core.RenderSupport;
-    import starling.core.Starling;
-    import starling.display.BlendMode;
-    import starling.display.DisplayObject;
-    import starling.display.Image;
-    import starling.errors.MissingContextError;
-    import starling.filters.FragmentFilter;
-    import starling.utils.SystemUtil;
-    import starling.utils.execute;
-    import starling.utils.getNextPowerOfTwo;
+	import starling.core.RenderSupport;
+	import starling.core.Starling;
+	import starling.display.BlendMode;
+	import starling.display.DisplayObject;
+	import starling.display.Image;
+	import starling.errors.MissingContextError;
+	import starling.filters.FragmentFilter;
+	import starling.utils.SystemUtil;
+	import starling.utils.execute;
+
+	import flash.display3D.Context3D;
+	import flash.display3D.VertexBuffer3D;
+	import flash.display3D.textures.TextureBase;
+	import flash.geom.Matrix;
+	import flash.geom.Rectangle;
 
     /** A RenderTexture is a dynamic texture onto which you can draw any display object.
      * 
@@ -109,13 +108,13 @@ package starling.textures
         public function RenderTexture(name: String, width:int, height:int, persistent:Boolean=true,
                                       scale:Number=-1, format:String="bgra", repeat:Boolean=false)
         {
-			this.name = name;
+//			this.name = name;
 
-            mActiveTexture = Texture.empty("render.mActiveTexture", width, height, PMA, //false, 
+            mActiveTexture = Texture.empty("RenderTexture1:" + name, width, height, PMA, //false, 
 				true, scale, format, repeat);
             mActiveTexture.root.onRestore = mActiveTexture.root.clear;
             
-            super(mActiveTexture, new Rectangle(0, 0, width, height), true, null, false);
+            super(name, mActiveTexture, new Rectangle(0, 0, width, height), true, null, false);
             
             var rootWidth:Number  = mActiveTexture.root.width;
             var rootHeight:Number = mActiveTexture.root.height;
@@ -126,7 +125,7 @@ package starling.textures
             
             if (persistent && (!optimizePersistentBuffers || !SystemUtil.supportsRelaxedTargetClearRequirement))
             {
-                mBufferTexture = Texture.empty("render.mBufferTexture", width, height, PMA, //false, 
+                mBufferTexture = Texture.empty("RenderTexture2:" + name, width, height, PMA, //false, 
 					true, scale, format, repeat);
                 mBufferTexture.root.onRestore = mBufferTexture.root.clear;
                 mHelperImage = new Image(mBufferTexture);

@@ -10,7 +10,6 @@
 
 package starling.text
 {
-
 	import starling.core.RenderSupport;
 	import starling.core.Starling;
 	import starling.display.DisplayObject;
@@ -124,6 +123,11 @@ package starling.text
         /** Helper objects. */
         private static var sHelperMatrix:Matrix = new Matrix();
         private static var sNativeTextField:flash.text.TextField = new flash.text.TextField();
+		
+		override public function get visible():Boolean 
+		{ 
+			return super.visible && !emptyText; 
+		}
         
         /** Create a new text field with the given properties. */
         public function TextField(width:int, height:int, text:String, fontName:String="Verdana",
@@ -166,15 +170,23 @@ package starling.text
             super.render(support, parentAlpha);
         }
         
+		private function get emptyText(): Boolean
+		{
+			return !mText || mText == "";
+		}
+		
         /** Forces the text field to be constructed right away. Normally, 
          *  it will only do so lazily, i.e. before being rendered. */
         public function redraw():void
         {
             if (mRequiresRedraw)
             {
-                if (getBitmapFont(mFontName)) createComposedContents();
-                else createRenderedContents();
-                updateBorder();
+//				if (!emptyText)
+//				{
+	                if (getBitmapFont(mFontName)) createComposedContents();
+	                else createRenderedContents();
+	                updateBorder();
+//				}
                 mRequiresRedraw = false;
             }
         }
@@ -219,7 +231,7 @@ package starling.text
             mHitArea.width  = bitmapData.width  / scalee;
             mHitArea.height = bitmapData.height / scalee;
             
-            texture = Texture.fromBitmapData("TF:" + mText, bitmapData, false, scalee, format, false, false);
+            texture = Texture.fromBitmapData("TextField:" + (mText && mText.length>50?mText.substring(0,50):mText), bitmapData, false, scalee, format, false, false);
 			
             texture.root.onRestore = function():void
             {
@@ -341,9 +353,6 @@ package starling.text
             var drawWithQualityFunc:Function = 
                 "drawWithQuality" in bitmapData ? bitmapData["drawWithQuality"] : null;
             
-            // Beginning with AIR 3.3, we can force a drawing quality. Since "LOW" produces
-            // wrong output oftentimes, we force "MEDIUM" if possible.
-            
 			bitmapData.lock();
 			
             if (drawWithQualityFunc is Function)
@@ -356,7 +365,6 @@ package starling.text
 			
             sNativeTextField.text = "";
             
-            // update textBounds rectangle
             resultTextBounds.setTo((textOffsetX + filterOffset.x) / scale,
                                    (textOffsetY + filterOffset.y) / scale,
                                    textWidth / scale, textHeight / scale);
@@ -531,6 +539,7 @@ package starling.text
         /** Returns the bounds of the text within the text field. */
         public function get textBounds():Rectangle
         {
+//			if (emptyText) return new Rectangle();
             if (mRequiresRedraw) redraw();
             if (mTextBounds == null) mTextBounds = mQuadBatch.getBounds(mQuadBatch);
             return mTextBounds.clone();
@@ -539,6 +548,7 @@ package starling.text
         /** @inheritDoc */
         public override function getBounds(targetSpace:DisplayObject, resultRect:Rectangle=null):Rectangle
         {
+//			if (emptyText) return new Rectangle();
             if (mRequiresRedraw) redraw();
             getTransformationMatrix(targetSpace, sHelperMatrix);
             return RectangleUtil.getBounds(mHitArea, sHelperMatrix, resultRect);

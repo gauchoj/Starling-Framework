@@ -11,6 +11,7 @@ package starling.textures
 	 */
 	public class TextureCatalog
 	{
+		static internal const ACTIVE: Boolean = true;
 		static public const ME: TextureCatalog = new TextureCatalog();
 		
 		function TextureCatalog()
@@ -19,7 +20,7 @@ package starling.textures
 			
 			CONFIG::DEBUG
 			{			
-				setInterval(dump, 15000);
+				if (ACTIVE) setInterval(dump, 15000);
 			}
 		}
 		
@@ -39,7 +40,7 @@ package starling.textures
 			groups.apply(function(group: String): void
 			{
 				var c: int = 0;
-				var str: String;
+				var str: String = "";
 				hashset.apply(function(texture: Texture): void
 				{
 					if (group == texture.group)

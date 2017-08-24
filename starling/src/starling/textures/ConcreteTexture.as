@@ -62,7 +62,7 @@ package starling.textures
 			
 			CONFIG::DEBUG
 			{
-				TextureCatalog.ME.register(this);
+				if (TextureCatalog.ACTIVE) TextureCatalog.ME.register(this);
 			}
 			
             mScale = scale <= 0 ? 1.0 : scale;
@@ -92,7 +92,7 @@ package starling.textures
 			
 			CONFIG::DEBUG
 			{
-				TextureCatalog.ME.dispose(this);
+				if (TextureCatalog.ACTIVE) TextureCatalog.ME.dispose(this);
 			}
         }
         

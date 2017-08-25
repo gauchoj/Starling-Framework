@@ -19,7 +19,7 @@ package starling.textures
 			
 			CONFIG::DEBUG
 			{			
-				if (ACTIVE) setInterval(dump, 15000);
+				if (ACTIVE) setInterval(dump, 10000);
 			}
 		}
 		
@@ -57,7 +57,11 @@ package starling.textures
 						i++;
 						c++;
 						size += texture.nativeWidth * texture.nativeHeight;
-						str += "   " + i + " " + texture.name + " " + bytes(texture.nativeWidth * texture.nativeHeight) + "\n"; 
+						str += "   " + i + " " + texture.name + " " + bytes(texture.nativeWidth * texture.nativeHeight) + "\n";
+
+						//Excel friendly
+//						if(texture.name && texture.name != "")
+//							str += group + " " + texture.name + " " + bytes(texture.nativeWidth * texture.nativeHeight) + "\n";
 					}
 				});
 				asize += size;

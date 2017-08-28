@@ -141,6 +141,11 @@ package starling.textures
 			return name;
 		}
 		
+		public function get nativeBytes(): int
+		{
+			return 4 * nativeWidth * nativeHeight;
+		}
+		
 		/** Disposes the underlying texture data. Note that not all textures need to be disposed:
 		 *  SubTextures (created with 'Texture.fromTexture') just reference other textures and
 		 *  and do not take up resources themselves; this is also true for textures from an

@@ -10,7 +10,7 @@ package starling.textures
 	 */
 	public class TextureCatalog
 	{
-		static internal const ACTIVE: Boolean = true;
+		static internal const ACTIVE: Boolean = false;
 		static public const ME: TextureCatalog = new TextureCatalog();
 		
 		function TextureCatalog()

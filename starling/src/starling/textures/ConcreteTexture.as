@@ -41,14 +41,12 @@ package starling.textures
         private var mFormat:String;
         private var mWidth:int;
         private var mHeight:int;
-//        private var mMipMapping:Boolean;
         private var mPremultipliedAlpha:Boolean;
         private var mOptimizedForRenderTexture:Boolean;
         private var mScale:Number;
         private var mRepeat:Boolean;
         private var mOnRestore:Function;
         private var mDataUploaded:Boolean;
-//        private var mTextureReadyCallback:Function;
         
         /** helper object */
         private static var sOrigin:Point = new Point();
@@ -56,7 +54,8 @@ package starling.textures
         /** Creates a ConcreteTexture object from a TextureBase, storing information about size,
          *  mip-mapping, and if the channels contain premultiplied alpha values. */
         function ConcreteTexture(name: String, base:TextureBase, format:String, width:int, height:int, 
-				premultipliedAlpha:Boolean, optimizedForRenderTexture:Boolean=false, scale:Number=1, repeat:Boolean=false)
+				premultipliedAlpha:Boolean, 
+				optimizedForRenderTexture:Boolean=Texture.OPTIMIZE_RENDER_FOR_TEXTURE, scale:Number=1, repeat:Boolean=false)
         {
 			super(name);
 			

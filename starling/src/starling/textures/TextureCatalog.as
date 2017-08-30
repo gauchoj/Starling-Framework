@@ -57,7 +57,7 @@ package starling.textures
 						i++;
 						c++;
 						size += texture.nativeBytes;
-						str += "   " + i + " " + texture.name + " " + texture.nativeBytes + "\n";
+						str += "   " + i + " " + texture.name + " " + bytes(texture.nativeBytes) + "\n";
 
 						//Excel friendly
 //						if(texture.name && texture.name != "")

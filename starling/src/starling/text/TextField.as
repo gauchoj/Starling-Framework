@@ -25,6 +25,8 @@ package starling.text
 	import starling.utils.VAlign;
 	import starling.utils.deg2rad;
 
+	import com.assukar.airong.utils.Utils;
+
 	import flash.display.BitmapData;
 	import flash.display.StageQuality;
 	import flash.display3D.Context3DTextureFormat;
@@ -187,7 +189,10 @@ package starling.text
                 else createRenderedContents();
                 updateBorder();
                 mRequiresRedraw = false;
+				
+				// optimization. dispose texture if text content is empty.
 				emptyTextRendered = emptyText;
+				if (emptyTextRendered && mImage) mImage.texture.dispose();
             }
         }
         
@@ -244,7 +249,7 @@ package starling.text
             
             bitmapData.dispose();
             bitmapData = null;
-            
+			
             if (!mImage) 
             {
                 mImage = new Image(texture);
@@ -303,10 +308,13 @@ package starling.text
             sNativeTextField.defaultTextFormat = textFormat;
             sNativeTextField.width = width;
             sNativeTextField.height = height;
-            sNativeTextField.antiAliasType = AntiAliasType.ADVANCED;
+			
+			// optimization for font sizes greater than 32
+//			if (mFontSize>=15) Utils.print(mFontSize + ":" + mText);
+            sNativeTextField.antiAliasType = mFontSize<=32?AntiAliasType.ADVANCED:AntiAliasType.NORMAL;
+			
             sNativeTextField.selectable = false;            
             sNativeTextField.multiline = true;
-			            
             sNativeTextField.wordWrap = true;         
 
             if (mIsHtmlText) sNativeTextField.htmlText = mText;

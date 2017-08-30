@@ -13,6 +13,7 @@ package starling.textures
 	import starling.utils.cleanMasterString;
 
 	import com.assukar.airong.error.AssukarError;
+	import com.assukar.airong.utils.Utils;
 
 	import flash.geom.Rectangle;
 	import flash.utils.Dictionary;
@@ -90,7 +91,8 @@ package starling.textures
 			if (!atlasXml) throw new AssukarError();
             mSubTextures = new Dictionary();
             mAtlasTexture = texture;
-			texture.resetName("TextureAtlas:" + texture.name); 
+//			if (texture.name == "Rumpelstiltskin30Texture") Utils.printStackTrace();
+			texture.resetName("TextureAtlas:" + texture.name);
 			this.name = name;
 			this.registry = registry;
 			parseAtlasXml(atlasXml);

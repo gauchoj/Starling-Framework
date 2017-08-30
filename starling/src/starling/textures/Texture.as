@@ -18,8 +18,10 @@ package starling.textures
 	import starling.utils.VertexData;
 	import starling.utils.execute;
 	import starling.utils.getNextPowerOfTwo;
+
 	import com.assukar.airong.error.AssukarError;
 	import com.assukar.airong.utils.Utils;
+
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
 	import flash.display3D.Context3D;
@@ -112,6 +114,8 @@ package starling.textures
 	 */
 	public class Texture
 	{
+		static public const OPTIMIZE_RENDER_FOR_TEXTURE: Boolean = false; // Starling default implementation: false
+		
 		/** @private */
 		function Texture(namee:String)
 		{
@@ -120,7 +124,7 @@ package starling.textures
 
 		public function resetName(namee:String): void
 		{
-			this.namee = namee;
+			if (namee) this.namee = namee.replace("\n"," ").replace("\b"," ").replace("\t"," ").replace("\r"," ");
 		}
 		
 		private var namee:String;
@@ -139,6 +143,12 @@ package starling.textures
 		public function toString():String
 		{
 			return name;
+		}
+		
+		public function get nativeBytes(): int
+		{
+			// 4 for rgba channels
+			return 4 * nativeWidth * nativeHeight;
 		}
 		
 		/** Disposes the underlying texture data. Note that not all textures need to be disposed:
@@ -194,7 +204,7 @@ package starling.textures
 		 *  @param repeat   the repeat value of the texture. Only useful for power-of-two textures.
 		 */
 		public static function fromEmbeddedAsset(name:String, assetClass:Class, //mipMapping:Boolean=false,
-		optimizeForRenderToTexture:Boolean = false, scale:Number = 1, format:String = "bgra", repeat:Boolean = false):Texture
+		optimizeForRenderToTexture:Boolean = Texture.OPTIMIZE_RENDER_FOR_TEXTURE, scale:Number = 1, format:String = "bgra", repeat:Boolean = false):Texture
 		{
 			var texture:Texture;
 			var asset:Object = new assetClass();
@@ -204,6 +214,7 @@ package starling.textures
 				texture = Texture.fromBitmap(name, asset as Bitmap, optimizeForRenderToTexture, scale, format, repeat, false);
 				texture.root.onRestore = function():void
 				{
+					Utils.log("%% Texture::RESTORING fromEmbeddedAsset " + name);
 					texture.root.uploadBitmap(new assetClass());
 				};
 			}
@@ -212,6 +223,7 @@ package starling.textures
 				texture = Texture.fromAtfData(name, asset as ByteArray, scale, null, repeat, false);
 				texture.root.onRestore = function():void
 				{
+					Utils.log("%% Texture::RESTORING fromEmbeddedAsset " + name);
 					texture.root.uploadAtfData(new assetClass());
 				};
 			}
@@ -240,7 +252,7 @@ package starling.textures
 		 *  @param repeat   the repeat value of the texture. Only useful for power-of-two textures.
 		 */
 		public static function fromBitmap(name:String, bitmap:Bitmap, //generateMipMaps:Boolean=false,
-		optimizeForRenderToTexture:Boolean = false, scale:Number = 1, format:String = "bgra", repeat:Boolean = false, restoreImplementation: Boolean = true):Texture
+		optimizeForRenderToTexture:Boolean = Texture.OPTIMIZE_RENDER_FOR_TEXTURE, scale:Number = 1, format:String = "bgra", repeat:Boolean = false, restoreImplementation: Boolean = true):Texture
 		{
 			return fromBitmapData(name, bitmap.bitmapData, optimizeForRenderToTexture, scale, format, repeat, restoreImplementation);
 		}
@@ -261,12 +273,9 @@ package starling.textures
 		 *  @param repeat   the repeat value of the texture. Only useful for power-of-two textures.
 		 */
 		public static function fromBitmapData(name:String, data:BitmapData, 
-		optimizeForRenderToTexture:Boolean = false, scale:Number = 1, format:String = "bgra", repeat:Boolean = false, restoreImplementation: Boolean = true):Texture
+			optimizeForRenderToTexture:Boolean = Texture.OPTIMIZE_RENDER_FOR_TEXTURE, scale:Number = 1, format:String = "bgra", repeat:Boolean = false, restoreImplementation: Boolean = true):Texture
 		{
 			var texture:Texture = Texture.empty(name, data.width / scale, data.height / scale, true, optimizeForRenderToTexture, scale, format, repeat);
-			
-//			texture.name = texture.root.name = "BMD:" + name;
-//			texture.root.name = name;
 			
 			texture.root.uploadBitmapData(data);
 			
@@ -274,6 +283,7 @@ package starling.textures
 			{
 				texture.root.onRestore = function():void
 				{
+					Utils.log("%% Texture::RESTORING fromBitmapData " + name);
 					texture.root.uploadBitmapData(data);
 				};
 			}
@@ -281,15 +291,15 @@ package starling.textures
 			return texture;
 		}
 		
-		static public function fromByteArray(name:String, data:ByteArray, rect:Rectangle, optimizeForRenderToTexture:Boolean = false, scale:Number = 1, repeat:Boolean = false):Texture
+		static public function fromByteArray(name:String, data:ByteArray, rect:Rectangle, 
+			optimizeForRenderToTexture:Boolean = Texture.OPTIMIZE_RENDER_FOR_TEXTURE, scale:Number = 1, repeat:Boolean = false):Texture
 		{
 			var texture:Texture = Texture.empty(name, rect.width / scale, rect.height / scale, true, optimizeForRenderToTexture, scale, Context3DTextureFormat.BGRA, repeat);
-			
-//			texture.name = texture.root.name = "BA:" + name;
 			
 			texture.root.uploadByteArray(data);
 			texture.root.onRestore = function():void
 			{
+				Utils.log("%% Texture::RESTORING fromByteArray " + name);
 				texture.root.uploadByteArray(data);
 			};
 			
@@ -314,7 +324,8 @@ package starling.textures
 			
 			var nativeTexture:flash.display3D.textures.Texture = context.createTexture(atfData.width, atfData.height, atfData.format, false);
 			
-			var concreteTexture:ConcreteTexture = new ConcreteTexture(name, nativeTexture, atfData.format, atfData.width, atfData.height, false, false, scale, repeat);
+			var concreteTexture:ConcreteTexture = new ConcreteTexture(name, nativeTexture, atfData.format, atfData.width, atfData.height, 
+				false, Texture.OPTIMIZE_RENDER_FOR_TEXTURE, scale, repeat);
 			
 //			concreteTexture.name = name;
 			
@@ -324,6 +335,7 @@ package starling.textures
 			{
 				concreteTexture.onRestore = function():void
 				{
+					Utils.log("%% Texture::RESTORING fromAtfData " + name);
 					concreteTexture.uploadAtfData(data, 0);
 				};
 			}
@@ -417,6 +429,7 @@ package starling.textures
 //			texture.root.name = name;
 			texture.onRestore = function():void
 			{
+				Utils.log("%% Texture::RESTORING fromVideoAttachment " + name);
 				texture.root.attachVideo(type, attachment);
 			};
 			
@@ -433,7 +446,8 @@ package starling.textures
 		 *  @param format  the context3D texture format to use. Pass one of the packed or
 		 *                 compressed formats to save memory.
 		 */
-		public static function fromColor(name:String, width:Number, height:Number, color:uint = 0xffffffff, optimizeForRenderToTexture:Boolean = false, scale:Number = -1, format:String = "bgra"):Texture
+		public static function fromColor(name:String, width:Number, height:Number, color:uint = 0xffffffff, 
+			optimizeForRenderToTexture:Boolean = Texture.OPTIMIZE_RENDER_FOR_TEXTURE, scale:Number = -1, format:String = "bgra"):Texture
 		{
 //			trace('fromColor: ' + (fromColor));
 			var texture: Texture = Texture.empty(name, width, height, true, // false,
@@ -445,6 +459,7 @@ package starling.textures
 			texture.root.clear(color, Color.getAlpha(color) / 255.0);
 			texture.root.onRestore = function():void
 			{
+				Utils.log("%% Texture::RESTORING fromColor " + name);
 				texture.root.clear(color, Color.getAlpha(color) / 255.0);
 			};
 			
@@ -469,7 +484,7 @@ package starling.textures
 		 *  @param repeat  the repeat mode of the texture. Only useful for power-of-two textures.
 		 */
 		public static function empty(name:String, width:Number, height:Number, premultipliedAlpha:Boolean = true,  
-			optimizeForRenderToTexture:Boolean = false, scale:Number = -1, format:String = "bgra", repeat:Boolean = false):Texture
+			optimizeForRenderToTexture:Boolean = Texture.OPTIMIZE_RENDER_FOR_TEXTURE, scale:Number = -1, format:String = "bgra", repeat:Boolean = false):Texture
 		{
 			if (scale <= 0) scale = Starling.contentScaleFactor;
 			
@@ -484,6 +499,8 @@ package starling.textures
 			
 			var useRectTexture:Boolean = !repeat && Starling.current.profile != "baselineConstrained" && "createRectangleTexture" in context && format.indexOf("compressed") == -1;
 			
+//			Utils.print(name + ":" + (!repeat) + ":" + (Starling.current.profile != "baselineConstrained") + ":" + ("createRectangleTexture" in context) + ":" + (format.indexOf("compressed") == -1));
+			
 			if (context.driverInfo.search("Disposed") != -1) 
 			{
 				Utils.log("texture=" + name);
@@ -495,16 +512,17 @@ package starling.textures
 				actualWidth = Math.ceil(origWidth - 0.000000001); // avoid floating point errors
 				actualHeight = Math.ceil(origHeight - 0.000000001);
 				
+//				Utils.print("RECTANGLE::" + name + " " + origWidth + "->" + actualWidth);
+				
 				// Rectangle Textures are supported beginning with AIR 3.8. By calling the new
 				// methods only through those lookups, we stay compatible with older SDKs.
-				//nativeTexture = context["createRectangleTexture"](actualWidth, actualHeight, format, optimizeForRenderToTexture);
 				nativeTexture = context.createRectangleTexture(actualWidth, actualHeight, format, optimizeForRenderToTexture);
-				
 			}
 			else
 			{
 				actualWidth = getNextPowerOfTwo(origWidth);
 				actualHeight = getNextPowerOfTwo(origHeight);
+//				Utils.print("BASEOFTWO::" + name + " " + origWidth + "->" + actualWidth);
 				nativeTexture = context.createTexture(actualWidth, actualHeight, format, optimizeForRenderToTexture);
 			}
 			

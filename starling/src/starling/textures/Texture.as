@@ -10,7 +10,8 @@
 
 package starling.textures
 {
-	import starling.core.Starling;
+    import starling.core.Starling
+    import starling.core.Starling;
 	import starling.errors.MissingContextError;
 	import starling.errors.NotSupportedError;
 	import starling.utils.Color;
@@ -114,7 +115,7 @@ package starling.textures
 	 */
 	public class Texture
 	{
-		static public const OPTIMIZE_RENDER_FOR_TEXTURE: Boolean = false; // Starling default implementation: false
+		static public const OPTIMIZE_RENDER_FOR_TEXTURE: Boolean = true; //false; // Starling default implementation: false
 		
 		/** @private */
 		function Texture(namee:String)
@@ -147,8 +148,10 @@ package starling.textures
 		
 		public function get nativeBytes(): int
 		{
+			//TODO to review
 			// 4 for rgba channels
-			return 4 * nativeWidth * nativeHeight;
+//			return 4 * nativeWidth * nativeHeight; // [CANVAS]
+			return (nativeWidth * nativeHeight) * 0.5; // [MOB] , pvrtc 4bpp (16 pixels/block & 8 bytes/block)
 		}
 		
 		/** Disposes the underlying texture data. Note that not all textures need to be disposed:

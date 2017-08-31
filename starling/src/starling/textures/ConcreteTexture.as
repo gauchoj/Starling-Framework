@@ -59,7 +59,8 @@ package starling.textures
         {
 			super(name);
 			
-			CONFIG::DEBUG
+            //TODO to fix
+//			CONFIG::DEBUG
 			{
 				if (TextureCatalog.ACTIVE) TextureCatalog.ME.register(this);
 			}
@@ -88,8 +89,9 @@ package starling.textures
 
             this.onRestore = null;
             super.dispose();
-			
-			CONFIG::DEBUG
+    
+            //TODO to fix
+//			CONFIG::DEBUG
 			{
 				if (TextureCatalog.ACTIVE) TextureCatalog.ME.dispose(this);
 			}

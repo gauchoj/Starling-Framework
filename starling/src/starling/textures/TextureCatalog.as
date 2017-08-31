@@ -17,7 +17,8 @@ package starling.textures
 		{
 			Singleton.enforce(ME);
 			
-			CONFIG::DEBUG
+			//TODO to fix
+//			CONFIG::DEBUG
 			{			
 				if (ACTIVE) setInterval(dump, 10000);
 			}
@@ -35,6 +36,13 @@ package starling.textures
 			else return (size/Statics.GB).toFixed(3)+"Gb";
 		}
 		
+		
+		
+//		//TODO to delete
+		static public var SIZE_CALLBACK:Function = null;
+		private var asize:uint;
+		
+		
 		private function dump(): void
 		{
 			var groups: HashSet = new HashSet();
@@ -44,7 +52,7 @@ package starling.textures
 			});
 			
 			var i: int = 0;
-			var asize: uint = 0;
+			asize = 0;
 			groups.apply(function(group: String): void
 			{
 				var c: int = 0;
@@ -65,12 +73,16 @@ package starling.textures
 					}
 				});
 				asize += size;
-				trace(">> " + group + " " + c + " " + bytes(size));
-				trace(str);
+				//trace(">> " + group + " " + c + " " + bytes(size));
+				//trace(str);
 			});
 			
 			Utils.print("ALL " + bytes(asize));
-			Utils.print("registers=" + registers + " removals=" + removals);
+			//Utils.print("registers=" + registers + " removals=" + removals);
+			
+//			//TODO to delete
+			if(SIZE_CALLBACK) SIZE_CALLBACK(bytes(asize));
+			
 		}
 		
 		internal function register(texture: Texture): void

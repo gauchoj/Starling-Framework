@@ -1,5 +1,9 @@
 package starling.textures
 {
+    import com.assukar.airong.ds.HashSet
+    import com.assukar.airong.utils.Statics
+    import com.assukar.airong.utils.Utils
+    
     import flash.utils.setInterval
     
     /**

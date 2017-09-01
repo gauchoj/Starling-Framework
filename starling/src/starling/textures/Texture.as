@@ -10,6 +10,9 @@
 
 package starling.textures
 {
+    import com.assukar.airong.error.AssukarError;
+    import com.assukar.airong.utils.Utils;
+
     import flash.display.Bitmap
     import flash.display.BitmapData
     import flash.display3D.Context3D

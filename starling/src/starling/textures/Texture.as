@@ -150,8 +150,8 @@ package starling.textures
 		{
 			//TODO to review
 			// 4 for rgba channels
-			return 4 * nativeWidth * nativeHeight; // [CANVAS]
-//			return (nativeWidth * nativeHeight) * 0.5; // [MOB] , pvrtc 4bpp (16 pixels/block & 8 bytes/block)
+//			return 4 * nativeWidth * nativeHeight; // [CANVAS]
+			return (nativeWidth * nativeHeight) * 0.5; // [MOB] , pvrtc 4bpp (16 pixels/block & 8 bytes/block)
 		}
 		
 		/** Disposes the underlying texture data. Note that not all textures need to be disposed:

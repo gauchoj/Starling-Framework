@@ -60,7 +60,7 @@ package starling.textures
 			super(name);
 			
             //TODO to fix
-			CONFIG::DEBUG
+//			CONFIG::DEBUG
 			{
 				if (TextureCatalog.ACTIVE) TextureCatalog.ME.register(this);
 			}
@@ -91,7 +91,7 @@ package starling.textures
             super.dispose();
     
             //TODO to fix
-			CONFIG::DEBUG
+//			CONFIG::DEBUG
 			{
 				if (TextureCatalog.ACTIVE) TextureCatalog.ME.dispose(this);
 			}

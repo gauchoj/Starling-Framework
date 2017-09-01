@@ -18,7 +18,7 @@ package starling.textures
 			Singleton.enforce(ME);
 			
 			//TODO to fix
-			CONFIG::DEBUG
+//			CONFIG::DEBUG
 			{			
 				if (ACTIVE) setInterval(dump, 10000);
 			}
@@ -38,9 +38,9 @@ package starling.textures
 		
 		
 		
-////		//TODO to delete
-//		static public var SIZE_CALLBACK:Function = null;
-//		private var asize:uint;
+//		//TODO to delete
+		static public var SIZE_CALLBACK:Function = null;
+		private var asize:uint;
 		
 		
 		private function dump(): void
@@ -80,8 +80,8 @@ package starling.textures
 			Utils.print("ALL " + bytes(asize));
 			//Utils.print("registers=" + registers + " removals=" + removals);
 			
-////			//TODO to delete
-//			if(SIZE_CALLBACK) SIZE_CALLBACK(bytes(asize));
+//			//TODO to delete
+			if(SIZE_CALLBACK) SIZE_CALLBACK(bytes(asize));
 			
 		}
 		

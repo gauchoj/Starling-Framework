@@ -10,8 +10,8 @@
 
 package starling.filters
 {
-    import com.assukar.airong.utils.Utils;
-
+    import com.assukar.airong.utils.Utils
+    
     import flash.display3D.Context3D
     import flash.display3D.Context3DProgramType
     import flash.display3D.Context3DVertexBufferFormat

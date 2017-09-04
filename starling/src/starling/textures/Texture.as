@@ -10,29 +10,28 @@
 
 package starling.textures
 {
-    import starling.core.Starling
-    import starling.core.Starling;
-    import starling.errors.MissingContextError;
-    import starling.errors.NotSupportedError;
-    import starling.utils.Color;
-    import starling.utils.SystemUtil;
-    import starling.utils.VertexData;
-    import starling.utils.execute;
-    import starling.utils.getNextPowerOfTwo;
-    
-    import com.assukar.airong.error.AssukarError;
-    import com.assukar.airong.utils.Utils;
-    
-    import flash.display.Bitmap;
-    import flash.display.BitmapData;
-    import flash.display3D.Context3D;
-    import flash.display3D.Context3DTextureFormat;
-    import flash.display3D.textures.TextureBase;
-    import flash.geom.Rectangle;
-    import flash.media.Camera;
-    import flash.net.NetStream;
-    import flash.utils.ByteArray;
-    import flash.utils.getQualifiedClassName;
+	import starling.core.Starling;
+	import starling.errors.MissingContextError;
+	import starling.errors.NotSupportedError;
+	import starling.utils.Color;
+	import starling.utils.SystemUtil;
+	import starling.utils.VertexData;
+	import starling.utils.execute;
+	import starling.utils.getNextPowerOfTwo;
+
+	import com.assukar.airong.error.AssukarError;
+	import com.assukar.airong.utils.Utils;
+
+	import flash.display.Bitmap;
+	import flash.display.BitmapData;
+	import flash.display3D.Context3D;
+	import flash.display3D.Context3DTextureFormat;
+	import flash.display3D.textures.TextureBase;
+	import flash.geom.Rectangle;
+	import flash.media.Camera;
+	import flash.net.NetStream;
+	import flash.utils.ByteArray;
+	import flash.utils.getQualifiedClassName;
     
     /** <p>A texture stores the information that represents an image. It cannot be added to the
      *  display list directly; instead it has to be mapped onto a display object. In Starling,
@@ -146,12 +145,22 @@ package starling.textures
             return name;
         }
         
+		static public const RBGA: String = "RBGA";
+		static public const PVRTC: String = "PVRTC";
+		static public const EC2: String = "EC2";
+		
+		static public var COMPRESSION: String = RBGA;
+		
         public function get nativeBytes(): int
         {
-            //TODO to review
-            // 4 for rgba channels
-//			return 4 * nativeWidth * nativeHeight; // [CANVAS]
-            return (nativeWidth * nativeHeight) * 0.5; // [MOB] , pvrtc 4bpp (16 pixels/block & 8 bytes/block)
+			switch (COMPRESSION)
+			{
+				case RBGA: return 4 * nativeWidth * nativeHeight; // [CANVAS]
+				case PVRTC: return 2 * nativeWidth * nativeHeight; // TODO REVIEW [MOB] , pvrtc 4bpp (16 pixels/block & 8 bytes/block)
+				case EC2: return 2 * nativeWidth * nativeHeight; // TODO REVIEW [MOB] , pvrtc 4bpp (16 pixels/block & 8 bytes/block)
+			}
+			
+			throw new AssukarError();
         }
         
         /** Disposes the underlying texture data. Note that not all textures need to be disposed:

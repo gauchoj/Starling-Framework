@@ -12,7 +12,7 @@ package starling.textures
      */
     public class TextureCatalog
     {
-        static internal const ACTIVE:Boolean = false;
+        static internal const ACTIVE:Boolean = true;
         static public const ME:TextureCatalog = new TextureCatalog();
         
         function TextureCatalog()
@@ -68,8 +68,8 @@ package starling.textures
                     }
                 });
                 asize += size;
-                //trace(">> " + group + " " + c + " " + bytes(size));
-                //trace(str);
+                trace(">> " + group + " " + c + " " + bytes(size));
+                trace(str);
             });
             
             Utils.print("ALL " + bytes(asize));

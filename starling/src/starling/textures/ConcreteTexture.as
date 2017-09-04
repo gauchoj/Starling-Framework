@@ -365,12 +365,14 @@ package starling.textures
 
         public override function get nativeBytes(): int
         {
-            var compression:String = format == Context3DTextureFormat.COMPRESSED || Context3DTextureFormat.COMPRESSED_ALPHA ? COMPRESSION : RBGA;
+            var compression:String = format == Context3DTextureFormat.COMPRESSED || format == Context3DTextureFormat.COMPRESSED_ALPHA ? COMPRESSION : RBGA;
             switch (compression)
             {
-                case RBGA: return 4 * nativeWidth * nativeHeight; // [CANVAS]
-                case PVRTC: return 2 * nativeWidth * nativeHeight; // TODO REVIEW [MOB] , pvrtc 4bpp (16 pixels/block & 8 bytes/block)
-                case EC2: return 2 * nativeWidth * nativeHeight; // TODO REVIEW [MOB] , pvrtc 4bpp (16 pixels/block & 8 bytes/block)
+                case RBGA:
+                    return 2.922 * nativeWidth * nativeHeight;
+                case PVRTC:
+                case ETC:
+                    return 1.536 * nativeWidth * nativeHeight;
             }
 
             throw new AssukarError();

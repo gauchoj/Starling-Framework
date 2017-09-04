@@ -147,7 +147,7 @@ package starling.textures
         
 		static public const RBGA: String = "RBGA";
 		static public const PVRTC: String = "PVRTC";
-		static public const EC2: String = "EC2";
+		static public const ETC: String = "EC2";
 		
 		static public var COMPRESSION: String = RBGA;
 		
@@ -157,7 +157,7 @@ package starling.textures
 			{
 				case RBGA: return 4 * nativeWidth * nativeHeight; // [CANVAS]
 				case PVRTC: return 2 * nativeWidth * nativeHeight; // TODO REVIEW [MOB] , pvrtc 4bpp (16 pixels/block & 8 bytes/block)
-				case EC2: return 2 * nativeWidth * nativeHeight; // TODO REVIEW [MOB] , pvrtc 4bpp (16 pixels/block & 8 bytes/block)
+				case ETC: return 2 * nativeWidth * nativeHeight; // TODO REVIEW [MOB] , pvrtc 4bpp (16 pixels/block & 8 bytes/block)
 			}
 			
 			throw new AssukarError();

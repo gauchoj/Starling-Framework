@@ -59,8 +59,8 @@ package starling.textures
         {
             super(name);
             
-            //TODO to fix
-//			CONFIG::DEBUG
+//            TODO to fix
+			CONFIG::DEBUG
             {
                 if (TextureCatalog.ACTIVE) TextureCatalog.ME.register(this);
             }

@@ -365,10 +365,10 @@ package starling.textures
 
         public override function get nativeBytes(): int
         {
-            var compression:String = format == Context3DTextureFormat.COMPRESSED || format == Context3DTextureFormat.COMPRESSED_ALPHA ? COMPRESSION : RBGA;
+            var compression:String = format == Context3DTextureFormat.COMPRESSED || format == Context3DTextureFormat.COMPRESSED_ALPHA ? COMPRESSION : BGRA;
             switch (compression)
             {
-                case RBGA:
+                case BGRA:
                     return 2.922 * nativeWidth * nativeHeight;
                 case PVRTC:
                 case ETC:

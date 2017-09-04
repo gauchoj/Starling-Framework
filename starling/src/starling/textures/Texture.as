@@ -10,30 +10,28 @@
 
 package starling.textures
 {
-    import com.assukar.airong.error.AbstractError
+    import com.assukar.airong.error.AssukarError
+    import com.assukar.airong.utils.Utils
     
-    import starling.core.Starling;
-	import starling.errors.MissingContextError;
-	import starling.errors.NotSupportedError;
-	import starling.utils.Color;
-	import starling.utils.SystemUtil;
-	import starling.utils.VertexData;
-	import starling.utils.execute;
-	import starling.utils.getNextPowerOfTwo;
-
-	import com.assukar.airong.error.AssukarError;
-	import com.assukar.airong.utils.Utils;
-
-	import flash.display.Bitmap;
-	import flash.display.BitmapData;
-	import flash.display3D.Context3D;
-	import flash.display3D.Context3DTextureFormat;
-	import flash.display3D.textures.TextureBase;
-	import flash.geom.Rectangle;
-	import flash.media.Camera;
-	import flash.net.NetStream;
-	import flash.utils.ByteArray;
-	import flash.utils.getQualifiedClassName;
+    import flash.display.Bitmap
+    import flash.display.BitmapData
+    import flash.display3D.Context3D
+    import flash.display3D.Context3DTextureFormat
+    import flash.display3D.textures.TextureBase
+    import flash.geom.Rectangle
+    import flash.media.Camera
+    import flash.net.NetStream
+    import flash.utils.ByteArray
+    import flash.utils.getQualifiedClassName
+    
+    import starling.core.Starling
+    import starling.errors.MissingContextError
+    import starling.errors.NotSupportedError
+    import starling.utils.Color
+    import starling.utils.SystemUtil
+    import starling.utils.VertexData
+    import starling.utils.execute
+    import starling.utils.getNextPowerOfTwo
     
     /** <p>A texture stores the information that represents an image. It cannot be added to the
      *  display list directly; instead it has to be mapped onto a display object. In Starling,
@@ -116,20 +114,21 @@ package starling.textures
      */
     public class Texture
     {
-        static public const OPTIMIZE_RENDER_FOR_TEXTURE: Boolean = false; // Starling default implementation: false
+        static public const OPTIMIZE_RENDER_FOR_TEXTURE:Boolean = false; // Starling default implementation: false
         
         /** @private */
-        function Texture(namee:String)
+        function Texture( namee:String )
         {
             resetName(namee);
         }
         
-        public function resetName(namee:String): void
+        public function resetName( namee:String ):void
         {
-            if (namee) this.namee = namee.replace("\n"," ").replace("\b"," ").replace("\t"," ").replace("\r"," ");
+            if (namee) this.namee = namee.replace("\n", " ").replace("\b", " ").replace("\t", " ").replace("\r", " ");
         }
         
         private var namee:String;
+        
         public function get group():String
         {
             if (namee.indexOf(":") > -1) return namee.substr(0, namee.indexOf(":"));
@@ -138,7 +137,7 @@ package starling.textures
         
         public function get name():String
         {
-            if (namee.indexOf(":") > -1) return namee.substr(namee.indexOf(":")+1);
+            if (namee.indexOf(":") > -1) return namee.substr(namee.indexOf(":") + 1);
             else return namee;
         }
         
@@ -147,16 +146,16 @@ package starling.textures
             return name;
         }
         
-		static public const RBGA: String = "RBGA";
-		static public const PVRTC: String = "PVRTC";
-		static public const ETC: String = "ETC";
-		
-		static public var COMPRESSION: String = RBGA;
-		
-        public function get nativeBytes(): int
+        static public const BGRA:String = "BGRA";
+        static public const PVRTC:String = "PVRTC";
+        static public const ETC:String = "ETC";
+        
+        static public var COMPRESSION:String = BGRA;
+        
+        public function get nativeBytes():int
         {
             return 0;
-            
+
 //			switch (COMPRESSION)
 //			{
 //				case RBGA: return 4 * nativeWidth * nativeHeight; // [CANVAS]
@@ -181,7 +180,7 @@ package starling.textures
          *                  with ATF data.
          *  @param options  Specifies options about the texture settings, e.g. scale factor.
          */
-        public static function fromData(name:String, data:Object, options:TextureOptions = null):Texture
+        public static function fromData( name:String, data:Object, options:TextureOptions = null ):Texture
         {
             var texture:Texture = null;
             
@@ -218,8 +217,8 @@ package starling.textures
          *  @param format   the context3D texture format to use. Ignored for ATF data.
          *  @param repeat   the repeat value of the texture. Only useful for power-of-two textures.
          */
-        public static function fromEmbeddedAsset(name:String, assetClass:Class, //mipMapping:Boolean=false,
-                optimizeForRenderToTexture:Boolean = Texture.OPTIMIZE_RENDER_FOR_TEXTURE, scale:Number = 1, format:String = "bgra", repeat:Boolean = false):Texture
+        public static function fromEmbeddedAsset( name:String, assetClass:Class, //mipMapping:Boolean=false,
+                optimizeForRenderToTexture:Boolean = Texture.OPTIMIZE_RENDER_FOR_TEXTURE, scale:Number = 1, format:String = "bgra", repeat:Boolean = false ):Texture
         {
             var texture:Texture;
             var asset:Object = new assetClass();
@@ -227,8 +226,7 @@ package starling.textures
             if (asset is Bitmap)
             {
                 texture = Texture.fromBitmap(name, asset as Bitmap, optimizeForRenderToTexture, scale, format, repeat, false);
-                texture.root.onRestore = function():void
-                {
+                texture.root.onRestore = function ():void {
                     Utils.log("%% Texture::RESTORING fromEmbeddedAsset " + name);
                     texture.root.uploadBitmap(new assetClass());
                 };
@@ -236,8 +234,7 @@ package starling.textures
             else if (asset is ByteArray)
             {
                 texture = Texture.fromAtfData(name, asset as ByteArray, scale, null, repeat, false);
-                texture.root.onRestore = function():void
-                {
+                texture.root.onRestore = function ():void {
                     Utils.log("%% Texture::RESTORING fromEmbeddedAsset " + name);
                     texture.root.uploadAtfData(new assetClass());
                 };
@@ -266,8 +263,8 @@ package starling.textures
          *                  quality).
          *  @param repeat   the repeat value of the texture. Only useful for power-of-two textures.
          */
-        public static function fromBitmap(name:String, bitmap:Bitmap, //generateMipMaps:Boolean=false,
-                optimizeForRenderToTexture:Boolean = Texture.OPTIMIZE_RENDER_FOR_TEXTURE, scale:Number = 1, format:String = "bgra", repeat:Boolean = false, restoreImplementation: Boolean = true):Texture
+        public static function fromBitmap( name:String, bitmap:Bitmap, //generateMipMaps:Boolean=false,
+                optimizeForRenderToTexture:Boolean = Texture.OPTIMIZE_RENDER_FOR_TEXTURE, scale:Number = 1, format:String = "bgra", repeat:Boolean = false, restoreImplementation:Boolean = true ):Texture
         {
             return fromBitmapData(name, bitmap.bitmapData, optimizeForRenderToTexture, scale, format, repeat, restoreImplementation);
         }
@@ -287,8 +284,7 @@ package starling.textures
          *                  quality).
          *  @param repeat   the repeat value of the texture. Only useful for power-of-two textures.
          */
-        public static function fromBitmapData(name:String, data:BitmapData,
-                optimizeForRenderToTexture:Boolean = Texture.OPTIMIZE_RENDER_FOR_TEXTURE, scale:Number = 1, format:String = "bgra", repeat:Boolean = false, restoreImplementation: Boolean = true):Texture
+        public static function fromBitmapData( name:String, data:BitmapData, optimizeForRenderToTexture:Boolean = Texture.OPTIMIZE_RENDER_FOR_TEXTURE, scale:Number = 1, format:String = "bgra", repeat:Boolean = false, restoreImplementation:Boolean = true ):Texture
         {
             var texture:Texture = Texture.empty(name, data.width / scale, data.height / scale, true, optimizeForRenderToTexture, scale, format, repeat);
             
@@ -296,8 +292,7 @@ package starling.textures
             
             if (restoreImplementation)
             {
-                texture.root.onRestore = function():void
-                {
+                texture.root.onRestore = function ():void {
                     Utils.log("%% Texture::RESTORING fromBitmapData " + name);
                     texture.root.uploadBitmapData(data);
                 };
@@ -306,14 +301,12 @@ package starling.textures
             return texture;
         }
         
-        static public function fromByteArray(name:String, data:ByteArray, rect:Rectangle,
-                optimizeForRenderToTexture:Boolean = Texture.OPTIMIZE_RENDER_FOR_TEXTURE, scale:Number = 1, repeat:Boolean = false):Texture
+        static public function fromByteArray( name:String, data:ByteArray, rect:Rectangle, optimizeForRenderToTexture:Boolean = Texture.OPTIMIZE_RENDER_FOR_TEXTURE, scale:Number = 1, repeat:Boolean = false ):Texture
         {
             var texture:Texture = Texture.empty(name, rect.width / scale, rect.height / scale, true, optimizeForRenderToTexture, scale, Context3DTextureFormat.BGRA, repeat);
             
             texture.root.uploadByteArray(data);
-            texture.root.onRestore = function():void
-            {
+            texture.root.onRestore = function ():void {
                 Utils.log("%% Texture::RESTORING fromByteArray " + name);
                 texture.root.uploadByteArray(data);
             };
@@ -330,7 +323,7 @@ package starling.textures
          *  asynchronously. It can only be used when the callback has been executed. This is the
          *  expected function definition: <code>function(texture:Texture):void;</code></p> */
         
-        public static function fromAtfData(name:String, data:ByteArray, scale:Number = 1, async:Function = null, repeat:Boolean = false, restoreImplementation: Boolean = true):Texture
+        public static function fromAtfData( name:String, data:ByteArray, scale:Number = 1, async:Function = null, repeat:Boolean = false, restoreImplementation:Boolean = true ):Texture
         {
             var context:Context3D = Starling.context;
             if (context == null) throw new MissingContextError();
@@ -339,8 +332,7 @@ package starling.textures
             
             var nativeTexture:flash.display3D.textures.Texture = context.createTexture(atfData.width, atfData.height, atfData.format, false);
             
-            var concreteTexture:ConcreteTexture = new ConcreteTexture(name, nativeTexture, atfData.format, atfData.width, atfData.height,
-                    false, Texture.OPTIMIZE_RENDER_FOR_TEXTURE, scale, repeat);
+            var concreteTexture:ConcreteTexture = new ConcreteTexture(name, nativeTexture, atfData.format, atfData.width, atfData.height, false, Texture.OPTIMIZE_RENDER_FOR_TEXTURE, scale, repeat);
 
 //			concreteTexture.name = name;
             
@@ -348,8 +340,7 @@ package starling.textures
             
             if (restoreImplementation)
             {
-                concreteTexture.onRestore = function():void
-                {
+                concreteTexture.onRestore = function ():void {
                     Utils.log("%% Texture::RESTORING fromAtfData " + name);
                     concreteTexture.uploadAtfData(data, 0);
                 };
@@ -386,13 +377,13 @@ package starling.textures
          *  @param onComplete will be executed when the texture is ready. May contain a parameter
          *                 of type 'Texture'.
          */
-        public static function fromNetStream(name:String, stream:NetStream, scale:Number = 1, onComplete:Function = null):Texture
+        public static function fromNetStream( name:String, stream:NetStream, scale:Number = 1, onComplete:Function = null ):Texture
         {
             // workaround for bug in NetStream class:
-            if (stream.client == stream && !("onMetaData" in stream))
-                stream.client = {onMetaData: function(md:Object):void
-                {
-                }};
+            if (stream.client == stream && !("onMetaData" in stream)) stream.client = {
+                onMetaData: function ( md:Object ):void {
+                }
+            };
             
             return fromVideoAttachment(name, "NetStream", stream, scale, onComplete);
         }
@@ -416,25 +407,23 @@ package starling.textures
          *  @param onComplete will be executed when the texture is ready. May contain a parameter
          *                 of type 'Texture'.
          */
-        public static function fromCamera(name:String, camera:Camera, scale:Number = 1, onComplete:Function = null):Texture
+        public static function fromCamera( name:String, camera:Camera, scale:Number = 1, onComplete:Function = null ):Texture
         {
             return fromVideoAttachment(name, "Camera", camera, scale, onComplete);
         }
         
-        private static function fromVideoAttachment(name:String, type:String, attachment:Object, scale:Number, onComplete:Function):Texture
+        private static function fromVideoAttachment( name:String, type:String, attachment:Object, scale:Number, onComplete:Function ):Texture
         {
             const TEXTURE_READY:String = "textureReady"; // for backwards compatibility
             
-            if (!SystemUtil.supportsVideoTexture)
-                throw new NotSupportedError("Video Textures are not supported on this platform");
+            if (!SystemUtil.supportsVideoTexture) throw new NotSupportedError("Video Textures are not supported on this platform");
             
             var context:Context3D = Starling.context;
             if (context == null) throw new MissingContextError();
             
             var base:TextureBase = context["createVideoTexture"]();
             base["attach" + type](attachment);
-            base.addEventListener(TEXTURE_READY, function(event:Object):void
-            {
+            base.addEventListener(TEXTURE_READY, function ( event:Object ):void {
                 base.removeEventListener(TEXTURE_READY, arguments.callee);
                 execute(onComplete, texture);
             });
@@ -442,8 +431,7 @@ package starling.textures
             var texture:ConcreteVideoTexture = new ConcreteVideoTexture(name, base, scale);
 //			texture.name = name;
 //			texture.root.name = name;
-            texture.onRestore = function():void
-            {
+            texture.onRestore = function ():void {
                 Utils.log("%% Texture::RESTORING fromVideoAttachment " + name);
                 texture.root.attachVideo(type, attachment);
             };
@@ -461,19 +449,17 @@ package starling.textures
          *  @param format  the context3D texture format to use. Pass one of the packed or
          *                 compressed formats to save memory.
          */
-        public static function fromColor(name:String, width:Number, height:Number, color:uint = 0xffffffff,
-                optimizeForRenderToTexture:Boolean = Texture.OPTIMIZE_RENDER_FOR_TEXTURE, scale:Number = -1, format:String = "bgra"):Texture
+        public static function fromColor( name:String, width:Number, height:Number, color:uint = 0xffffffff, optimizeForRenderToTexture:Boolean = Texture.OPTIMIZE_RENDER_FOR_TEXTURE, scale:Number = -1, format:String = "bgra" ):Texture
         {
 //			trace('fromColor: ' + (fromColor));
-            var texture: Texture = Texture.empty(name, width, height, true, // false,
+            var texture:Texture = Texture.empty(name, width, height, true, // false,
                     optimizeForRenderToTexture, scale, format);
 
 //			texture.name = name;
 //			texture.root.name = name;
             
             texture.root.clear(color, Color.getAlpha(color) / 255.0);
-            texture.root.onRestore = function():void
-            {
+            texture.root.onRestore = function ():void {
                 Utils.log("%% Texture::RESTORING fromColor " + name);
                 texture.root.clear(color, Color.getAlpha(color) / 255.0);
             };
@@ -498,8 +484,7 @@ package starling.textures
          *                 compressed formats to save memory (at the price of reduced image quality).
          *  @param repeat  the repeat mode of the texture. Only useful for power-of-two textures.
          */
-        public static function empty(name:String, width:Number, height:Number, premultipliedAlpha:Boolean = true,
-                optimizeForRenderToTexture:Boolean = Texture.OPTIMIZE_RENDER_FOR_TEXTURE, scale:Number = -1, format:String = "bgra", repeat:Boolean = false):Texture
+        public static function empty( name:String, width:Number, height:Number, premultipliedAlpha:Boolean = true, optimizeForRenderToTexture:Boolean = Texture.OPTIMIZE_RENDER_FOR_TEXTURE, scale:Number = -1, format:String = "bgra", repeat:Boolean = false ):Texture
         {
             if (scale <= 0) scale = Starling.contentScaleFactor;
             
@@ -546,10 +531,8 @@ package starling.textures
             concreteTexture.onRestore = concreteTexture.clear;
 //			concreteTexture.name = name;
             
-            if (actualWidth - origWidth < 0.001 && actualHeight - origHeight < 0.001)
-                return concreteTexture;
-            else
-                return new SubTexture(name, concreteTexture, new Rectangle(0, 0, actualWidth, actualHeight), true);
+            if (actualWidth - origWidth < 0.001 && actualHeight - origHeight < 0.001) return concreteTexture;
+            else return new SubTexture(name, concreteTexture, new Rectangle(0, 0, actualWidth, actualHeight), true);
             
         }
         
@@ -576,7 +559,7 @@ package starling.textures
          *  might be working with a SubTexture or a texture frame. This method
          *  adjusts the texture and vertex coordinates accordingly.
          */
-        public function adjustVertexData(vertexData:VertexData, vertexID:int, count:int):void
+        public function adjustVertexData( vertexData:VertexData, vertexID:int, count:int ):void
         {
             // override in subclass
         }
@@ -593,7 +576,7 @@ package starling.textures
          *  @param stride     the distance (in vector elements) of consecutive UV pairs.
          *  @param count      the number of UV pairs that should be adjusted, or "-1" for all of them.
          */
-        public function adjustTexCoords(texCoords:Vector.<Number>, startIndex:int = 0, stride:int = 0, count:int = -1):void
+        public function adjustTexCoords( texCoords:Vector.<Number>, startIndex:int = 0, stride:int = 0, count:int = -1 ):void
         {
             // override in subclasses
         }
@@ -604,42 +587,76 @@ package starling.textures
          *  Only SubTextures can have a frame.
          *
          *  <p>CAUTION: not a copy, but the actual object! Do not modify!</p> */
-        public function get frame():Rectangle  { return null; }
+        public function get frame():Rectangle
+        {
+            return null;
+        }
         
         /** Indicates if the texture should repeat like a wallpaper or stretch the outermost pixels.
          *  Note: this only works in textures with sidelengths that are powers of two and
          *  that are not loaded from a texture atlas (i.e. no subtextures). @default false */
-        public function get repeat():Boolean  { return false; }
+        public function get repeat():Boolean
+        {
+            return false;
+        }
         
         /** The width of the texture in points. */
-        public function get width():Number  { return 0; }
+        public function get width():Number
+        {
+            return 0;
+        }
         
         /** The height of the texture in points. */
-        public function get height():Number  { return 0; }
+        public function get height():Number
+        {
+            return 0;
+        }
         
         /** The width of the texture in pixels (without scale adjustment). */
-        public function get nativeWidth():Number  { return 0; }
+        public function get nativeWidth():Number
+        {
+            return 0;
+        }
         
         /** The height of the texture in pixels (without scale adjustment). */
-        public function get nativeHeight():Number  { return 0; }
+        public function get nativeHeight():Number
+        {
+            return 0;
+        }
         
         /** The scale factor, which influences width and height properties. */
-        public function get scale():Number  { return 1.0; }
+        public function get scale():Number
+        {
+            return 1.0;
+        }
         
         /** The Stage3D texture object the texture is based on. */
-        public function get base():TextureBase  { return null; }
+        public function get base():TextureBase
+        {
+            return null;
+        }
         
         /** The concrete texture the texture is based on. */
-        public function get root():ConcreteTexture  { return null; }
+        public function get root():ConcreteTexture
+        {
+            return null;
+        }
         
         /** The <code>Context3DTextureFormat</code> of the underlying texture data. */
-        public function get format():String  { return Context3DTextureFormat.BGRA; }
+        public function get format():String
+        {
+            return Context3DTextureFormat.BGRA;
+        }
         
         /** Indicates if the texture contains mip maps. */
+        
         //        public function get mipMapping():Boolean { return false; }
         
         /** Indicates if the alpha values are premultiplied into the RGB values. */
-        public function get premultipliedAlpha():Boolean  { return false; }
+        public function get premultipliedAlpha():Boolean
+        {
+            return false;
+        }
         
         /** Returns the maximum size constraint (for both width and height) for textures in the
          *  current Context3D profile. */

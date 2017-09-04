@@ -27,7 +27,7 @@ package starling.textures
             {
                 if (ACTIVE) setInterval(dump, //
 //                 10000 //
-                 15000 //
+                 15000  //
                  );
             }
         }

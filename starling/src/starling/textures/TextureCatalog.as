@@ -14,7 +14,7 @@ package starling.textures
     {
         
         //TODO to fix
-        static internal const ACTIVE:Boolean = true;
+        static internal const ACTIVE:Boolean = false; //true;
         
         static public const ME:TextureCatalog = new TextureCatalog();
         
@@ -23,7 +23,7 @@ package starling.textures
             Singleton.enforce(ME);
     
             //TODO to fix
-//            CONFIG::DEBUG
+            CONFIG::DEBUG
             {
                 if (ACTIVE) setInterval(dump, //
 //                 10000 //
@@ -84,7 +84,7 @@ package starling.textures
             Utils.print("registers=" + registers + " removals=" + removals);
 
             //TODO to comment
-			if(SIZE_CALLBACK) SIZE_CALLBACK(bytes(asize));
+//			if(SIZE_CALLBACK) SIZE_CALLBACK(bytes(asize));
         
         }
         

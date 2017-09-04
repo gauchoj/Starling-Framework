@@ -14,7 +14,7 @@ package starling.textures
     {
         
         //TODO to fix
-        static internal const ACTIVE:Boolean = true;
+        static internal const ACTIVE:Boolean = false;
         
         static public const ME:TextureCatalog = new TextureCatalog();
         

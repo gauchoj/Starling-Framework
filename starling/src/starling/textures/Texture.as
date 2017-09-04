@@ -10,7 +10,9 @@
 
 package starling.textures
 {
-	import starling.core.Starling;
+    import com.assukar.airong.error.AbstractError
+    
+    import starling.core.Starling;
 	import starling.errors.MissingContextError;
 	import starling.errors.NotSupportedError;
 	import starling.utils.Color;
@@ -147,20 +149,21 @@ package starling.textures
         
 		static public const RBGA: String = "RBGA";
 		static public const PVRTC: String = "PVRTC";
-		static public const ETC: String = "EC2";
+		static public const ETC: String = "ETC";
 		
 		static public var COMPRESSION: String = RBGA;
 		
         public function get nativeBytes(): int
         {
-			switch (COMPRESSION)
-			{
-				case RBGA: return 4 * nativeWidth * nativeHeight; // [CANVAS]
-				case PVRTC: return 2 * nativeWidth * nativeHeight; // TODO REVIEW [MOB] , pvrtc 4bpp (16 pixels/block & 8 bytes/block)
-				case ETC: return 2 * nativeWidth * nativeHeight; // TODO REVIEW [MOB] , pvrtc 4bpp (16 pixels/block & 8 bytes/block)
-			}
-			
-			throw new AssukarError();
+            return 0;
+            
+//			switch (COMPRESSION)
+//			{
+//				case RBGA: return 4 * nativeWidth * nativeHeight; // [CANVAS]
+//				case PVRTC: return 2 * nativeWidth * nativeHeight; // TODO REVIEW [MOB] , pvrtc 4bpp (16 pixels/block & 8 bytes/block)
+//				case ETC: return 2 * nativeWidth * nativeHeight; // TODO REVIEW [MOB] , pvrtc 4bpp (16 pixels/block & 8 bytes/block)
+//			}
+//			throw new AssukarError();
         }
         
         /** Disposes the underlying texture data. Note that not all textures need to be disposed:

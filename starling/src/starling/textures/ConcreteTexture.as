@@ -10,6 +10,9 @@
 
 package starling.textures
 {
+    import flash.display3D.Context3DTextureFormat;
+    import flash.geom.Utils3D;
+
     import starling.core.RenderSupport;
     import starling.core.Starling;
     import starling.core.starling_internal;
@@ -359,5 +362,18 @@ package starling.textures
         
         /** @inheritDoc */
         public override function get repeat():Boolean { return mRepeat; }
+
+        public override function get nativeBytes(): int
+        {
+            var compression:String = format == Context3DTextureFormat.COMPRESSED || Context3DTextureFormat.COMPRESSED_ALPHA ? COMPRESSION : RBGA;
+            switch (compression)
+            {
+                case RBGA: return 4 * nativeWidth * nativeHeight; // [CANVAS]
+                case PVRTC: return 2 * nativeWidth * nativeHeight; // TODO REVIEW [MOB] , pvrtc 4bpp (16 pixels/block & 8 bytes/block)
+                case EC2: return 2 * nativeWidth * nativeHeight; // TODO REVIEW [MOB] , pvrtc 4bpp (16 pixels/block & 8 bytes/block)
+            }
+
+            throw new AssukarError();
+        }
     }
 }

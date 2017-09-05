@@ -88,8 +88,7 @@ package starling.textures
             this.onRestore = null;
             super.dispose();
             
-            //TODO to fix
-//			CONFIG::DEBUG
+			CONFIG::DEBUG
             {
                 if (TextureCatalog.ACTIVE) TextureCatalog.ME.dispose(this);
             }

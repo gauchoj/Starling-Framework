@@ -1,18 +1,19 @@
 package starling.textures
 {
-    import com.assukar.airong.ds.HashSet
-    import com.assukar.airong.utils.Singleton
-    import com.assukar.airong.utils.Statics
-    import com.assukar.airong.utils.Utils
-    
-    import flash.utils.setInterval
+	import com.assukar.airong.ds.HashSet;
+	import com.assukar.airong.main.MainContext;
+	import com.assukar.airong.utils.Singleton;
+	import com.assukar.airong.utils.Statics;
+	import com.assukar.airong.utils.Utils;
+
+	import flash.utils.setInterval;
     
     /**
      * @author Assukar
      */
     public class TextureCatalog
     {
-        static internal const ACTIVE:Boolean = true;
+        static internal const ACTIVE:Boolean = false && !MainContext.STORE_CANDIDATE;
         static public const ME:TextureCatalog = new TextureCatalog();
         
         function TextureCatalog()

@@ -12,6 +12,7 @@ package starling.textures
      */
     public class TextureCatalog
     {
+        
         static internal const ACTIVE:Boolean = false; //false;
         
         static public const ME:TextureCatalog = new TextureCatalog();
@@ -37,7 +38,8 @@ package starling.textures
             else if (size < Statics.GB) return (size / Statics.MB).toFixed(1) + "Mb";
             else return (size / Statics.GB).toFixed(3) + "Gb";
         }
-
+        
+        //TODO to comment
 //        static public var SIZE_CALLBACK:Function = null;
         
         private var asize:uint;
@@ -75,7 +77,8 @@ package starling.textures
             
             Utils.print("ALL " + bytes(asize));
             Utils.print("registers=" + registers + " removals=" + removals);
-
+            
+            //TODO to comment
 //            if (SIZE_CALLBACK) SIZE_CALLBACK(bytes(asize));
             
         }

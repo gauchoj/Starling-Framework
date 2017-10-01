@@ -178,7 +178,7 @@ package starling.core
      *
      */ public class Starling extends EventDispatcher
     {
-        static private const LOG_SHARE_CONTEXT:Boolean = true;
+        static private const LOG_SHARE_CONTEXT:Boolean = false;
         
         /** The version of the Starling framework. */
         public static const VERSION:String = "1.8";

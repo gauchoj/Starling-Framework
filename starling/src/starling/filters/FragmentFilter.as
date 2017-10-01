@@ -259,10 +259,7 @@ package starling.filters
             previousRenderTarget = support.renderTarget;
             previousStencilRefValue = support.stencilReferenceValue;
 
-//            if (previousRenderTarget && !SystemUtil.supportsRelaxedTargetClearRequirement)
-//                throw new IllegalOperationError("To nest filters, you need at least Flash Player / AIR version 15.");
-            
-            if (intoCache) cacheTexture = Texture.empty("FragmentFilter:" + name, boundsPot.width, boundsPot.height, PMA, //false,
+            if (intoCache) cacheTexture = Texture.empty("FragmentFilter:" + name, boundsPot.width, boundsPot.height, PMA,
                     true, mResolution * scale);
             
             // draw the original object into a texture

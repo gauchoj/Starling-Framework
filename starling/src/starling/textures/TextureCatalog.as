@@ -13,7 +13,7 @@ package starling.textures
      */
     public class TextureCatalog
     {
-        //TODO to fix
+       
         static internal const ACTIVE:Boolean = !MainContext.STORE_CANDIDATE && false; // false
         static public const ME:TextureCatalog = new TextureCatalog();
         

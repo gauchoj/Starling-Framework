@@ -40,7 +40,7 @@ package starling.textures
         private static var sMatrix:Matrix = new Matrix();
         
         /** Creates a new SubTexture containing the specified region of a parent texture.
-         *
+         *  @param name
          *  @param parent     The texture you want to create a SubTexture from.
          *  @param region     The region of the parent texture that the SubTexture will show
          *                    (in points). If <code>null</code>, the complete area of the parent.

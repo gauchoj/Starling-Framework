@@ -129,8 +129,8 @@ package starling.display
         // members
         
 		// SKEW::
-//        private var mSkewX:Number = 0.0;
-//        private var mSkewY:Number = 0.0;
+        private var mSkewX:Number = 0.0;
+        private var mSkewY:Number = 0.0;
 		//
 		
         private var mX:Number = 0.0;
@@ -841,31 +841,31 @@ package starling.display
         }
         
 		// SKEW::
-//        /** The horizontal skew angle in radians. */
-//        public function get skewX():Number { return mSkewX; }
-//        public function set skewX(value:Number):void 
-//        {
-//            value = MathUtil.normalizeAngle(value);
-//            
-//            if (mSkewX != value)
-//            {
-//                mSkewX = value;
-//                mOrientationChanged = true;
-//            }
-//        }
+        /** The horizontal skew angle in radians. */
+        public function get skewX():Number { return mSkewX; }
+        public function set skewX(value:Number):void
+        {
+            value = MathUtil.normalizeAngle(value);
+
+            if (mSkewX != value)
+            {
+                mSkewX = value;
+                mOrientationChanged = true;
+            }
+        }
 //        
-//        /** The vertical skew angle in radians. */
-//        public function get skewY():Number { return mSkewY; }
-//        public function set skewY(value:Number):void 
-//        {
-//            value = MathUtil.normalizeAngle(value);
-//            
-//            if (mSkewY != value)
-//            {
-//                mSkewY = value;
-//                mOrientationChanged = true;
-//            }
-//        }
+        /** The vertical skew angle in radians. */
+        public function get skewY():Number { return mSkewY; }
+        public function set skewY(value:Number):void
+        {
+            value = MathUtil.normalizeAngle(value);
+
+            if (mSkewY != value)
+            {
+                mSkewY = value;
+                mOrientationChanged = true;
+            }
+        }
         
         /** The rotation of the object in radians. (In Starling, all angles are measured 
          *  in radians.) */

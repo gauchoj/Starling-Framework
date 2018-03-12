@@ -549,7 +549,7 @@ package starling.core
             
             if (!mShareContext)
             {
-                Utils.log("PRESENT " + mContext);
+                //Utils.log("PRESENT " + mContext);
                 mContext.present();
             }
         }

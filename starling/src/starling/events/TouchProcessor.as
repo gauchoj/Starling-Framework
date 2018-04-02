@@ -117,8 +117,8 @@ package starling.events
                     if (mElapsedTime - mLastTaps[i].timestamp > mMultitapTime)
                         mLastTaps.splice(i, 1);
             }
-    
-    
+            
+            
             //TODO to review
             if (mQueue.length >= QUEUE_MAX_LENGTH)
             {

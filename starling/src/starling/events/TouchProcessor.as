@@ -118,14 +118,14 @@ package starling.events
                         mLastTaps.splice(i, 1);
             }
             
-            
             //TODO to review
             if (mQueue.length >= QUEUE_MAX_LENGTH)
             {
-                while (mQueue.length >= QUEUE_MAX_LENGTH) mQueue.pop();
+                cancelTouches();
                 System.pauseForGCIfCollectionImminent(0);
                 return;
             }
+            
             
             while (mQueue.length > 0)
             {

@@ -10,16 +10,16 @@
 
 package starling.display
 {
-	import starling.core.RenderSupport;
-	import starling.events.Event;
-	import starling.utils.MatrixUtil;
-	import starling.utils.RectangleUtil;
-
-	import flash.geom.Matrix;
-	import flash.geom.Matrix3D;
-	import flash.geom.Point;
-	import flash.geom.Rectangle;
-
+    import flash.geom.Matrix;
+    import flash.geom.Matrix3D;
+    import flash.geom.Point;
+    import flash.geom.Rectangle;
+    
+    import starling.core.RenderSupport;
+    import starling.events.Event;
+    import starling.utils.MatrixUtil;
+    import starling.utils.RectangleUtil;
+    
     /** Dispatched on all children when the object is flattened. */
     [Event(name="flatten", type="starling.events.Event")]
     
@@ -28,25 +28,25 @@ package starling.display
      *  as the base class for custom display objects.</p>
      *
      *  <strong>Flattened Sprites</strong>
-     * 
-     *  <p>The <code>flatten</code>-method allows you to optimize the rendering of static parts of 
+     *
+     *  <p>The <code>flatten</code>-method allows you to optimize the rendering of static parts of
      *  your display list.</p>
      *
-     *  <p>It analyzes the tree of children attached to the sprite and optimizes the rendering calls 
-     *  in a way that makes rendering extremely fast. The speed-up comes at a price, though: you 
-     *  will no longer see any changes in the properties of the children (position, rotation, 
-     *  alpha, etc.). To update the object after changes have happened, simply call 
+     *  <p>It analyzes the tree of children attached to the sprite and optimizes the rendering calls
+     *  in a way that makes rendering extremely fast. The speed-up comes at a price, though: you
+     *  will no longer see any changes in the properties of the children (position, rotation,
+     *  alpha, etc.). To update the object after changes have happened, simply call
      *  <code>flatten</code> again, or <code>unflatten</code> the object.</p>
-     *  
+     *
      *  <strong>Clipping Rectangle</strong>
-     * 
+     *
      *  <p>The <code>clipRect</code> property allows you to clip the visible area of the sprite
      *  to a rectangular region. Only pixels inside the rectangle will be displayed. This is a very
      *  fast way to mask objects. However, there is one limitation: the <code>clipRect</code>
      *  only works with stage-aligned rectangles, i.e. you cannot rotate or skew the rectangle.
      *  This limitation is inherited from the underlying "scissoring" technique that is used
      *  internally.</p>
-     *  
+     *
      *  @see DisplayObject
      *  @see DisplayObjectContainer
      */
@@ -61,7 +61,7 @@ package starling.display
         private static const sHelperMatrix:Matrix = new Matrix();
         private static const sHelperPoint:Point = new Point();
         private static const sHelperRect:Rectangle = new Rectangle();
-        
+
 //        /** Creates an empty sprite. */
 //        public function Sprite()
 //        {
@@ -79,17 +79,17 @@ package starling.display
         {
             if (mFlattenedContents)
             {
-                for (var i:int=0, max:int=mFlattenedContents.length; i<max; ++i) mFlattenedContents[i].dispose();
+                for (var i:int = 0, max:int = mFlattenedContents.length; i < max; ++i) mFlattenedContents[i].dispose();
                 mFlattenedContents = null;
             }
         }
         
         /** Optimizes the sprite for optimal rendering performance. Changes in the
          *  children of a flattened sprite will not be displayed any longer. For this to happen,
-         *  either call <code>flatten</code> again, or <code>unflatten</code> the sprite. 
+         *  either call <code>flatten</code> again, or <code>unflatten</code> the sprite.
          *  Beware that the actual flattening will not happen right away, but right before the
-         *  next rendering. 
-         * 
+         *  next rendering.
+         *
          *  <p>When you flatten a sprite, the result of all matrix operations that are otherwise
          *  executed during rendering are cached. For this reason, a flattened sprite can be
          *  rendered with much less strain on the CPU. However, a flattened sprite will always
@@ -105,19 +105,19 @@ package starling.display
          *  @param ignoreChildOrder If the child order is not important, you can further optimize
          *           the number of draw calls. Naturally, this is not an option for all use-cases.
          */
-		public function flatten():void
-        {					
+        public function flatten():void
+        {
             mFlattenRequested = true;
             broadcastEventWith(Event.FLATTEN);
         }
-		
-		public function get isFlattenRequested(): Boolean
-		{
-			return mFlattenRequested;
-		}
+        
+        public function get isFlattenRequested():Boolean
+        {
+            return mFlattenRequested;
+        }
         
         /** Removes the rendering optimizations that were created when flattening the sprite.
-         *  Changes to the sprite's children will immediately become visible again. */ 
+         *  Changes to the sprite's children will immediately become visible again. */
         public function unflatten():void
         {
             mFlattenRequested = false;
@@ -125,44 +125,60 @@ package starling.display
         }
         
         /** Indicates if the sprite was flattened. */
-        public function get isFlattened():Boolean 
-        { 
-            return (mFlattenedContents != null) || mFlattenRequested; 
+        public function get isFlattened():Boolean
+        {
+            return (mFlattenedContents != null) || mFlattenRequested;
         }
         
         /** The object's clipping rectangle in its local coordinate system.
-         *  Only pixels within that rectangle will be drawn. 
+         *  Only pixels within that rectangle will be drawn.
          *  <strong>Note:</strong> clipping rectangles are axis aligned with the screen, so they
          *  will not be rotated or skewed if the Sprite is. */
-        public function get clipRect():Rectangle { return mClipRect; }
-        public function set clipRect(value:Rectangle):void 
+        public function get clipRect():Rectangle
+        {
+            return mClipRect;
+        }
+        
+        public function set clipRect(value:Rectangle):void
         {
             if (mClipRect && value) mClipRect.copyFrom(value);
             else mClipRect = (value ? value.clone() : null);
         }
-
+        
         /** Returns the bounds of the container's clipping rectangle in the given coordinate space,
          *  or null if the sprite does not have one. */
-        public function getClipRect(targetSpace:DisplayObject, resultRect:Rectangle=null):Rectangle
+        public function getClipRect(targetSpace:DisplayObject, resultRect:Rectangle = null):Rectangle
         {
             if (mClipRect == null) return null;
             if (resultRect == null) resultRect = new Rectangle();
             
             var x:Number, y:Number;
-            var minX:Number =  Number.MAX_VALUE;
+            var minX:Number = Number.MAX_VALUE;
             var maxX:Number = -Number.MAX_VALUE;
-            var minY:Number =  Number.MAX_VALUE;
+            var minY:Number = Number.MAX_VALUE;
             var maxY:Number = -Number.MAX_VALUE;
             var transMatrix:Matrix = getTransformationMatrix(targetSpace, sHelperMatrix);
             
-            for (var i:int=0; i<4; ++i)
+            for (var i:int = 0; i < 4; ++i)
             {
-                switch(i)
+                switch (i)
                 {
-                    case 0: x = mClipRect.left;  y = mClipRect.top;    break;
-                    case 1: x = mClipRect.left;  y = mClipRect.bottom; break;
-                    case 2: x = mClipRect.right; y = mClipRect.top;    break;
-                    case 3: x = mClipRect.right; y = mClipRect.bottom; break;
+                    case 0:
+                        x = mClipRect.left;
+                        y = mClipRect.top;
+                        break;
+                    case 1:
+                        x = mClipRect.left;
+                        y = mClipRect.bottom;
+                        break;
+                    case 2:
+                        x = mClipRect.right;
+                        y = mClipRect.top;
+                        break;
+                    case 3:
+                        x = mClipRect.right;
+                        y = mClipRect.bottom;
+                        break;
                 }
                 var transformedPoint:Point = MatrixUtil.transformCoords(transMatrix, x, y, sHelperPoint);
                 
@@ -172,25 +188,25 @@ package starling.display
                 if (maxY < transformedPoint.y) maxY = transformedPoint.y;
             }
             
-            resultRect.setTo(minX, minY, maxX-minX, maxY-minY);
+            resultRect.setTo(minX, minY, maxX - minX, maxY - minY);
             return resultRect;
         }
         
-        /** @inheritDoc */ 
-        public override function getBounds(targetSpace:DisplayObject, resultRect:Rectangle=null):Rectangle
+        /** @inheritDoc */
+        public override function getBounds(targetSpace:DisplayObject, resultRect:Rectangle = null):Rectangle
         {
             var bounds:Rectangle = super.getBounds(targetSpace, resultRect);
             
             // if we have a scissor rect, intersect it with our bounds
             if (mClipRect)
-                RectangleUtil.intersect(bounds, getClipRect(targetSpace, sHelperRect), 
-                                        bounds);
+                RectangleUtil.intersect(bounds, getClipRect(targetSpace, sHelperRect),
+                        bounds);
             
             return bounds;
         }
         
         /** @inheritDoc */
-        public override function hitTest(localPoint:Point, forTouch:Boolean=false):DisplayObject
+        public override function hitTest(localPoint:Point, forTouch:Boolean = false):DisplayObject
         {
             if (mClipRect != null && !mClipRect.containsPoint(localPoint))
                 return null;
@@ -198,10 +214,11 @@ package starling.display
                 return super.hitTest(localPoint, forTouch);
         }
         
-		private function renderFlatten(support:RenderSupport, parentAlpha:Number): void
-		{
-			var alpha1:Number, numBatches1:int, mvpMatrix1:Matrix3D, i1:int, quadBatch1:QuadBatch;
-			
+        private function renderFlatten(support:RenderSupport, parentAlpha:Number):void
+        {
+            
+            var alpha1:Number, numBatches1:int, mvpMatrix1:Matrix3D, i1:int, quadBatch1:QuadBatch;
+            
             if (mFlattenedContents == null) mFlattenedContents = new <QuadBatch>[];
             
             if (mFlattenRequested)
@@ -214,20 +231,20 @@ package starling.display
             alpha1 = parentAlpha * this.mAlpha;
             numBatches1 = mFlattenedContents.length;
             mvpMatrix1 = support.mvpMatrix3D;
-			
+            
             support.finishQuadBatch();
             support.raiseDrawCount(numBatches1);
             
-			for (i1=0; i1<numBatches1; ++i1)
-            {	
-                quadBatch1 = mFlattenedContents[i1];		
+            for (i1 = 0; i1 < numBatches1; ++i1)
+            {
+                quadBatch1 = mFlattenedContents[i1];
                 quadBatch1.renderCustom(mvpMatrix1, alpha1, (quadBatch1.blendMode == BlendMode.AUTO ? support.blendMode : quadBatch1.blendMode));
             }
-		}
-		
-		// obj-tion
-		private var clipRect1:Rectangle;
-		
+        }
+        
+        // obj-tion
+        private var clipRect1:Rectangle;
+        
         /** @inheritDoc */
         public override function render(support:RenderSupport, parentAlpha:Number):void
         {
@@ -246,9 +263,9 @@ package starling.display
             else super.render(support, parentAlpha);
             
             if (mClipRect)
-			{
-               	support.popClipRect();
-			}
+            {
+                support.popClipRect();
+            }
         }
     }
 }

@@ -11,9 +11,9 @@
 package starling.events
 {
     import flash.geom.Point;
-    import flash.system.System;
     import flash.utils.getDefinitionByName;
     
+    import starling.core.Starling;
     import starling.display.DisplayObject;
     import starling.display.Stage;
     
@@ -98,12 +98,13 @@ package starling.events
         
         
         //TODO to review
-        static private const QUEUE_MAX_LENGTH:int = 30;
+        private const QUEUE_MAX_LENGTH:int = 8;
         
         /** Analyzes the current touch queue and processes the list of current touches, emptying
          *  the queue while doing so. This method is called by Starling once per frame. */
         public function advanceTime(passedTime:Number):void
         {
+            
             var i:int;
             var touch:Touch;
             
@@ -118,14 +119,20 @@ package starling.events
                         mLastTaps.splice(i, 1);
             }
             
-            //TODO to review
-            if (mQueue.length >= QUEUE_MAX_LENGTH)
-            {
-                cancelTouches();
-                System.pauseForGCIfCollectionImminent(0);
-                return;
-            }
             
+            //TODO to review
+            if (mQueue.length > QUEUE_MAX_LENGTH && passedTime > (1 / Starling.current.nativeStage.frameRate))
+            {
+                if (passedTime > 0.5)
+                {
+                    Starling.current.stop();
+                    cancelTouches();
+                    Starling.current.start();
+                    return;
+                }
+                while (mQueue.length > QUEUE_MAX_LENGTH) mQueue.pop();
+            }
+            ///////
             
             while (mQueue.length > 0)
             {

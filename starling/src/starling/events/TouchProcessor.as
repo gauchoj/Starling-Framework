@@ -10,6 +10,8 @@
 
 package starling.events
 {
+    import com.assukar.airong.utils.Utils;
+    
     import flash.geom.Point;
     import flash.utils.getDefinitionByName;
     
@@ -126,7 +128,7 @@ package starling.events
                 if (passedTime > 0.5)
                 {
                     Starling.current.stop();
-                    cancelTouches();
+                    cancelTouches(true);
                     Starling.current.start();
                     return;
                 }
@@ -260,23 +262,26 @@ package starling.events
         /** Force-end all current touches. Changes the phase of all touches to 'ENDED' and
          *  immediately dispatches a new TouchEvent (if touches are present). Called automatically
          *  when the app receives a 'DEACTIVATE' event. */
-        public function cancelTouches():void
+        
+        //TODO to review
+//        public function cancelTouches():void
+        public function cancelTouches(ignoreProcess:Boolean = false):void
         {
             if (mCurrentTouches.length > 0)
             {
                 // abort touches
                 for each (var touch:Touch in mCurrentTouches)
                 {
-                    if (touch.phase == TouchPhase.BEGAN || touch.phase == TouchPhase.MOVED ||
-                            touch.phase == TouchPhase.STATIONARY)
+                    if (touch.phase == TouchPhase.BEGAN || touch.phase == TouchPhase.MOVED || touch.phase == TouchPhase.STATIONARY)
                     {
                         touch.phase = TouchPhase.ENDED;
                         touch.cancelled = true;
                     }
                 }
                 
+                //TODO to review
                 // dispatch events
-                processTouches(mCurrentTouches, mShiftDown, mCtrlDown);
+                if (!ignoreProcess) processTouches(mCurrentTouches, mShiftDown, mCtrlDown);
             }
             
             // purge touches
@@ -503,7 +508,9 @@ package starling.events
         
         private function onInterruption(event:Object):void
         {
-            cancelTouches();
+            //TODO to review
+//            cancelTouches();
+            cancelTouches(true);
         }
     }
 }

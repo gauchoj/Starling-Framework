@@ -13,7 +13,6 @@ package starling.events
     import flash.geom.Point;
     import flash.utils.getDefinitionByName;
     
-    import starling.core.Starling;
     import starling.display.DisplayObject;
     import starling.display.Stage;
     
@@ -99,12 +98,19 @@ package starling.events
         
         //TODO to review
         private const QUEUE_MAX_LENGTH:int = 8;
-        private const MAX_PASSED_TIME:int = 0.5;
+        private const MAX_PASSED_TIME:Number = 0.3;
+        
+        private var ignoreEvents:Boolean = false;
         
         /** Analyzes the current touch queue and processes the list of current touches, emptying
          *  the queue while doing so. This method is called by Starling once per frame. */
         public function advanceTime(passedTime:Number):void
         {
+            
+            //TODO to review
+            ignoreEvents = passedTime > MAX_PASSED_TIME;
+            while (mQueue.length > QUEUE_MAX_LENGTH) mQueue.pop();
+            
             
             var i:int;
             var touch:Touch;
@@ -119,10 +125,6 @@ package starling.events
                     if (mElapsedTime - mLastTaps[i].timestamp > mMultitapTime)
                         mLastTaps.splice(i, 1);
             }
-            
-            
-            //TODO to review
-            while (mQueue.length > QUEUE_MAX_LENGTH) mQueue.pop();
             
             while (mQueue.length > 0)
             {
@@ -140,15 +142,6 @@ package starling.events
                             touchArgs[4], touchArgs[5], touchArgs[6]);
                     
                     sUpdatedTouches[sUpdatedTouches.length] = touch; // avoiding 'push'
-                }
-                
-                //TODO to review
-                if (passedTime > MAX_PASSED_TIME)
-                {
-                    Starling.current.stop();
-                    cancelTouches(true);
-                    Starling.current.start();
-                    return;
                 }
                 
                 // process the current set of touches (i.e. dispatch touch events)
@@ -198,15 +191,20 @@ package starling.events
                 }
             }
             
+            //TODO to review
             // if the target of a hovering touch changed, we dispatch the event to the previous
             // target to notify it that it's no longer being hovered over.
             for each (var touchData:Object in sHoveringTouchData)
                 if (touchData.touch.target != touchData.target)
-                    touchEvent.dispatch(touchData.bubbleChain);
+                    if (!ignoreEvents) touchEvent.dispatch(touchData.bubbleChain);
             
+            
+            //TODO to review
             // dispatch events for the rest of our updated touches
             for each (touch in touches)
-                touch.dispatchEvent(touchEvent);
+                if (!ignoreEvents) touch.dispatchEvent(touchEvent);
+            
+            
         }
         
         /** Enqueues a new touch our mouse event with the given properties. */
@@ -258,9 +256,7 @@ package starling.events
          *  immediately dispatches a new TouchEvent (if touches are present). Called automatically
          *  when the app receives a 'DEACTIVATE' event. */
         
-        //TODO to review
-//        public function cancelTouches():void
-        public function cancelTouches(ignoreProcess:Boolean = false):void
+        public function cancelTouches():void
         {
             if (mCurrentTouches.length > 0)
             {
@@ -274,9 +270,8 @@ package starling.events
                     }
                 }
                 
-                //TODO to review
                 // dispatch events
-                if (!ignoreProcess) processTouches(mCurrentTouches, mShiftDown, mCtrlDown);
+                processTouches(mCurrentTouches, mShiftDown, mCtrlDown);
             }
             
             // purge touches
@@ -503,9 +498,7 @@ package starling.events
         
         private function onInterruption(event:Object):void
         {
-            //TODO to review
-//            cancelTouches();
-            cancelTouches(true);
+            cancelTouches();
         }
     }
 }

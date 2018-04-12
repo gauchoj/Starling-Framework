@@ -10,8 +10,6 @@
 
 package starling.events
 {
-    import com.assukar.airong.utils.Utils;
-    
     import flash.geom.Point;
     import flash.utils.getDefinitionByName;
     
@@ -101,6 +99,7 @@ package starling.events
         
         //TODO to review
         private const QUEUE_MAX_LENGTH:int = 8;
+        private const MAX_PASSED_TIME:int = 0.5;
         
         /** Analyzes the current touch queue and processes the list of current touches, emptying
          *  the queue while doing so. This method is called by Starling once per frame. */
@@ -123,18 +122,7 @@ package starling.events
             
             
             //TODO to review
-            if (mQueue.length > QUEUE_MAX_LENGTH && passedTime > (1 / Starling.current.nativeStage.frameRate))
-            {
-                if (passedTime > 0.5)
-                {
-                    Starling.current.stop();
-                    cancelTouches(true);
-                    Starling.current.start();
-                    return;
-                }
-                while (mQueue.length > QUEUE_MAX_LENGTH) mQueue.pop();
-            }
-            ///////
+            while (mQueue.length > QUEUE_MAX_LENGTH) mQueue.pop();
             
             while (mQueue.length > 0)
             {
@@ -144,8 +132,7 @@ package starling.events
                         touch.phase = TouchPhase.STATIONARY;
                 
                 // analyze new touches, but each ID only once
-                while (mQueue.length > 0 &&
-                !containsTouchWithID(sUpdatedTouches, mQueue[mQueue.length - 1][0]))
+                while (mQueue.length > 0 && !containsTouchWithID(sUpdatedTouches, mQueue[mQueue.length - 1][0]))
                 {
                     var touchArgs:Array = mQueue.pop();
                     touch = createOrUpdateTouch(
@@ -153,6 +140,15 @@ package starling.events
                             touchArgs[4], touchArgs[5], touchArgs[6]);
                     
                     sUpdatedTouches[sUpdatedTouches.length] = touch; // avoiding 'push'
+                }
+                
+                //TODO to review
+                if (passedTime > MAX_PASSED_TIME)
+                {
+                    Starling.current.stop();
+                    cancelTouches(true);
+                    Starling.current.start();
+                    return;
                 }
                 
                 // process the current set of touches (i.e. dispatch touch events)
@@ -175,8 +171,7 @@ package starling.events
          *  @param shiftDown  indicates if the shift key was down when the touches occurred.
          *  @param ctrlDown   indicates if the ctrl or cmd key was down when the touches occurred.
          */
-        protected function processTouches(touches:Vector.<Touch>,
-                                          shiftDown:Boolean, ctrlDown:Boolean):void
+        protected function processTouches(touches:Vector.<Touch>, shiftDown:Boolean, ctrlDown:Boolean):void
         {
             sHoveringTouchData.length = 0;
             

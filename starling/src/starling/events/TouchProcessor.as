@@ -96,7 +96,7 @@ package starling.events
         }
         
         
-        //TODO to review
+        
         private const QUEUE_MAX_LENGTH:int = 8;
         private const MAX_PASSED_TIME:Number = 0.3;
         
@@ -107,7 +107,7 @@ package starling.events
         public function advanceTime(passedTime:Number):void
         {
             
-            //TODO to review
+            
             ignoreEvents = passedTime > MAX_PASSED_TIME;
             while (mQueue.length > QUEUE_MAX_LENGTH) mQueue.pop();
             
@@ -191,7 +191,7 @@ package starling.events
                 }
             }
             
-            //TODO to review
+            
             // if the target of a hovering touch changed, we dispatch the event to the previous
             // target to notify it that it's no longer being hovered over.
             for each (var touchData:Object in sHoveringTouchData)
@@ -199,7 +199,7 @@ package starling.events
                     if (!ignoreEvents) touchEvent.dispatch(touchData.bubbleChain);
             
             
-            //TODO to review
+            
             // dispatch events for the rest of our updated touches
             for each (touch in touches)
                 if (!ignoreEvents) touch.dispatchEvent(touchEvent);

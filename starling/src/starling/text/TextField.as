@@ -148,6 +148,7 @@ import starling.core.RenderSupport;
             mBorder = null;
             mKerning = true;
             mLeading = 0.0;
+            mStrokeSize = 0;
             mBold = bold;
             mAutoSize = TextFieldAutoSize.NONE;
             mHitArea = new Rectangle(0, 0, width, height);
@@ -391,7 +392,7 @@ import starling.core.RenderSupport;
             {
                 var canvas:BitmapData = new BitmapData(bitmapData.width, bitmapData.height, true, 0x0)
                 var outline:BitmapData = new BitmapData(bitmapData.width, bitmapData.height, true, mStrokeColor);
-                var point:Point = new Point(4, 4);
+                var point:Point = new Point(mStrokeSize, mStrokeSize);
 
                 for (var i:int = 1; i <= mStrokeSize; i++) {
                     canvas.copyPixels(outline, outline.rect, new Point(point.x - i, point.y), bitmapData, null, true);
@@ -485,7 +486,10 @@ import starling.core.RenderSupport;
                 else if (vAlign == VAlign.BOTTOM && bounds.y > 0)
                     resultOffset.y = -(bounds.bottom - textHeight);
             }
-            
+
+            resultOffset.x -= mStrokeSize;
+            resultOffset.y -= mStrokeSize;
+
             return resultOffset;
         }
         

@@ -288,7 +288,12 @@ import starling.core.RenderSupport;
         	mRequiresRedraw = true;
         }
 
-        public function setStroke(size:uint, color:uint):void
+        /**
+         * Cria um STROKE/OUTLINE para o texto
+         * @param size      A qualidade depende da largura da borda
+         * @param color     Definir cor no formato 0xAARRGGBB
+         */
+        public function setStroke(size:uint, color:uint = 0xFF000000):void
         {
             mStrokeSize = size;
             mStrokeColor = color;

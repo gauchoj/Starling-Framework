@@ -10,7 +10,10 @@
 
 package starling.text
 {
-	import starling.core.RenderSupport;
+import flash.display.Bitmap;
+import flash.geom.ColorTransform;
+
+import starling.core.RenderSupport;
 	import starling.core.Starling;
 	import starling.display.DisplayObject;
 	import starling.display.DisplayObjectContainer;
@@ -115,10 +118,12 @@ package starling.text
         private var mIsHtmlText:Boolean;
         private var mTextBounds:Rectangle;
         private var mBatchable:Boolean;
-        
+        private var mStrokeSize:uint;
+        private var mStrokeColor:uint;
+
         private var mHitArea:Rectangle;
         private var mBorder:DisplayObjectContainer;
-        
+
         private var mImage:Image;
         private var mQuadBatch:QuadBatch;
         
@@ -178,7 +183,7 @@ package starling.text
 		}
 		
 		private var emptyTextRendered: Boolean = false;
-		
+
         /** Forces the text field to be constructed right away. Normally, 
          *  it will only do so lazily, i.e. before being rendered. */
         public function redraw():void
@@ -282,6 +287,13 @@ package starling.text
         	mRequiresRedraw = true;
         }
 
+        public function setStroke(size:uint, color:uint):void
+        {
+            mStrokeSize = size;
+            mStrokeColor = color;
+            mRequiresRedraw = true;
+        }
+
         private function renderText(scale:Number, resultTextBounds:Rectangle):BitmapData
         {
             var width:Number  = mHitArea.width  * scale;
@@ -360,17 +372,47 @@ package starling.text
                 filterOffset.x, filterOffset.y + int(textOffsetY)-2);
             var drawWithQualityFunc:Function = 
                 "drawWithQuality" in bitmapData ? bitmapData["drawWithQuality"] : null;
-            
+
 			bitmapData.lock();
-			
+
             if (drawWithQualityFunc is Function)
                 drawWithQualityFunc.call(bitmapData, sNativeTextField, drawMatrix, 
                                          null, null, null, false, StageQuality.HIGH);
             else
                 bitmapData.draw(sNativeTextField, drawMatrix);
-            
+
 			bitmapData.unlock();
-			
+
+            /*
+            * Cria um stroke dinamico
+            * Como não usa filtros e usa apenas manipulação de pixel, não consome muita cpu
+            */
+            if(mStrokeSize > 0)
+            {
+                var canvas:BitmapData = new BitmapData(bitmapData.width, bitmapData.height, true, 0x0)
+                var outline:BitmapData = new BitmapData(bitmapData.width, bitmapData.height, true, mStrokeColor);
+                var point:Point = new Point(4, 4);
+
+                for (var i:int = 1; i <= mStrokeSize; i++) {
+                    canvas.copyPixels(outline, outline.rect, new Point(point.x - i, point.y), bitmapData, null, true);
+                    canvas.copyPixels(outline, outline.rect, new Point(point.x + i, point.y), bitmapData, null, true);
+                    canvas.copyPixels(outline, outline.rect, new Point(point.x, point.y + i), bitmapData, null, true);
+                    canvas.copyPixels(outline, outline.rect, new Point(point.x, point.y - i), bitmapData, null, true);
+                }
+
+                for (var i:int = 1; i <= (mStrokeSize>>1); i++) {
+                    canvas.copyPixels(outline, outline.rect, new Point(point.x - i, point.y - i), bitmapData, null, true);
+                    canvas.copyPixels(outline, outline.rect, new Point(point.x + i, point.y - i), bitmapData, null, true);
+                    canvas.copyPixels(outline, outline.rect, new Point(point.x - i, point.y + i), bitmapData, null, true);
+                    canvas.copyPixels(outline, outline.rect, new Point(point.x + i, point.y + i), bitmapData, null, true);
+                }
+
+                canvas.copyPixels(bitmapData, bitmapData.rect, point, null, null, true);
+                bitmapData = canvas;
+
+            }
+
+
             sNativeTextField.text = "";
             
             resultTextBounds.setTo((textOffsetX + filterOffset.x) / scale,

@@ -93,8 +93,10 @@ package starling.animation
 		static public const EASE_IN_EXPO : String = "easeInExpo";
 		static public const EASE_OUT_EXPO : String = "easeOutExpo";
 		static public const EASE_IN_OUT_EXPO : String = "easeInOutExpo";
-		
-		
+
+		static public const BEZIER_OUT_IN_BACK : String = "bezierOutInBack";
+
+
 		
         
         private static var sTransitions:Dictionary;
@@ -171,7 +173,12 @@ package starling.animation
 			register(EASE_IN_EXPO, Expo.easeIn);
 			register(EASE_OUT_EXPO, Expo.easeOut);
 			register(EASE_IN_OUT_EXPO, Expo.easeInOut);
-			
+
+            // Custom Bezier
+            // https://cubic-bezier.com/
+
+			register(BEZIER_OUT_IN_BACK, BezierEase.config(.57,-0.49,.49,1.57));
+
 			// original
 			
             //register(EASE_IN, easeIn);
